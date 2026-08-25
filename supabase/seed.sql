@@ -1,0 +1,2 @@
+-- Development-only seed data belongs here. Tenant fixtures will be added with
+-- their integration tests; production data must never be placed in this file.
