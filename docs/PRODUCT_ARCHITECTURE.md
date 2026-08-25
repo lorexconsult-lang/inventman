@@ -26,3 +26,11 @@ Features may depend on shared configuration, types, UI, and infrastructure. Cros
 ## Industry capabilities
 
 Industry modes are organization-level capabilities and configuration. They extend the universal product, inventory, workflow, and location models rather than forking schemas or applications.
+
+## Phase 1 catalogue and locations
+
+Branches contain warehouses, and warehouses contain an adjacency-list storage hierarchy rooted by an automatically created system location. Composite tenant foreign keys, cycle guards, and RLS prevent cross-organization or cross-warehouse links.
+
+The catalogue separates products from sellable variants. Variants own SKUs, packaging conversions, barcodes, option assignments, reorder configuration, and deterministic price rows. Categories are hierarchical; brands, units, tax profiles, and price lists are organization-scoped. Product images are private objects under tenant-prefixed Storage paths with metadata in PostgreSQL.
+
+No table in this phase stores on-hand, available, committed, or inventory-value quantities. Reference cost and reorder fields are configuration metadata only. Authoritative physical quantities must be derived from the future immutable Inventory Ledger.

@@ -1,5 +1,7 @@
 begin;
+set local role postgres;
 create extension if not exists pgtap with schema extensions;
+set local search_path = pgtap, extensions, public;
 select plan(27);
 
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at) values
@@ -11,31 +13,31 @@ insert into auth.users (id, instance_id, aud, role, email, encrypted_password, e
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}',true);
 select lives_ok($$select public.create_organization('Organization A','gate-org-a','GB','GBP','Europe/London')$$,'User A bootstraps Organization A');
-reset role;
+set local role postgres;
 select set_config('test.org_a',(select id::text from public.organizations where slug='gate-org-a'),true);
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}',true);
 select lives_ok($$select public.create_organization('Organization B','gate-org-b','US','USD','America/New_York')$$,'User B bootstraps Organization B');
-reset role;
+set local role postgres;
 select set_config('test.org_b',(select id::text from public.organizations where slug='gate-org-b'),true);
 
-insert into public.businesses(id,organization_id,name,business_type) values
-('10000000-0000-0000-0000-00000000000a',current_setting('test.org_a')::uuid,'Business A','retail'),
-('10000000-0000-0000-0000-00000000000b',current_setting('test.org_b')::uuid,'Business B','retail');
-insert into public.branches(id,organization_id,business_id,name,code,timezone) values
-('20000000-0000-0000-0000-00000000000a',current_setting('test.org_a')::uuid,'10000000-0000-0000-0000-00000000000a','Branch A','A','Europe/London'),
-('20000000-0000-0000-0000-00000000000b',current_setting('test.org_a')::uuid,'10000000-0000-0000-0000-00000000000a','Branch B','B','Europe/London');
-insert into public.warehouses(id,organization_id,branch_id,name,code) values
-('30000000-0000-0000-0000-00000000000a',current_setting('test.org_a')::uuid,'20000000-0000-0000-0000-00000000000a','Warehouse A','A'),
-('30000000-0000-0000-0000-00000000000b',current_setting('test.org_a')::uuid,'20000000-0000-0000-0000-00000000000b','Warehouse B','B');
+insert into public.businesses(id,organization_id,name,business_type,created_by) values
+('10000000-0000-0000-0000-00000000000a',current_setting('test.org_a')::uuid,'Business A','retail','00000000-0000-0000-0000-00000000000a'),
+('10000000-0000-0000-0000-00000000000b',current_setting('test.org_b')::uuid,'Business B','retail','00000000-0000-0000-0000-00000000000b');
+insert into public.branches(id,organization_id,business_id,name,code,timezone,created_by) values
+('20000000-0000-0000-0000-00000000000a',current_setting('test.org_a')::uuid,'10000000-0000-0000-0000-00000000000a','Branch A','A','Europe/London','00000000-0000-0000-0000-00000000000a'),
+('20000000-0000-0000-0000-00000000000b',current_setting('test.org_a')::uuid,'10000000-0000-0000-0000-00000000000a','Branch B','B','Europe/London','00000000-0000-0000-0000-00000000000a');
+insert into public.warehouses(id,organization_id,business_id,branch_id,name,code,created_by) values
+('30000000-0000-0000-0000-00000000000a',current_setting('test.org_a')::uuid,'10000000-0000-0000-0000-00000000000a','20000000-0000-0000-0000-00000000000a','Warehouse A','A','00000000-0000-0000-0000-00000000000a'),
+('30000000-0000-0000-0000-00000000000b',current_setting('test.org_a')::uuid,'10000000-0000-0000-0000-00000000000a','20000000-0000-0000-0000-00000000000b','Warehouse B','B','00000000-0000-0000-0000-00000000000a');
 insert into public.organization_members(id,organization_id,user_id,status,joined_at) values
 ('40000000-0000-0000-0000-00000000000c',current_setting('test.org_a')::uuid,'00000000-0000-0000-0000-00000000000c','active',now()),
 ('40000000-0000-0000-0000-00000000000d',current_setting('test.org_a')::uuid,'00000000-0000-0000-0000-00000000000d','active',now());
 insert into public.roles(id,organization_id,name) values
-('50000000-0000-0000-0000-00000000000c',current_setting('test.org_a')::uuid,'Branch Manager'),
+('50000000-0000-0000-0000-00000000000c',current_setting('test.org_a')::uuid,'Test Branch Manager'),
 ('50000000-0000-0000-0000-00000000000d',current_setting('test.org_a')::uuid,'Restricted Manager');
 insert into public.role_permissions(organization_id,role_id,permission_id)
-select current_setting('test.org_a')::uuid,'50000000-0000-0000-0000-00000000000c'::uuid,id from public.permissions where code in ('branches.manage','warehouses.manage')
+select current_setting('test.org_a')::uuid,'50000000-0000-0000-0000-00000000000c'::uuid,id from public.permissions where code in ('branches.view','branches.update','warehouses.view','warehouses.update','storage_locations.view')
 union all select current_setting('test.org_a')::uuid,'50000000-0000-0000-0000-00000000000d'::uuid,id from public.permissions where code='roles.manage';
 insert into public.member_roles values
 (current_setting('test.org_a')::uuid,'40000000-0000-0000-0000-00000000000c','50000000-0000-0000-0000-00000000000c',now()),
@@ -53,7 +55,7 @@ select lives_ok(format('delete from public.organizations where id=%L',current_se
 select is((select count(*)::int from public.organization_members where organization_id=current_setting('test.org_b')::uuid),0,'User A cannot access Organization B memberships');
 select ok(public.has_permission(current_setting('test.org_a')::uuid,'organizations.manage'),'Owner has organization capability');
 select throws_ok($$select public.create_organization('Duplicate','gate-org-a','GB','GBP','Europe/London')$$,'23505',null,'Duplicate bootstrap is rejected');
-reset role;
+set local role postgres;
 select is((select count(*)::int from public.organizations where slug='gate-org-a'),1,'Duplicate bootstrap is atomic');
 select is((select count(*)::int from public.organization_members where organization_id=current_setting('test.org_a')::uuid and user_id='00000000-0000-0000-0000-00000000000a'),1,'Authenticated actor becomes owner');
 
@@ -61,7 +63,7 @@ set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}',true);
 select is((select count(*)::int from public.organizations where id=current_setting('test.org_a')::uuid),0,'User B cannot select Organization A');
 select lives_ok(format('update public.organizations set name=%L where id=%L','Compromised',current_setting('test.org_a')),'Inverse update is filtered');
-reset role;
+set local role postgres;
 select is((select name from public.organizations where id=current_setting('test.org_a')::uuid),'Organization A','Organization A remains unchanged');
 select is((select name from public.organizations where id=current_setting('test.org_b')::uuid),'Organization B','Organization B remains unchanged');
 

@@ -15,3 +15,9 @@ This matrix is a default template. Organizations may create custom roles; author
 | Audit reports | ✓ | ✓ | Branch | Inventory |  | Procurement | Sales | Own | Finance | ✓ | View |
 
 `Branch` means access is restricted by `member_branch_access`. Exact seeded permission assignments will be introduced with each domain so incomplete capabilities are not advertised.
+
+## Phase 1 permissions
+
+Location capabilities are split into branch create/update/deactivate, warehouse create/update/deactivate, and storage-location create/update/deactivate. Catalogue capabilities separately govern product view/create/update/archive, categories, brands, units, tax profiles, prices, and CSV import. Every application mutation checks a capability server-side; RLS and database functions repeat tenant and scope enforcement.
+
+The default Owner and Administrator roles receive full Phase 1 capabilities. Branch Manager receives operational catalogue and location capabilities subject to branch scope. Cashier receives catalogue read access only. Custom roles remain capability-based.

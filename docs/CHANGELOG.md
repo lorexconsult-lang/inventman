@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Built Phase 1 branches, warehouses, hierarchical storage locations, and the complete tenant-safe product catalogue.
+- Added simple and option-generated variant products, packaging conversions, organization-unique SKUs/barcodes, tax and price-list configuration, private product images, and lifecycle controls.
+- Added validated CSV preview/import, deterministic CSV export, responsive catalogue/location screens, capability enforcement, audit events, and default warehouse/price-list workflows.
+- Added 35 Phase 1 pgTAP assertions and catalogue unit coverage while preserving the explicit boundary that no stock balance or Inventory Ledger implementation exists in this phase.
+
 - Initialized product architecture, security, database, RBAC, offline-sync, and delivery documentation.
 - Established the Next.js/Supabase project foundation and tenant-safe schema baseline.
 - Added Supabase SSR authentication clients, validated registration/login actions, PKCE callback handling, a responsive application shell, and foundational tests.
