@@ -38,6 +38,8 @@ Procurement tables force RLS. Supplier access is tenant capability-scoped; requi
 
 Authenticated hosted verification proves restricted approval denial, branch-ID tampering rejection, foreign-tenant filtering, duplicate GRN replay without duplicate stock, and inability to write inventory balances or movements directly. Ephemeral test cleanup requires `service_role` and an explicit test-only slug prefix.
 
+Sales tables force RLS and expose writes through capability-checked RPCs. Sales confirmation locks customer exposure and inventory reservations; fulfilment consumes reservations and posts `SALE` through the Inventory Ledger; invoice issue performs no stock mutation; accepted returns post `SALE_RETURN` at historical cost before issuing a linked Credit Note. A database trigger rejects unauthorized client-supplied price or discount overrides. Sales verification cleanup requires `service_role` and a `phase4-e2e-` organization slug.
+
 ## Secrets
 
 Browser configuration is limited to `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Service-role and secret keys are not declared in the public template or referenced in application source.

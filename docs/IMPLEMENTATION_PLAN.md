@@ -65,7 +65,7 @@ The application-controlled foundation gate is complete. Temporary users and tena
 | Security | PASS | Forced RLS, tenant-composite references, branch policies, capability RPCs, private document storage, and direct ledger-write denial are implemented. |
 | Tests and build | PASS | All 164 hosted pgTAP assertions, 27 unit tests, 4 Playwright security tests, the authenticated 22-step hosted procurement workflow, strict typecheck, ESLint, database lint, and production build pass. |
 
-## PHASE 4 SALES DATABASE/RPC GATE
+## PHASE 4 CUSTOMER, SALES AND RECEIVABLES GATE
 
 | Verification | Status | Evidence |
 |---|---|---|
@@ -73,10 +73,11 @@ The application-controlled foundation gate is complete. Temporary users and tena
 | Atomic order and reservation workflow | PASS | Confirmation, partial reservation/backorder policy, cancellation release, row/advisory locking, capability checks, and exact idempotency use the existing Inventory Reservation subsystem. |
 | Inventory and COGS integration | PASS | Partial 10→4→6 fulfilment posts `SALE`, consumes reservations exactly, and records authoritative ledger COGS and margin. Invoice issue has an explicit zero-stock-mutation regression assertion. |
 | Returns and receivables | PASS | Return eligibility, inspection disposition, `SALE_RETURN`, historical WAC/FIFO restoration links, return-linked Credit Notes, and derived AR are transactionally enforced. |
-| Database tests | PASS | 34 Phase 4 hosted pgTAP assertions pass. Existing Phase 1, Phase 2, Phase 3, and tenant-isolation files also pass; the combined run experienced one pooler EOF during Phase 3, whose isolated 36-assertion retry passed. |
+| Sales application | PASS | Customer, quotation, Sales Order, partial/full fulfilment, invoice, receivables/aging/statement, return, Credit Note, dashboard, report, print, and CSV routes are implemented. |
+| Database tests | PASS | 39 Phase 4 hosted pgTAP assertions pass. Tenant, Catalogue, Inventory, Procurement and Sales run together as 203 assertions. |
 | Database lint | PASS | Public-schema lint has no Phase 4 errors; pgTAP extension-internal findings are excluded from the application schema result. |
 
-Phase 4 remains database-first at this checkpoint. Sales UI and POS have not started.
+POS, customer/supplier payment settlement, payment allocation, and Finance have not started and are not claimed by Phase 4.
 
 ## PRODUCTION COMMUNICATION GATE
 

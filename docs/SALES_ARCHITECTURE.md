@@ -50,6 +50,12 @@ If backorders are allowed, confirmation reserves the available quantity and reco
 
 Tenant-composite foreign keys cover customer, branch, warehouse/location, variant/packaging, document, ledger, and return relationships. Sensitive child tables inherit branch authorization through their parent policies. `anon` and unauthorized authenticated users cannot execute Sales workflows or mutate ledger/balance tables directly.
 
-## Current stop point
+## Application surface
 
-The hosted schema, atomic RPCs, generated types, database lint, and Phase 4 pgTAP workflow are complete. Broad Sales UI work and POS have not started.
+Phase 4 includes authenticated screens for customers, quotations, Sales Orders, fulfilments, invoices, receivables and customer statements, Sales Returns, Credit Notes, dashboard metrics, reports, printing, and CSV exports. Draft quotation and customer edits cross capability-checked RPC boundaries. Sales line inserts enforce price and discount override capabilities in PostgreSQL, not only in the browser.
+
+Payment allocation, POS, Finance, and independent manual Credit Notes remain outside Phase 4. Statements therefore show issued invoices and issued Credit Notes only.
+
+## Verification cleanup
+
+`purge_ephemeral_sales_verification` remains in permanent migration history because it was already deployed and is the fail-closed cleanup boundary for authenticated hosted verification. Execution is restricted to `service_role`, and the target organization must use the `phase4-e2e-` slug prefix. It is not available to application users.

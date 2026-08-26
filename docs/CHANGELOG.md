@@ -2,9 +2,13 @@
 
 ## Unreleased
 
+- Completed the Phase 4 Customer, Sales and Receivables application surface: customer maintenance, editable draft quotations, Sales Orders, partial/full fulfilment, invoices, aging and customer statements, returns, Credit Notes, dashboard, reporting, print views, and CSV exports.
+- Added database-enforced price/discount override protection plus customer and draft-quotation update RPCs.
+- Added authenticated hosted 20→10→4→6 Sales verification with exact reservation, ledger COGS, invoice stock invariance, historical-cost return, AR, security, browser, and cleanup checks. POS, Payments, and Finance remain unimplemented.
+
 - Added the Phase 4 database-first customer, quotation, Sales Order, fulfilment, customer invoice/AR, Sales Return, and Credit Note schema and tenant/branch security model.
 - Added atomic Sales RPCs for quotation conversion, credit-safe order confirmation, Inventory Reservation integration, cancellation/release, partial fulfilment through the `SALE` ledger, invoice issue without stock posting, and historical-cost `SALE_RETURN` with return-linked Credits.
-- Added 34 hosted Sales pgTAP assertions covering idempotency, authorization, 10→4→6 reservation consumption, ledger COGS/margin, invoice stock invariance, return eligibility, historical valuation, and AR reduction. Sales UI and POS remain intentionally unstarted.
+- Added hosted Sales pgTAP assertions covering idempotency, authorization, 20→10→4→6 reservation consumption, ledger COGS/margin, invoice stock invariance, return eligibility, historical valuation, and AR reduction.
 
 - Built Phase 3 supplier and procurement foundations: supplier relationships/documents, requisitions, reusable approvals, RFQs and quote history/comparison, protected purchase orders, partial GRNs, landed costs, supplier invoice matching/payables, credits, purchase returns, reporting, and private document policies.
 - Integrated accepted receipts and purchase returns atomically with the existing `PURCHASE_RECEIPT` and `PURCHASE_RETURN` inventory ledger paths; no parallel stock system was introduced.

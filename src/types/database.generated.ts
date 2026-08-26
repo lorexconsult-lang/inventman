@@ -6971,6 +6971,22 @@ export type Database = {
         }
         Returns: string
       }
+      add_customer_address: {
+        Args: {
+          target_address: Json
+          target_customer_id: string
+          target_organization_id: string
+        }
+        Returns: string
+      }
+      add_customer_contact: {
+        Args: {
+          target_contact: Json
+          target_customer_id: string
+          target_organization_id: string
+        }
+        Returns: string
+      }
       add_supplier_product: {
         Args: {
           target_description: string
@@ -7559,6 +7575,27 @@ export type Database = {
           target_action: string
           target_organization_id: string
           target_quotation_id: string
+        }
+        Returns: string
+      }
+      update_customer: {
+        Args: {
+          target_customer: Json
+          target_customer_id: string
+          target_organization_id: string
+        }
+        Returns: string
+      }
+      update_sales_quotation: {
+        Args: {
+          target_billing_address: Json
+          target_delivery_address: Json
+          target_expiry_date: string
+          target_lines: Json
+          target_notes: string
+          target_organization_id: string
+          target_quotation_id: string
+          target_terms: string
         }
         Returns: string
       }

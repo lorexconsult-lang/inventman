@@ -42,3 +42,7 @@ The inventory domain owns the immutable transaction/movement ledger, derived loc
 ## Phase 3 procurement
 
 The procurement domain adds supplier masters, reusable approvals, requisitions, RFQs/quotations, purchase orders, receiving/GRNs, landed-cost allocations, supplier invoices, AP projections, credits, and purchase returns. Physical receipts and returns call the Phase 2 inventory posting engine atomically. Finance settlement, Sales, and POS remain outside this boundary. See `PROCUREMENT_ARCHITECTURE.md`.
+
+## Phase 4 Sales and receivables
+
+The Sales domain adds customers, quotations, Sales Orders, inventory reservations, partial/full fulfilment, invoices, receivables, returns, Credit Notes, and operational reporting. Fulfilment posts through the Phase 2 Inventory Ledger and records actual COGS. Invoice and Credit Note issuance affect receivables but never mutate stock independently. Payment settlement, POS, and Finance remain future boundaries.

@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   LogOut,
   PackageSearch,
+  BadgeDollarSign,
   ShoppingCart,
   Settings2,
   Warehouse,
@@ -20,6 +21,7 @@ const navigation = [
   { label: "Catalogue", href: "/dashboard/catalogue", icon: PackageSearch },
   { label: "Inventory", href: "/dashboard/inventory", icon: Boxes },
   { label: "Procurement", href: "/dashboard/procurement", icon: ShoppingCart },
+  { label: "Sales", href: "/dashboard/sales", icon: BadgeDollarSign },
   {
     label: "Catalogue settings",
     href: "/dashboard/catalogue/settings",
@@ -41,7 +43,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           {appConfig.name}
         </Link>
         <div className="flex items-center gap-3 text-sm text-subtle">
-          <span className="hidden sm:inline">Workspace foundation</span>
+          <span className="hidden sm:inline">Operations workspace</span>
           <span
             className="size-2 rounded-full bg-positive"
             aria-label="Online"
@@ -76,7 +78,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
       <nav
         aria-label="Mobile navigation"
-        className="sticky bottom-0 z-20 grid grid-cols-7 border-t bg-canvas/95 p-2 backdrop-blur md:hidden"
+        className="sticky bottom-0 z-20 grid grid-cols-8 border-t bg-canvas/95 p-2 backdrop-blur md:hidden"
       >
         {navigation.map(({ label, href, icon: Icon }) => (
           <Link

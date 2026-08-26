@@ -42,12 +42,11 @@ export default async function DashboardPage() {
           Operations overview
         </p>
         <h1 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-          Build the operating structure.
+          Run your business operations.
         </h1>
         <p className="mt-3 max-w-2xl text-subtle">
-          Branches, warehouses, storage locations, and catalogue records are
-          ready. Stock balances remain intentionally unavailable until the
-          Inventory Ledger phase.
+          Manage locations, catalogue, inventory, procurement, and Sales from
+          one tenant-secure workspace.
         </p>
       </div>
       <section aria-label="Key metrics" className="grid gap-4 lg:grid-cols-3">
