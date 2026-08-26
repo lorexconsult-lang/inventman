@@ -14,12 +14,12 @@ Organization membership grants tenant entry. Roles contain capabilities through 
 
 ## Inventory
 
-`stock_movements` is the immutable source of truth. `inventory_balances` is a transactionally maintained read model. Posted movements are reversed with compensating movements, never edited or deleted. Atomic RPCs validate membership, permissions, workflow state, quantities, and idempotency before writing both records.
+`inventory_movements` is the immutable source of truth. `inventory_balances` is a transactionally maintained read model. Posted movements are reversed with compensating movements, never edited or deleted. Atomic RPCs validate membership, permissions, workflow state, packaging conversions, costing, quantities, and idempotency. Weighted Average and FIFO are supported; FIFO consumption uses immutable layer allocations. See `INVENTORY_ARCHITECTURE.md`.
 
 ## Conventions
 
 - UUID primary keys; UTC `timestamptz` audit timestamps.
-- Money uses `numeric(20,4)` and an ISO currency code.
+- General money uses `numeric(20,4)` and an ISO currency code. Inventory quantities use `numeric(24,6)`, costs `numeric(24,8)`, and extended values `numeric(28,8)`.
 - Tenant indexes start with `organization_id` and add common filter/sort columns.
 - Historical financial and stock records use lifecycle states rather than physical deletion.
 - User-configurable concepts use tables; stable internal state machines may use enums or constrained text.

@@ -21,3 +21,7 @@ This matrix is a default template. Organizations may create custom roles; author
 Location capabilities are split into branch create/update/deactivate, warehouse create/update/deactivate, and storage-location create/update/deactivate. Catalogue capabilities separately govern product view/create/update/archive, categories, brands, units, tax profiles, prices, and CSV import. Every application mutation checks a capability server-side; RLS and database functions repeat tenant and scope enforcement.
 
 The default Owner and Administrator roles receive full Phase 1 capabilities. Branch Manager receives operational catalogue and location capabilities subject to branch scope. Cashier receives catalogue read access only. Custom roles remain capability-based.
+
+## Phase 2 inventory permissions
+
+Capabilities separately govern view, opening stock, receipts, issues, adjustments, reservations, transfer create/dispatch/receive, count create/perform/post, reversal, backdate, negative-stock override, settings, valuation, and export. Owner and Administrator receive all. Inventory Manager receives operational and settings capabilities; Storekeeper receives branch-scoped daily workflows without reversal, override, backdate, or settings authority. Auditor and Viewer remain read-only.

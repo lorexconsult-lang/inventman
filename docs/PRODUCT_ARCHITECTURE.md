@@ -34,3 +34,7 @@ Branches contain warehouses, and warehouses contain an adjacency-list storage hi
 The catalogue separates products from sellable variants. Variants own SKUs, packaging conversions, barcodes, option assignments, reorder configuration, and deterministic price rows. Categories are hierarchical; brands, units, tax profiles, and price lists are organization-scoped. Product images are private objects under tenant-prefixed Storage paths with metadata in PostgreSQL.
 
 No table in this phase stores on-hand, available, committed, or inventory-value quantities. Reference cost and reorder fields are configuration metadata only. Authoritative physical quantities must be derived from the future immutable Inventory Ledger.
+
+## Phase 2 inventory engine
+
+The inventory domain owns the immutable transaction/movement ledger, derived location balances and availability, Weighted Average and FIFO valuation, reservations, transfers, stock counts, reversals, reason codes, exports, and reconciliation. Pages read tenant-filtered projections and send commands through server actions to atomic PostgreSQL functions. Future Procurement, Sales/POS, Returns, and Production modules must use this posting boundary rather than mutate balances.

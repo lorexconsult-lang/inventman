@@ -46,6 +46,16 @@ Status meanings: **Not Started**, **In Progress**, **Complete**, **Blocked**. A 
 
 The application-controlled foundation gate is complete. Temporary users and tenant fixtures were deleted after verification.
 
+## PHASE 2 INVENTORY GATE
+
+| Verification | Status | Evidence |
+|---|---|---|
+| Ledger and costing | PASS | Immutable movements, derived balances, Weighted Average, FIFO layers/allocations, reversals, and reconciliation are deployed to hosted development. |
+| Workflows | PASS | Opening stock, manual stock events, reservations, transfers, stock counts, settings, history, valuation, and CSV exports are implemented. |
+| Tenant security | PASS | Capability RPCs, RLS, branch scope, direct-write denial, actor derivation, and audit events are enforced. |
+| Database tests | PASS | All 66 Phase 2 hosted pgTAP assertions pass. |
+| Application gates | PASS | Strict typecheck, ESLint, 19 unit tests, 4 browser security tests, and the production build pass; all 128 hosted database assertions pass together. |
+
 ## PRODUCTION COMMUNICATION GATE
 
 | Verification | Status | Evidence |

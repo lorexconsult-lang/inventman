@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
@@ -100,6 +101,7 @@ export default async function ProductPage({
         description="Catalogue configuration only. Physical stock is introduced by the Inventory Ledger."
         actions={
           <>
+            <Link href={`/dashboard/catalogue/${product.id}/inventory`} className="rounded-lg border px-4 py-2 text-sm font-semibold">Inventory</Link>
             <StatusBadge
               tone={product.status === "ACTIVE" ? "positive" : "neutral"}
             >

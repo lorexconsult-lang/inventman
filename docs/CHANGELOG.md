@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Built the Phase 2 immutable inventory ledger and derived stock engine with Weighted Average and FIFO costing, deterministic layer allocation, reservations, transfers, counts, reversals, reconciliation, idempotency, concurrency locks, RLS, capability controls, reporting, exports, and responsive inventory workflows.
+- Added 66 hosted Phase 2 pgTAP assertions and inventory calculation unit coverage, including count variance posting, exact FIFO restoration, direct-write denial, cross-tenant isolation, and branch scope.
+
 - Built Phase 1 branches, warehouses, hierarchical storage locations, and the complete tenant-safe product catalogue.
 - Added simple and option-generated variant products, packaging conversions, organization-unique SKUs/barcodes, tax and price-list configuration, private product images, and lifecycle controls.
 - Added validated CSV preview/import, deterministic CSV export, responsive catalogue/location screens, capability enforcement, audit events, and default warehouse/price-list workflows.

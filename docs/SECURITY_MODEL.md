@@ -20,6 +20,8 @@ Application authentication tests provision short-lived confirmed users through t
 
 Prefer `security invoker`. Reviewed `security definer` helpers set `search_path = ''`, schema-qualify objects, expose the smallest possible interface, and revoke public execution before granting it to authenticated users.
 
+Inventory tables grant authenticated users read access only. Stock, reservation, transfer, count, reversal, and settings writes cross capability-checked RPC boundaries. These derive the actor from `auth.uid()`, enforce branch scope, lock stock rows, validate tenant relationships, and append audit events. Platform reconciliation is unavailable to ordinary authenticated users.
+
 ## Storage and files
 
 Public branding and private business documents use different buckets. Private object paths begin with an organization ID and policies validate active membership. Uploads require allow-listed media types and size limits.
@@ -29,6 +31,8 @@ Public branding and private business documents use different buckets. Private ob
 Database integration tests must prove anonymous denial, member access, cross-tenant denial, inactive-member denial, branch scoping, and privileged platform isolation.
 
 `supabase/tests/tenant_isolation.sql` covers anonymous denial, inverse two-tenant isolation, unauthorized inserts/updates/deletes, owner bootstrap atomicity, branch scoping, manual branch-ID tampering, and capability escalation. All 27 assertions pass transactionally against the hosted development database.
+
+`supabase/tests/phase2_inventory.sql` adds 66 assertions for direct-write denial, isolation, availability, valuation, FIFO ordering, reservations, idempotency, transfers, counts, reversals, and reconciliation.
 
 ## Secrets
 
