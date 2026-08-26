@@ -38,3 +38,7 @@ No table in this phase stores on-hand, available, committed, or inventory-value 
 ## Phase 2 inventory engine
 
 The inventory domain owns the immutable transaction/movement ledger, derived location balances and availability, Weighted Average and FIFO valuation, reservations, transfers, stock counts, reversals, reason codes, exports, and reconciliation. Pages read tenant-filtered projections and send commands through server actions to atomic PostgreSQL functions. Future Procurement, Sales/POS, Returns, and Production modules must use this posting boundary rather than mutate balances.
+
+## Phase 3 procurement
+
+The procurement domain adds supplier masters, reusable approvals, requisitions, RFQs/quotations, purchase orders, receiving/GRNs, landed-cost allocations, supplier invoices, AP projections, credits, and purchase returns. Physical receipts and returns call the Phase 2 inventory posting engine atomically. Finance settlement, Sales, and POS remain outside this boundary. See `PROCUREMENT_ARCHITECTURE.md`.

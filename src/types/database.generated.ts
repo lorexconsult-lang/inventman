@@ -14,6 +14,208 @@ export type Database = {
   }
   public: {
     Tables: {
+      approval_actions: {
+        Row: {
+          acted_at: string
+          action: string
+          actor_id: string
+          approval_request_id: string
+          comments: string | null
+          id: string
+          organization_id: string
+          step_order: number
+        }
+        Insert: {
+          acted_at?: string
+          action: string
+          actor_id: string
+          approval_request_id: string
+          comments?: string | null
+          id?: string
+          organization_id: string
+          step_order: number
+        }
+        Update: {
+          acted_at?: string
+          action?: string
+          actor_id?: string
+          approval_request_id?: string
+          comments?: string | null
+          id?: string
+          organization_id?: string
+          step_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_actions_organization_id_approval_request_id_fkey"
+            columns: ["organization_id", "approval_request_id"]
+            isOneToOne: false
+            referencedRelation: "approval_requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      approval_policies: {
+        Row: {
+          branch_id: string | null
+          created_at: string
+          created_by: string
+          currency: string
+          document_type: string
+          id: string
+          is_active: boolean
+          minimum_amount: number
+          name: string
+          organization_id: string
+          prohibit_self_approval: boolean
+          updated_at: string
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string
+          created_by: string
+          currency: string
+          document_type: string
+          id?: string
+          is_active?: boolean
+          minimum_amount?: number
+          name: string
+          organization_id: string
+          prohibit_self_approval?: boolean
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string
+          created_by?: string
+          currency?: string
+          document_type?: string
+          id?: string
+          is_active?: boolean
+          minimum_amount?: number
+          name?: string
+          organization_id?: string
+          prohibit_self_approval?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_policies_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "approval_policies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      approval_requests: {
+        Row: {
+          amount: number
+          branch_id: string | null
+          currency: string
+          current_step: number
+          document_hash: string
+          document_id: string
+          document_type: string
+          finalized_at: string | null
+          id: string
+          organization_id: string
+          policy_id: string | null
+          requester_id: string
+          status: string
+          submitted_at: string
+        }
+        Insert: {
+          amount: number
+          branch_id?: string | null
+          currency: string
+          current_step?: number
+          document_hash: string
+          document_id: string
+          document_type: string
+          finalized_at?: string | null
+          id?: string
+          organization_id: string
+          policy_id?: string | null
+          requester_id: string
+          status?: string
+          submitted_at?: string
+        }
+        Update: {
+          amount?: number
+          branch_id?: string | null
+          currency?: string
+          current_step?: number
+          document_hash?: string
+          document_id?: string
+          document_type?: string
+          finalized_at?: string | null
+          id?: string
+          organization_id?: string
+          policy_id?: string | null
+          requester_id?: string
+          status?: string
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_requests_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "approval_requests_organization_id_policy_id_fkey"
+            columns: ["organization_id", "policy_id"]
+            isOneToOne: false
+            referencedRelation: "approval_policies"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      approval_steps: {
+        Row: {
+          approvals_required: number
+          id: string
+          organization_id: string
+          permission_code: string
+          policy_id: string
+          step_order: number
+        }
+        Insert: {
+          approvals_required?: number
+          id?: string
+          organization_id: string
+          permission_code: string
+          policy_id: string
+          step_order: number
+        }
+        Update: {
+          approvals_required?: number
+          id?: string
+          organization_id?: string
+          permission_code?: string
+          policy_id?: string
+          step_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_steps_organization_id_policy_id_fkey"
+            columns: ["organization_id", "policy_id"]
+            isOneToOne: false
+            referencedRelation: "approval_policies"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       audit_events: {
         Row: {
           action: string
@@ -291,6 +493,227 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      goods_receipt_lines: {
+        Row: {
+          accepted_base_quantity: number
+          accepted_quantity: number
+          allocated_landed_cost_base: number
+          conversion_snapshot: number
+          damage_reason: string | null
+          damaged_quantity: number
+          delivered_quantity: number
+          goods_receipt_id: string
+          id: string
+          inspection_status: string
+          inventory_unit_cost_base: number
+          notes: string | null
+          ordered_quantity_snapshot: number
+          organization_id: string
+          packaging_id: string
+          previously_accepted_base_quantity: number
+          product_variant_id: string
+          purchase_order_line_id: string
+          rejected_quantity: number
+          rejection_reason: string | null
+          unit_purchase_cost_base: number
+        }
+        Insert: {
+          accepted_base_quantity: number
+          accepted_quantity: number
+          allocated_landed_cost_base?: number
+          conversion_snapshot: number
+          damage_reason?: string | null
+          damaged_quantity?: number
+          delivered_quantity: number
+          goods_receipt_id: string
+          id?: string
+          inspection_status: string
+          inventory_unit_cost_base: number
+          notes?: string | null
+          ordered_quantity_snapshot: number
+          organization_id: string
+          packaging_id: string
+          previously_accepted_base_quantity: number
+          product_variant_id: string
+          purchase_order_line_id: string
+          rejected_quantity?: number
+          rejection_reason?: string | null
+          unit_purchase_cost_base: number
+        }
+        Update: {
+          accepted_base_quantity?: number
+          accepted_quantity?: number
+          allocated_landed_cost_base?: number
+          conversion_snapshot?: number
+          damage_reason?: string | null
+          damaged_quantity?: number
+          delivered_quantity?: number
+          goods_receipt_id?: string
+          id?: string
+          inspection_status?: string
+          inventory_unit_cost_base?: number
+          notes?: string | null
+          ordered_quantity_snapshot?: number
+          organization_id?: string
+          packaging_id?: string
+          previously_accepted_base_quantity?: number
+          product_variant_id?: string
+          purchase_order_line_id?: string
+          rejected_quantity?: number
+          rejection_reason?: string | null
+          unit_purchase_cost_base?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goods_receipt_lines_organization_id_goods_receipt_id_fkey"
+            columns: ["organization_id", "goods_receipt_id"]
+            isOneToOne: false
+            referencedRelation: "goods_receipts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipt_lines_organization_id_packaging_id_fkey"
+            columns: ["organization_id", "packaging_id"]
+            isOneToOne: false
+            referencedRelation: "product_variant_packaging"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipt_lines_organization_id_product_variant_id_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipt_lines_organization_id_purchase_order_line_id_fkey"
+            columns: ["organization_id", "purchase_order_line_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_order_lines"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipt_lines_organization_id_purchase_order_line_id_fkey"
+            columns: ["organization_id", "purchase_order_line_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_order_outstanding"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      goods_receipts: {
+        Row: {
+          branch_id: string
+          business_id: string
+          created_at: string
+          grn_number: string
+          id: string
+          idempotency_key: string
+          inventory_transaction_id: string | null
+          notes: string | null
+          organization_id: string
+          posted_at: string | null
+          purchase_order_id: string
+          received_at: string
+          received_by: string
+          status: string
+          storage_location_id: string
+          supplier_delivery_note: string | null
+          supplier_id: string
+          warehouse_id: string
+        }
+        Insert: {
+          branch_id: string
+          business_id: string
+          created_at?: string
+          grn_number: string
+          id?: string
+          idempotency_key: string
+          inventory_transaction_id?: string | null
+          notes?: string | null
+          organization_id: string
+          posted_at?: string | null
+          purchase_order_id: string
+          received_at: string
+          received_by: string
+          status?: string
+          storage_location_id: string
+          supplier_delivery_note?: string | null
+          supplier_id: string
+          warehouse_id: string
+        }
+        Update: {
+          branch_id?: string
+          business_id?: string
+          created_at?: string
+          grn_number?: string
+          id?: string
+          idempotency_key?: string
+          inventory_transaction_id?: string | null
+          notes?: string | null
+          organization_id?: string
+          posted_at?: string | null
+          purchase_order_id?: string
+          received_at?: string
+          received_by?: string
+          status?: string
+          storage_location_id?: string
+          supplier_delivery_note?: string | null
+          supplier_id?: string
+          warehouse_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goods_receipts_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipts_organization_id_business_id_fkey"
+            columns: ["organization_id", "business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipts_organization_id_inventory_transaction_id_fkey"
+            columns: ["organization_id", "inventory_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_transactions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipts_organization_id_purchase_order_id_fkey"
+            columns: ["organization_id", "purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipts_organization_id_storage_location_id_fkey"
+            columns: ["organization_id", "storage_location_id"]
+            isOneToOne: false
+            referencedRelation: "storage_locations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipts_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "goods_receipts_organization_id_warehouse_id_fkey"
+            columns: ["organization_id", "warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
@@ -1096,6 +1519,114 @@ export type Database = {
           },
         ]
       }
+      landed_cost_allocations: {
+        Row: {
+          allocated_amount_base: number
+          created_at: string
+          goods_receipt_line_id: string
+          id: string
+          landed_cost_id: string
+          organization_id: string
+        }
+        Insert: {
+          allocated_amount_base: number
+          created_at?: string
+          goods_receipt_line_id: string
+          id?: string
+          landed_cost_id: string
+          organization_id: string
+        }
+        Update: {
+          allocated_amount_base?: number
+          created_at?: string
+          goods_receipt_line_id?: string
+          id?: string
+          landed_cost_id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "landed_cost_allocations_landed_cost_id_fkey"
+            columns: ["landed_cost_id"]
+            isOneToOne: false
+            referencedRelation: "landed_costs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "landed_cost_allocations_organization_id_goods_receipt_line_fkey"
+            columns: ["organization_id", "goods_receipt_line_id"]
+            isOneToOne: false
+            referencedRelation: "goods_receipt_lines"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      landed_costs: {
+        Row: {
+          allocation_method: string
+          amount: number
+          base_currency_amount: number
+          cost_type: string
+          created_at: string
+          created_by: string
+          currency: string
+          description: string | null
+          exchange_rate: number
+          goods_receipt_id: string | null
+          id: string
+          is_acquisition_cost: boolean
+          organization_id: string
+          purchase_order_id: string | null
+        }
+        Insert: {
+          allocation_method: string
+          amount: number
+          base_currency_amount: number
+          cost_type: string
+          created_at?: string
+          created_by: string
+          currency: string
+          description?: string | null
+          exchange_rate: number
+          goods_receipt_id?: string | null
+          id?: string
+          is_acquisition_cost?: boolean
+          organization_id: string
+          purchase_order_id?: string | null
+        }
+        Update: {
+          allocation_method?: string
+          amount?: number
+          base_currency_amount?: number
+          cost_type?: string
+          created_at?: string
+          created_by?: string
+          currency?: string
+          description?: string | null
+          exchange_rate?: number
+          goods_receipt_id?: string | null
+          id?: string
+          is_acquisition_cost?: boolean
+          organization_id?: string
+          purchase_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "landed_costs_organization_id_goods_receipt_id_fkey"
+            columns: ["organization_id", "goods_receipt_id"]
+            isOneToOne: false
+            referencedRelation: "goods_receipts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "landed_costs_organization_id_purchase_order_id_fkey"
+            columns: ["organization_id", "purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       member_branch_access: {
         Row: {
           branch_id: string
@@ -1384,6 +1915,85 @@ export type Database = {
             foreignKeyName: "price_lists_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      procurement_activity: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          details: Json
+          document_id: string
+          document_type: string
+          id: number
+          organization_id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          document_id: string
+          document_type: string
+          id?: never
+          organization_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          document_id?: string
+          document_type?: string
+          id?: never
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "procurement_activity_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      procurement_settings: {
+        Row: {
+          organization_id: string
+          over_delivery_policy: string
+          over_delivery_tolerance_percent: number
+          require_inspection: boolean
+          require_po_approval: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          organization_id: string
+          over_delivery_policy?: string
+          over_delivery_tolerance_percent?: number
+          require_inspection?: boolean
+          require_po_approval?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          organization_id?: string
+          over_delivery_policy?: string
+          over_delivery_tolerance_percent?: number
+          require_inspection?: boolean
+          require_po_approval?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "procurement_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
@@ -1998,6 +2608,750 @@ export type Database = {
           },
         ]
       }
+      purchase_order_lines: {
+        Row: {
+          accepted_base_quantity: number
+          conversion_snapshot: number
+          discount: number
+          id: string
+          line_total: number
+          ordered_base_quantity: number
+          ordered_quantity: number
+          organization_id: string
+          packaging_id: string
+          product_description_snapshot: string
+          product_variant_id: string
+          purchase_order_id: string
+          rejected_base_quantity: number
+          supplier_item_code_snapshot: string | null
+          tax: number
+          unit_price: number
+        }
+        Insert: {
+          accepted_base_quantity?: number
+          conversion_snapshot: number
+          discount?: number
+          id?: string
+          line_total: number
+          ordered_base_quantity: number
+          ordered_quantity: number
+          organization_id: string
+          packaging_id: string
+          product_description_snapshot: string
+          product_variant_id: string
+          purchase_order_id: string
+          rejected_base_quantity?: number
+          supplier_item_code_snapshot?: string | null
+          tax?: number
+          unit_price: number
+        }
+        Update: {
+          accepted_base_quantity?: number
+          conversion_snapshot?: number
+          discount?: number
+          id?: string
+          line_total?: number
+          ordered_base_quantity?: number
+          ordered_quantity?: number
+          organization_id?: string
+          packaging_id?: string
+          product_description_snapshot?: string
+          product_variant_id?: string
+          purchase_order_id?: string
+          rejected_base_quantity?: number
+          supplier_item_code_snapshot?: string | null
+          tax?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_order_lines_organization_id_packaging_id_fkey"
+            columns: ["organization_id", "packaging_id"]
+            isOneToOne: false
+            referencedRelation: "product_variant_packaging"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_order_lines_organization_id_product_variant_id_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_order_lines_organization_id_purchase_order_id_fkey"
+            columns: ["organization_id", "purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      purchase_orders: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          base_currency: string
+          base_currency_total: number
+          branch_id: string
+          business_id: string
+          created_at: string
+          created_by: string
+          currency: string
+          discount: number
+          exchange_rate: number
+          expected_delivery_date: string | null
+          freight: number
+          id: string
+          notes: string | null
+          order_date: string
+          organization_id: string
+          originating_quotation_id: string | null
+          originating_requisition_id: string | null
+          originating_rfq_id: string | null
+          other_cost: number
+          payment_terms: string | null
+          purchase_order_number: string
+          receiving_location_id: string
+          receiving_warehouse_id: string
+          revision: number
+          status: string
+          subtotal: number
+          supplier_code_snapshot: string
+          supplier_id: string
+          supplier_name_snapshot: string
+          supplier_terms_snapshot: string | null
+          tax: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          base_currency: string
+          base_currency_total: number
+          branch_id: string
+          business_id: string
+          created_at?: string
+          created_by: string
+          currency: string
+          discount?: number
+          exchange_rate: number
+          expected_delivery_date?: string | null
+          freight?: number
+          id?: string
+          notes?: string | null
+          order_date: string
+          organization_id: string
+          originating_quotation_id?: string | null
+          originating_requisition_id?: string | null
+          originating_rfq_id?: string | null
+          other_cost?: number
+          payment_terms?: string | null
+          purchase_order_number: string
+          receiving_location_id: string
+          receiving_warehouse_id: string
+          revision?: number
+          status?: string
+          subtotal: number
+          supplier_code_snapshot: string
+          supplier_id: string
+          supplier_name_snapshot: string
+          supplier_terms_snapshot?: string | null
+          tax?: number
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          base_currency?: string
+          base_currency_total?: number
+          branch_id?: string
+          business_id?: string
+          created_at?: string
+          created_by?: string
+          currency?: string
+          discount?: number
+          exchange_rate?: number
+          expected_delivery_date?: string | null
+          freight?: number
+          id?: string
+          notes?: string | null
+          order_date?: string
+          organization_id?: string
+          originating_quotation_id?: string | null
+          originating_requisition_id?: string | null
+          originating_rfq_id?: string | null
+          other_cost?: number
+          payment_terms?: string | null
+          purchase_order_number?: string
+          receiving_location_id?: string
+          receiving_warehouse_id?: string
+          revision?: number
+          status?: string
+          subtotal?: number
+          supplier_code_snapshot?: string
+          supplier_id?: string
+          supplier_name_snapshot?: string
+          supplier_terms_snapshot?: string | null
+          tax?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_organization_id_business_id_fkey"
+            columns: ["organization_id", "business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_organization_id_originating_quotation_id_fkey"
+            columns: ["organization_id", "originating_quotation_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_quotations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_organization_id_originating_requisition_id_fkey"
+            columns: ["organization_id", "originating_requisition_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requisitions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_organization_id_originating_rfq_id_fkey"
+            columns: ["organization_id", "originating_rfq_id"]
+            isOneToOne: false
+            referencedRelation: "request_for_quotations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_organization_id_receiving_location_id_fkey"
+            columns: ["organization_id", "receiving_location_id"]
+            isOneToOne: false
+            referencedRelation: "storage_locations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_organization_id_receiving_warehouse_id_fkey"
+            columns: ["organization_id", "receiving_warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_orders_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      purchase_requisition_lines: {
+        Row: {
+          conversion_snapshot: number
+          estimated_unit_cost: number | null
+          id: string
+          notes: string | null
+          organization_id: string
+          packaging_id: string
+          product_variant_id: string
+          requested_base_quantity: number
+          requested_quantity: number
+          requisition_id: string
+        }
+        Insert: {
+          conversion_snapshot: number
+          estimated_unit_cost?: number | null
+          id?: string
+          notes?: string | null
+          organization_id: string
+          packaging_id: string
+          product_variant_id: string
+          requested_base_quantity: number
+          requested_quantity: number
+          requisition_id: string
+        }
+        Update: {
+          conversion_snapshot?: number
+          estimated_unit_cost?: number | null
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          packaging_id?: string
+          product_variant_id?: string
+          requested_base_quantity?: number
+          requested_quantity?: number
+          requisition_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_requisition_lines_organization_id_packaging_id_fkey"
+            columns: ["organization_id", "packaging_id"]
+            isOneToOne: false
+            referencedRelation: "product_variant_packaging"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_requisition_lines_organization_id_product_variant_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_requisition_lines_organization_id_requisition_id_fkey"
+            columns: ["organization_id", "requisition_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requisitions"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      purchase_requisitions: {
+        Row: {
+          approved_at: string | null
+          business_id: string
+          created_at: string
+          department: string | null
+          id: string
+          justification: string | null
+          organization_id: string
+          priority: string
+          rejected_at: string | null
+          requesting_branch_id: string
+          requesting_user_id: string
+          required_by_date: string | null
+          requisition_number: string
+          status: string
+          submitted_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          business_id: string
+          created_at?: string
+          department?: string | null
+          id?: string
+          justification?: string | null
+          organization_id: string
+          priority?: string
+          rejected_at?: string | null
+          requesting_branch_id: string
+          requesting_user_id: string
+          required_by_date?: string | null
+          requisition_number: string
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          business_id?: string
+          created_at?: string
+          department?: string | null
+          id?: string
+          justification?: string | null
+          organization_id?: string
+          priority?: string
+          rejected_at?: string | null
+          requesting_branch_id?: string
+          requesting_user_id?: string
+          required_by_date?: string | null
+          requisition_number?: string
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_requisitions_organization_id_business_id_fkey"
+            columns: ["organization_id", "business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_requisitions_organization_id_requesting_branch_id_fkey"
+            columns: ["organization_id", "requesting_branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      purchase_return_lines: {
+        Row: {
+          base_quantity: number
+          conversion_snapshot: number
+          goods_receipt_line_id: string | null
+          id: string
+          organization_id: string
+          packaging_id: string
+          product_variant_id: string
+          purchase_return_id: string
+          quantity: number
+          unit_cost_base: number
+        }
+        Insert: {
+          base_quantity: number
+          conversion_snapshot: number
+          goods_receipt_line_id?: string | null
+          id?: string
+          organization_id: string
+          packaging_id: string
+          product_variant_id: string
+          purchase_return_id: string
+          quantity: number
+          unit_cost_base: number
+        }
+        Update: {
+          base_quantity?: number
+          conversion_snapshot?: number
+          goods_receipt_line_id?: string | null
+          id?: string
+          organization_id?: string
+          packaging_id?: string
+          product_variant_id?: string
+          purchase_return_id?: string
+          quantity?: number
+          unit_cost_base?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_return_lines_organization_id_goods_receipt_line_i_fkey"
+            columns: ["organization_id", "goods_receipt_line_id"]
+            isOneToOne: false
+            referencedRelation: "goods_receipt_lines"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_return_lines_organization_id_packaging_id_fkey"
+            columns: ["organization_id", "packaging_id"]
+            isOneToOne: false
+            referencedRelation: "product_variant_packaging"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_return_lines_organization_id_product_variant_id_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_return_lines_organization_id_purchase_return_id_fkey"
+            columns: ["organization_id", "purchase_return_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_returns"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      purchase_returns: {
+        Row: {
+          branch_id: string
+          business_id: string
+          created_at: string
+          created_by: string
+          goods_receipt_id: string | null
+          id: string
+          idempotency_key: string
+          inventory_transaction_id: string | null
+          notes: string | null
+          organization_id: string
+          posted_at: string | null
+          purchase_order_id: string | null
+          reason: string
+          return_date: string
+          return_number: string
+          status: string
+          storage_location_id: string
+          supplier_id: string
+          supplier_return_reference: string | null
+        }
+        Insert: {
+          branch_id: string
+          business_id: string
+          created_at?: string
+          created_by: string
+          goods_receipt_id?: string | null
+          id?: string
+          idempotency_key: string
+          inventory_transaction_id?: string | null
+          notes?: string | null
+          organization_id: string
+          posted_at?: string | null
+          purchase_order_id?: string | null
+          reason: string
+          return_date: string
+          return_number: string
+          status?: string
+          storage_location_id: string
+          supplier_id: string
+          supplier_return_reference?: string | null
+        }
+        Update: {
+          branch_id?: string
+          business_id?: string
+          created_at?: string
+          created_by?: string
+          goods_receipt_id?: string | null
+          id?: string
+          idempotency_key?: string
+          inventory_transaction_id?: string | null
+          notes?: string | null
+          organization_id?: string
+          posted_at?: string | null
+          purchase_order_id?: string | null
+          reason?: string
+          return_date?: string
+          return_number?: string
+          status?: string
+          storage_location_id?: string
+          supplier_id?: string
+          supplier_return_reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_returns_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_returns_organization_id_business_id_fkey"
+            columns: ["organization_id", "business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_returns_organization_id_goods_receipt_id_fkey"
+            columns: ["organization_id", "goods_receipt_id"]
+            isOneToOne: false
+            referencedRelation: "goods_receipts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_returns_organization_id_inventory_transaction_id_fkey"
+            columns: ["organization_id", "inventory_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_transactions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_returns_organization_id_purchase_order_id_fkey"
+            columns: ["organization_id", "purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_returns_organization_id_storage_location_id_fkey"
+            columns: ["organization_id", "storage_location_id"]
+            isOneToOne: false
+            referencedRelation: "storage_locations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_returns_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      request_for_quotations: {
+        Row: {
+          branch_id: string
+          business_id: string
+          created_at: string
+          created_by: string
+          delivery_location_id: string
+          id: string
+          notes: string | null
+          organization_id: string
+          required_delivery_date: string | null
+          requisition_id: string | null
+          response_deadline: string | null
+          rfq_number: string
+          status: string
+          terms: string | null
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          business_id: string
+          created_at?: string
+          created_by: string
+          delivery_location_id: string
+          id?: string
+          notes?: string | null
+          organization_id: string
+          required_delivery_date?: string | null
+          requisition_id?: string | null
+          response_deadline?: string | null
+          rfq_number: string
+          status?: string
+          terms?: string | null
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          business_id?: string
+          created_at?: string
+          created_by?: string
+          delivery_location_id?: string
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          required_delivery_date?: string | null
+          requisition_id?: string | null
+          response_deadline?: string | null
+          rfq_number?: string
+          status?: string
+          terms?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "request_for_quotations_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "request_for_quotations_organization_id_business_id_fkey"
+            columns: ["organization_id", "business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "request_for_quotations_organization_id_delivery_location_i_fkey"
+            columns: ["organization_id", "delivery_location_id"]
+            isOneToOne: false
+            referencedRelation: "storage_locations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "request_for_quotations_organization_id_requisition_id_fkey"
+            columns: ["organization_id", "requisition_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_requisitions"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      rfq_lines: {
+        Row: {
+          conversion_snapshot: number
+          id: string
+          organization_id: string
+          packaging_id: string
+          product_description_snapshot: string
+          product_variant_id: string
+          requested_quantity: number
+          requisition_line_id: string | null
+          rfq_id: string
+        }
+        Insert: {
+          conversion_snapshot: number
+          id?: string
+          organization_id: string
+          packaging_id: string
+          product_description_snapshot: string
+          product_variant_id: string
+          requested_quantity: number
+          requisition_line_id?: string | null
+          rfq_id: string
+        }
+        Update: {
+          conversion_snapshot?: number
+          id?: string
+          organization_id?: string
+          packaging_id?: string
+          product_description_snapshot?: string
+          product_variant_id?: string
+          requested_quantity?: number
+          requisition_line_id?: string | null
+          rfq_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_lines_organization_id_packaging_id_fkey"
+            columns: ["organization_id", "packaging_id"]
+            isOneToOne: false
+            referencedRelation: "product_variant_packaging"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "rfq_lines_organization_id_product_variant_id_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "rfq_lines_organization_id_rfq_id_fkey"
+            columns: ["organization_id", "rfq_id"]
+            isOneToOne: false
+            referencedRelation: "request_for_quotations"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      rfq_suppliers: {
+        Row: {
+          organization_id: string
+          rfq_id: string
+          status: string
+          supplier_id: string
+        }
+        Insert: {
+          organization_id: string
+          rfq_id: string
+          status?: string
+          supplier_id: string
+        }
+        Update: {
+          organization_id?: string
+          rfq_id?: string
+          status?: string
+          supplier_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfq_suppliers_organization_id_rfq_id_fkey"
+            columns: ["organization_id", "rfq_id"]
+            isOneToOne: false
+            referencedRelation: "request_for_quotations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "rfq_suppliers_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           created_at: string
@@ -2567,6 +3921,861 @@ export type Database = {
           },
         ]
       }
+      supplier_addresses: {
+        Row: {
+          address_type: string
+          city: string | null
+          country_code: string
+          created_at: string
+          id: string
+          is_primary: boolean
+          line_1: string
+          line_2: string | null
+          organization_id: string
+          postal_code: string | null
+          state_region: string | null
+          supplier_id: string
+          updated_at: string
+        }
+        Insert: {
+          address_type: string
+          city?: string | null
+          country_code: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          line_1: string
+          line_2?: string | null
+          organization_id: string
+          postal_code?: string | null
+          state_region?: string | null
+          supplier_id: string
+          updated_at?: string
+        }
+        Update: {
+          address_type?: string
+          city?: string | null
+          country_code?: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          line_1?: string
+          line_2?: string | null
+          organization_id?: string
+          postal_code?: string | null
+          state_region?: string | null
+          supplier_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_addresses_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_contacts: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_finance: boolean
+          is_primary: boolean
+          is_procurement: boolean
+          name: string
+          notes: string | null
+          organization_id: string
+          phone: string | null
+          status: string
+          supplier_id: string
+          title: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_finance?: boolean
+          is_primary?: boolean
+          is_procurement?: boolean
+          name: string
+          notes?: string | null
+          organization_id: string
+          phone?: string | null
+          status?: string
+          supplier_id: string
+          title?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_finance?: boolean
+          is_primary?: boolean
+          is_procurement?: boolean
+          name?: string
+          notes?: string | null
+          organization_id?: string
+          phone?: string | null
+          status?: string
+          supplier_id?: string
+          title?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_contacts_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_credits: {
+        Row: {
+          amount: number
+          base_currency_amount: number
+          created_at: string
+          credit_date: string
+          credit_number: string
+          currency: string
+          exchange_rate: number
+          id: string
+          organization_id: string
+          purchase_return_id: string | null
+          reason: string
+          status: string
+          supplier_id: string
+          supplier_invoice_id: string | null
+        }
+        Insert: {
+          amount: number
+          base_currency_amount: number
+          created_at?: string
+          credit_date: string
+          credit_number: string
+          currency: string
+          exchange_rate: number
+          id?: string
+          organization_id: string
+          purchase_return_id?: string | null
+          reason: string
+          status?: string
+          supplier_id: string
+          supplier_invoice_id?: string | null
+        }
+        Update: {
+          amount?: number
+          base_currency_amount?: number
+          created_at?: string
+          credit_date?: string
+          credit_number?: string
+          currency?: string
+          exchange_rate?: number
+          id?: string
+          organization_id?: string
+          purchase_return_id?: string | null
+          reason?: string
+          status?: string
+          supplier_id?: string
+          supplier_invoice_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_credits_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_credits_organization_id_supplier_invoice_id_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoices"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_credits_purchase_return_fk"
+            columns: ["organization_id", "purchase_return_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_returns"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_documents: {
+        Row: {
+          created_at: string
+          created_by: string
+          document_type: string
+          file_name: string
+          id: string
+          media_type: string
+          notes: string | null
+          organization_id: string
+          size_bytes: number
+          storage_path: string
+          supplier_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          document_type: string
+          file_name: string
+          id?: string
+          media_type: string
+          notes?: string | null
+          organization_id: string
+          size_bytes: number
+          storage_path: string
+          supplier_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          document_type?: string
+          file_name?: string
+          id?: string
+          media_type?: string
+          notes?: string | null
+          organization_id?: string
+          size_bytes?: number
+          storage_path?: string
+          supplier_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_documents_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_invoice_lines: {
+        Row: {
+          description: string
+          discount: number
+          goods_receipt_line_id: string | null
+          id: string
+          line_total: number
+          match_variance_base: number
+          organization_id: string
+          product_variant_id: string | null
+          purchase_order_line_id: string | null
+          quantity: number
+          supplier_invoice_id: string
+          tax: number
+          unit_price: number
+        }
+        Insert: {
+          description: string
+          discount?: number
+          goods_receipt_line_id?: string | null
+          id?: string
+          line_total: number
+          match_variance_base?: number
+          organization_id: string
+          product_variant_id?: string | null
+          purchase_order_line_id?: string | null
+          quantity: number
+          supplier_invoice_id: string
+          tax?: number
+          unit_price: number
+        }
+        Update: {
+          description?: string
+          discount?: number
+          goods_receipt_line_id?: string | null
+          id?: string
+          line_total?: number
+          match_variance_base?: number
+          organization_id?: string
+          product_variant_id?: string | null
+          purchase_order_line_id?: string | null
+          quantity?: number
+          supplier_invoice_id?: string
+          tax?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_invoice_lines_organization_id_goods_receipt_line__fkey"
+            columns: ["organization_id", "goods_receipt_line_id"]
+            isOneToOne: false
+            referencedRelation: "goods_receipt_lines"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_lines_organization_id_product_variant_id_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_lines_organization_id_purchase_order_line_fkey"
+            columns: ["organization_id", "purchase_order_line_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_order_lines"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_lines_organization_id_purchase_order_line_fkey"
+            columns: ["organization_id", "purchase_order_line_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_order_outstanding"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_lines_organization_id_supplier_invoice_id_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoices"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_invoice_links: {
+        Row: {
+          goods_receipt_id: string
+          organization_id: string
+          purchase_order_id: string
+          supplier_invoice_id: string
+        }
+        Insert: {
+          goods_receipt_id: string
+          organization_id: string
+          purchase_order_id: string
+          supplier_invoice_id: string
+        }
+        Update: {
+          goods_receipt_id?: string
+          organization_id?: string
+          purchase_order_id?: string
+          supplier_invoice_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_invoice_links_organization_id_goods_receipt_id_fkey"
+            columns: ["organization_id", "goods_receipt_id"]
+            isOneToOne: false
+            referencedRelation: "goods_receipts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_links_organization_id_purchase_order_id_fkey"
+            columns: ["organization_id", "purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_links_organization_id_supplier_invoice_id_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoices"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_invoices: {
+        Row: {
+          amount_paid_base: number
+          approved_at: string | null
+          approved_by: string | null
+          attachment_path: string | null
+          base_currency: string
+          base_currency_total: number
+          created_at: string
+          created_by: string
+          currency: string
+          discount: number
+          due_date: string | null
+          exchange_rate: number
+          freight_charges: number
+          id: string
+          invoice_date: string
+          invoice_number: string
+          match_status: string
+          notes: string | null
+          organization_id: string
+          status: string
+          subtotal: number
+          supplier_id: string
+          tax: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          amount_paid_base?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          attachment_path?: string | null
+          base_currency: string
+          base_currency_total: number
+          created_at?: string
+          created_by: string
+          currency: string
+          discount?: number
+          due_date?: string | null
+          exchange_rate: number
+          freight_charges?: number
+          id?: string
+          invoice_date: string
+          invoice_number: string
+          match_status?: string
+          notes?: string | null
+          organization_id: string
+          status?: string
+          subtotal: number
+          supplier_id: string
+          tax?: number
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          amount_paid_base?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          attachment_path?: string | null
+          base_currency?: string
+          base_currency_total?: number
+          created_at?: string
+          created_by?: string
+          currency?: string
+          discount?: number
+          due_date?: string | null
+          exchange_rate?: number
+          freight_charges?: number
+          id?: string
+          invoice_date?: string
+          invoice_number?: string
+          match_status?: string
+          notes?: string | null
+          organization_id?: string
+          status?: string
+          subtotal?: number
+          supplier_id?: string
+          tax?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_invoices_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_price_history: {
+        Row: {
+          base_currency: string
+          base_currency_price: number
+          created_at: string
+          currency: string
+          effective_date: string
+          exchange_rate: number
+          id: string
+          organization_id: string
+          packaging_id: string
+          product_variant_id: string
+          quoted_price: number
+          source_quotation_id: string | null
+          supplier_id: string
+        }
+        Insert: {
+          base_currency: string
+          base_currency_price: number
+          created_at?: string
+          currency: string
+          effective_date: string
+          exchange_rate: number
+          id?: string
+          organization_id: string
+          packaging_id: string
+          product_variant_id: string
+          quoted_price: number
+          source_quotation_id?: string | null
+          supplier_id: string
+        }
+        Update: {
+          base_currency?: string
+          base_currency_price?: number
+          created_at?: string
+          currency?: string
+          effective_date?: string
+          exchange_rate?: number
+          id?: string
+          organization_id?: string
+          packaging_id?: string
+          product_variant_id?: string
+          quoted_price?: number
+          source_quotation_id?: string | null
+          supplier_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_price_history_organization_id_packaging_id_fkey"
+            columns: ["organization_id", "packaging_id"]
+            isOneToOne: false
+            referencedRelation: "product_variant_packaging"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_price_history_organization_id_product_variant_id_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_price_history_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_products: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          is_preferred: boolean
+          last_quoted_price: number | null
+          lead_time_days: number
+          minimum_order_quantity: number
+          order_multiple: number
+          organization_id: string
+          preferred_packaging_id: string | null
+          product_variant_id: string
+          supplier_description: string | null
+          supplier_id: string
+          supplier_sku: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_preferred?: boolean
+          last_quoted_price?: number | null
+          lead_time_days?: number
+          minimum_order_quantity?: number
+          order_multiple?: number
+          organization_id: string
+          preferred_packaging_id?: string | null
+          product_variant_id: string
+          supplier_description?: string | null
+          supplier_id: string
+          supplier_sku?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_preferred?: boolean
+          last_quoted_price?: number | null
+          lead_time_days?: number
+          minimum_order_quantity?: number
+          order_multiple?: number
+          organization_id?: string
+          preferred_packaging_id?: string | null
+          product_variant_id?: string
+          supplier_description?: string | null
+          supplier_id?: string
+          supplier_sku?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_products_organization_id_preferred_packaging_id_fkey"
+            columns: ["organization_id", "preferred_packaging_id"]
+            isOneToOne: false
+            referencedRelation: "product_variant_packaging"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_products_organization_id_product_variant_id_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_products_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_quotation_lines: {
+        Row: {
+          awarded_quantity: number
+          conversion_snapshot: number
+          discount: number
+          expected_delivery_date: string | null
+          id: string
+          is_alternative: boolean
+          line_total: number
+          offered_quantity: number
+          organization_id: string
+          packaging_id: string
+          product_variant_id: string
+          quotation_id: string
+          rfq_line_id: string | null
+          tax: number
+          unit_price: number
+        }
+        Insert: {
+          awarded_quantity?: number
+          conversion_snapshot: number
+          discount?: number
+          expected_delivery_date?: string | null
+          id?: string
+          is_alternative?: boolean
+          line_total: number
+          offered_quantity: number
+          organization_id: string
+          packaging_id: string
+          product_variant_id: string
+          quotation_id: string
+          rfq_line_id?: string | null
+          tax?: number
+          unit_price: number
+        }
+        Update: {
+          awarded_quantity?: number
+          conversion_snapshot?: number
+          discount?: number
+          expected_delivery_date?: string | null
+          id?: string
+          is_alternative?: boolean
+          line_total?: number
+          offered_quantity?: number
+          organization_id?: string
+          packaging_id?: string
+          product_variant_id?: string
+          quotation_id?: string
+          rfq_line_id?: string | null
+          tax?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_quotation_lines_organization_id_packaging_id_fkey"
+            columns: ["organization_id", "packaging_id"]
+            isOneToOne: false
+            referencedRelation: "product_variant_packaging"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_quotation_lines_organization_id_product_variant_i_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_quotation_lines_organization_id_quotation_id_fkey"
+            columns: ["organization_id", "quotation_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_quotations"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_quotations: {
+        Row: {
+          attachment_path: string | null
+          base_currency: string
+          created_at: string
+          created_by: string
+          currency: string
+          delivery_period_days: number | null
+          discount: number
+          exchange_rate: number
+          expiry_date: string | null
+          freight: number
+          id: string
+          notes: string | null
+          organization_id: string
+          payment_terms: string | null
+          quote_date: string
+          quote_number: string
+          rfq_id: string
+          shipping_terms: string | null
+          status: string
+          subtotal: number
+          supplier_id: string
+          tax: number
+          total: number
+        }
+        Insert: {
+          attachment_path?: string | null
+          base_currency: string
+          created_at?: string
+          created_by: string
+          currency: string
+          delivery_period_days?: number | null
+          discount?: number
+          exchange_rate: number
+          expiry_date?: string | null
+          freight?: number
+          id?: string
+          notes?: string | null
+          organization_id: string
+          payment_terms?: string | null
+          quote_date: string
+          quote_number: string
+          rfq_id: string
+          shipping_terms?: string | null
+          status?: string
+          subtotal: number
+          supplier_id: string
+          tax?: number
+          total: number
+        }
+        Update: {
+          attachment_path?: string | null
+          base_currency?: string
+          created_at?: string
+          created_by?: string
+          currency?: string
+          delivery_period_days?: number | null
+          discount?: number
+          exchange_rate?: number
+          expiry_date?: string | null
+          freight?: number
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          payment_terms?: string | null
+          quote_date?: string
+          quote_number?: string
+          rfq_id?: string
+          shipping_terms?: string | null
+          status?: string
+          subtotal?: number
+          supplier_id?: string
+          tax?: number
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_quotations_organization_id_rfq_id_fkey"
+            columns: ["organization_id", "rfq_id"]
+            isOneToOne: false
+            referencedRelation: "request_for_quotations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_quotations_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      suppliers: {
+        Row: {
+          alternate_phone: string | null
+          created_at: string
+          created_by: string
+          credit_limit: number
+          default_currency: string
+          default_payment_terms: string | null
+          email: string | null
+          id: string
+          lead_time_days: number
+          legal_name: string
+          notes: string | null
+          organization_id: string
+          phone: string | null
+          registration_number: string | null
+          status: string
+          supplier_code: string
+          supplier_type: string
+          tax_number: string | null
+          trading_name: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          alternate_phone?: string | null
+          created_at?: string
+          created_by: string
+          credit_limit?: number
+          default_currency: string
+          default_payment_terms?: string | null
+          email?: string | null
+          id?: string
+          lead_time_days?: number
+          legal_name: string
+          notes?: string | null
+          organization_id: string
+          phone?: string | null
+          registration_number?: string | null
+          status?: string
+          supplier_code: string
+          supplier_type?: string
+          tax_number?: string | null
+          trading_name?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          alternate_phone?: string | null
+          created_at?: string
+          created_by?: string
+          credit_limit?: number
+          default_currency?: string
+          default_payment_terms?: string | null
+          email?: string | null
+          id?: string
+          lead_time_days?: number
+          legal_name?: string
+          notes?: string | null
+          organization_id?: string
+          phone?: string | null
+          registration_number?: string | null
+          status?: string
+          supplier_code?: string
+          supplier_type?: string
+          tax_number?: string | null
+          trading_name?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suppliers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tax_profiles: {
         Row: {
           calculation: string
@@ -2888,8 +5097,164 @@ export type Database = {
           },
         ]
       }
+      purchase_order_outstanding: {
+        Row: {
+          accepted_base_quantity: number | null
+          conversion_snapshot: number | null
+          discount: number | null
+          id: string | null
+          line_total: number | null
+          ordered_base_quantity: number | null
+          ordered_quantity: number | null
+          organization_id: string | null
+          outstanding_base_quantity: number | null
+          packaging_id: string | null
+          product_description_snapshot: string | null
+          product_variant_id: string | null
+          purchase_order_id: string | null
+          rejected_base_quantity: number | null
+          supplier_item_code_snapshot: string | null
+          tax: number | null
+          unit_price: number | null
+        }
+        Insert: {
+          accepted_base_quantity?: number | null
+          conversion_snapshot?: number | null
+          discount?: number | null
+          id?: string | null
+          line_total?: number | null
+          ordered_base_quantity?: number | null
+          ordered_quantity?: number | null
+          organization_id?: string | null
+          outstanding_base_quantity?: never
+          packaging_id?: string | null
+          product_description_snapshot?: string | null
+          product_variant_id?: string | null
+          purchase_order_id?: string | null
+          rejected_base_quantity?: number | null
+          supplier_item_code_snapshot?: string | null
+          tax?: number | null
+          unit_price?: number | null
+        }
+        Update: {
+          accepted_base_quantity?: number | null
+          conversion_snapshot?: number | null
+          discount?: number | null
+          id?: string | null
+          line_total?: number | null
+          ordered_base_quantity?: number | null
+          ordered_quantity?: number | null
+          organization_id?: string | null
+          outstanding_base_quantity?: never
+          packaging_id?: string | null
+          product_description_snapshot?: string | null
+          product_variant_id?: string | null
+          purchase_order_id?: string | null
+          rejected_base_quantity?: number | null
+          supplier_item_code_snapshot?: string | null
+          tax?: number | null
+          unit_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_order_lines_organization_id_packaging_id_fkey"
+            columns: ["organization_id", "packaging_id"]
+            isOneToOne: false
+            referencedRelation: "product_variant_packaging"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_order_lines_organization_id_product_variant_id_fkey"
+            columns: ["organization_id", "product_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "purchase_order_lines_organization_id_purchase_order_id_fkey"
+            columns: ["organization_id", "purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_payables: {
+        Row: {
+          organization_id: string | null
+          outstanding_base: number | null
+          supplier_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_invoices_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
     }
     Functions: {
+      act_on_approval: {
+        Args: {
+          target_action: string
+          target_approval_request_id: string
+          target_comments: string
+          target_organization_id: string
+        }
+        Returns: string
+      }
+      add_supplier_product: {
+        Args: {
+          target_description: string
+          target_lead_days: number
+          target_minimum: number
+          target_multiple: number
+          target_organization_id: string
+          target_packaging_id: string
+          target_preferred: boolean
+          target_supplier_id: string
+          target_supplier_sku: string
+          target_variant_id: string
+        }
+        Returns: string
+      }
+      allocate_landed_cost: {
+        Args: {
+          target_amount: number
+          target_cost_type: string
+          target_currency: string
+          target_description: string
+          target_exchange_rate: number
+          target_goods_receipt_id: string
+          target_manual_allocations?: Json
+          target_method: string
+          target_organization_id: string
+        }
+        Returns: string
+      }
+      approve_purchase_order: {
+        Args: {
+          target_idempotency_key: string
+          target_organization_id: string
+          target_purchase_order_id: string
+        }
+        Returns: string
+      }
+      approve_supplier_invoice: {
+        Args: { target_invoice_id: string; target_organization_id: string }
+        Returns: undefined
+      }
+      award_quotation: {
+        Args: {
+          target_awards: Json
+          target_organization_id: string
+          target_quotation_id: string
+        }
+        Returns: undefined
+      }
       can_access_branch: {
         Args: { target_branch_id: string; target_organization_id: string }
         Returns: boolean
@@ -2909,6 +5274,53 @@ export type Database = {
           organization_name: string
           organization_slug: string
           organization_timezone: string
+        }
+        Returns: string
+      }
+      create_purchase_order: {
+        Args: {
+          target_branch_id: string
+          target_business_id: string
+          target_currency: string
+          target_exchange_rate: number
+          target_expected_date: string
+          target_lines: Json
+          target_location_id: string
+          target_notes: string
+          target_order_date: string
+          target_organization_id: string
+          target_payment_terms: string
+          target_supplier_id: string
+          target_warehouse_id: string
+        }
+        Returns: string
+      }
+      create_purchase_requisition: {
+        Args: {
+          target_branch_id: string
+          target_business_id: string
+          target_department: string
+          target_justification: string
+          target_lines: Json
+          target_organization_id: string
+          target_priority: string
+          target_required_by: string
+        }
+        Returns: string
+      }
+      create_rfq: {
+        Args: {
+          target_branch_id: string
+          target_business_id: string
+          target_deadline: string
+          target_lines: Json
+          target_location_id: string
+          target_notes: string
+          target_organization_id: string
+          target_required_date: string
+          target_requisition_id: string
+          target_supplier_ids: string[]
+          target_terms: string
         }
         Returns: string
       }
@@ -2955,6 +5367,21 @@ export type Database = {
           target_notes: string
           target_organization_id: string
           target_source_location_id: string
+        }
+        Returns: string
+      }
+      create_supplier: {
+        Args: {
+          target_code: string
+          target_currency: string
+          target_email: string
+          target_legal_name: string
+          target_notes: string
+          target_organization_id: string
+          target_payment_terms: string
+          target_phone: string
+          target_trading_name: string
+          target_type: string
         }
         Returns: string
       }
@@ -3006,9 +5433,31 @@ export type Database = {
         Args: { target_organization_id: string }
         Returns: boolean
       }
+      issue_rfq: {
+        Args: { target_organization_id: string; target_rfq_id: string }
+        Returns: undefined
+      }
       next_inventory_number: {
         Args: { target_organization_id: string; target_prefix: string }
         Returns: string
+      }
+      next_procurement_number: {
+        Args: { target_organization_id: string; target_prefix: string }
+        Returns: string
+      }
+      post_goods_receipt: {
+        Args: {
+          target_allow_override: boolean
+          target_idempotency_key: string
+          target_lines: Json
+          target_notes: string
+          target_organization_id: string
+          target_override_reason: string
+          target_purchase_order_id: string
+          target_received_at: string
+          target_supplier_delivery_note: string
+        }
+        Returns: Json
       }
       post_inventory_transaction: {
         Args: {
@@ -3031,6 +5480,22 @@ export type Database = {
         }
         Returns: Json
       }
+      post_purchase_return: {
+        Args: {
+          target_branch_id: string
+          target_business_id: string
+          target_grn_id: string
+          target_idempotency_key: string
+          target_lines: Json
+          target_location_id: string
+          target_notes: string
+          target_organization_id: string
+          target_po_id: string
+          target_reason: string
+          target_supplier_id: string
+        }
+        Returns: Json
+      }
       post_stock_count: {
         Args: {
           target_count_id: string
@@ -3039,6 +5504,10 @@ export type Database = {
           target_reason_code_id: string
         }
         Returns: Json
+      }
+      purge_ephemeral_procurement_verification: {
+        Args: { target_organization_id: string }
+        Returns: undefined
       }
       receive_stock_transfer: {
         Args: {
@@ -3060,6 +5529,47 @@ export type Database = {
           target_organization_id: string
         }
         Returns: undefined
+      }
+      record_supplier_invoice: {
+        Args: {
+          target_currency: string
+          target_discount: number
+          target_due_date: string
+          target_exchange_rate: number
+          target_freight: number
+          target_grn_ids: string[]
+          target_invoice_date: string
+          target_invoice_number: string
+          target_notes: string
+          target_organization_id: string
+          target_po_ids: string[]
+          target_subtotal: number
+          target_supplier_id: string
+          target_tax: number
+          target_total: number
+        }
+        Returns: string
+      }
+      record_supplier_quotation: {
+        Args: {
+          target_currency: string
+          target_delivery_days: number
+          target_discount: number
+          target_exchange_rate: number
+          target_expiry_date: string
+          target_freight: number
+          target_lines: Json
+          target_notes: string
+          target_organization_id: string
+          target_payment_terms: string
+          target_quote_date: string
+          target_quote_number: string
+          target_rfq_id: string
+          target_shipping_terms: string
+          target_supplier_id: string
+          target_tax: number
+        }
+        Returns: string
       }
       release_inventory_reservation: {
         Args: {
@@ -3099,6 +5609,14 @@ export type Database = {
       set_default_warehouse: {
         Args: { target_branch_id: string; target_warehouse_id: string }
         Returns: undefined
+      }
+      submit_purchase_requisition: {
+        Args: {
+          target_idempotency_key: string
+          target_organization_id: string
+          target_requisition_id: string
+        }
+        Returns: string
       }
       update_inventory_settings: {
         Args: {

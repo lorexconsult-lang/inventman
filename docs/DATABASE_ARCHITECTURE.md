@@ -25,3 +25,7 @@ Organization membership grants tenant entry. Roles contain capabilities through 
 - User-configurable concepts use tables; stable internal state machines may use enums or constrained text.
 
 The first migration establishes the tenant and RBAC foundation. It is applied to the dedicated hosted development project, remote lint is clean, generated types match, and all 27 hosted pgTAP assertions pass. Two temporary confirmed users additionally passed application-boundary tenant isolation; their organizations and Auth identities were removed afterward.
+
+## Procurement
+
+Procurement documents use composite organization foreign keys and tenant-safe counter numbering. Commercial documents snapshot mutable master values, currency, exchange rate, packaging conversion, price, and tax. GRN and purchase-return posting functions lock parent/line rows and invoke `post_inventory_transaction`; no procurement table is a stock authority. Supplier payables are derived from invoices and credits rather than a mutable supplier balance.

@@ -34,6 +34,10 @@ Database integration tests must prove anonymous denial, member access, cross-ten
 
 `supabase/tests/phase2_inventory.sql` adds 66 assertions for direct-write denial, isolation, availability, valuation, FIFO ordering, reservations, idempotency, transfers, counts, reversals, and reconciliation.
 
+Procurement tables force RLS. Supplier access is tenant capability-scoped; requisitions, approvals, RFQs, POs, receipts, and returns also enforce branch visibility. Atomic workflow functions recheck capabilities, active suppliers, branch/destination relationships, state, totals, receipt quantities, and idempotency. Supplier documents remain in a tenant-prefixed private bucket.
+
+Authenticated hosted verification proves restricted approval denial, branch-ID tampering rejection, foreign-tenant filtering, duplicate GRN replay without duplicate stock, and inability to write inventory balances or movements directly. Ephemeral test cleanup requires `service_role` and an explicit test-only slug prefix.
+
 ## Secrets
 
 Browser configuration is limited to `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Service-role and secret keys are not declared in the public template or referenced in application source.

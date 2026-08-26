@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   LogOut,
   PackageSearch,
+  ShoppingCart,
   Settings2,
   Warehouse,
 } from "lucide-react";
@@ -18,6 +19,7 @@ const navigation = [
   { label: "Warehouses", href: "/dashboard/warehouses", icon: Warehouse },
   { label: "Catalogue", href: "/dashboard/catalogue", icon: PackageSearch },
   { label: "Inventory", href: "/dashboard/inventory", icon: Boxes },
+  { label: "Procurement", href: "/dashboard/procurement", icon: ShoppingCart },
   {
     label: "Catalogue settings",
     href: "/dashboard/catalogue/settings",
@@ -74,7 +76,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
       <nav
         aria-label="Mobile navigation"
-        className="sticky bottom-0 z-20 grid grid-cols-6 border-t bg-canvas/95 p-2 backdrop-blur md:hidden"
+        className="sticky bottom-0 z-20 grid grid-cols-7 border-t bg-canvas/95 p-2 backdrop-blur md:hidden"
       >
         {navigation.map(({ label, href, icon: Icon }) => (
           <Link

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Built Phase 3 supplier and procurement foundations: supplier relationships/documents, requisitions, reusable approvals, RFQs and quote history/comparison, protected purchase orders, partial GRNs, landed costs, supplier invoice matching/payables, credits, purchase returns, reporting, and private document policies.
+- Integrated accepted receipts and purchase returns atomically with the existing `PURCHASE_RECEIPT` and `PURCHASE_RETURN` inventory ledger paths; no parallel stock system was introduced.
+- Completed the 22-step authenticated hosted procurement gate with ephemeral confirmed users, full fixture cleanup, browser health checks, GRN idempotency, three-way invoice links, and restricted tenant/branch authorization tests.
+
 - Built the Phase 2 immutable inventory ledger and derived stock engine with Weighted Average and FIFO costing, deterministic layer allocation, reservations, transfers, counts, reversals, reconciliation, idempotency, concurrency locks, RLS, capability controls, reporting, exports, and responsive inventory workflows.
 - Added 66 hosted Phase 2 pgTAP assertions and inventory calculation unit coverage, including count variance posting, exact FIFO restoration, direct-write denial, cross-tenant isolation, and branch scope.
 

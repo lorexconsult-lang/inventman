@@ -56,6 +56,15 @@ The application-controlled foundation gate is complete. Temporary users and tena
 | Database tests | PASS | All 66 Phase 2 hosted pgTAP assertions pass. |
 | Application gates | PASS | Strict typecheck, ESLint, 19 unit tests, 4 browser security tests, and the production build pass; all 128 hosted database assertions pass together. |
 
+## PHASE 3 PROCUREMENT GATE
+
+| Verification | Status | Evidence |
+|---|---|---|
+| Supplier and procurement schema | PASS | Supplier master, approvals, sourcing, PO, GRN, landed cost, invoice/AP, credit and return structures are deployed to hosted development. |
+| Inventory integration | PASS | Accepted GRNs and purchase returns call the existing inventory engine atomically with idempotency and row locks. |
+| Security | PASS | Forced RLS, tenant-composite references, branch policies, capability RPCs, private document storage, and direct ledger-write denial are implemented. |
+| Tests and build | PASS | All 164 hosted pgTAP assertions, 27 unit tests, 4 Playwright security tests, the authenticated 22-step hosted procurement workflow, strict typecheck, ESLint, database lint, and production build pass. |
+
 ## PRODUCTION COMMUNICATION GATE
 
 | Verification | Status | Evidence |

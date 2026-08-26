@@ -25,3 +25,9 @@ The default Owner and Administrator roles receive full Phase 1 capabilities. Bra
 ## Phase 2 inventory permissions
 
 Capabilities separately govern view, opening stock, receipts, issues, adjustments, reservations, transfer create/dispatch/receive, count create/perform/post, reversal, backdate, negative-stock override, settings, valuation, and export. Owner and Administrator receive all. Inventory Manager receives operational and settings capabilities; Storekeeper receives branch-scoped daily workflows without reversal, override, backdate, or settings authority. Auditor and Viewer remain read-only.
+
+## Phase 3 procurement permissions
+
+Supplier, requisition, RFQ, quotation, PO, receipt, invoice, return, report, payable, and approval-policy capabilities are independently assignable. Owner and Administrator receive all. Branch Manager receives branch-scoped operational procurement without PO/invoice approval or policy management. Approval checks use capabilities and policy steps, never role names.
+
+Hosted verification additionally uses a restricted custom role with PO-create capability limited to one branch: an approval attempt and a PO targeting another branch both fail at the database boundary.
