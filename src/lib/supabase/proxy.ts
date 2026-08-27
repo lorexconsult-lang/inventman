@@ -13,18 +13,28 @@ export async function updateSession(request: NextRequest) {
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll(cookiesToSet, headers) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value),
+          );
           response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
-          Object.entries(headers).forEach(([name, value]) => response.headers.set(name, value));
-        }
-      }
-    }
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options),
+          );
+          Object.entries(headers).forEach(([name, value]) =>
+            response.headers.set(name, value),
+          );
+        },
+      },
+    },
   );
 
   const { data, error } = await client.auth.getClaims();
-  const isProtectedRoute = request.nextUrl.pathname.startsWith("/dashboard");
-  const isAuthRoute = request.nextUrl.pathname.startsWith("/auth/login") || request.nextUrl.pathname.startsWith("/auth/register");
+  const isProtectedRoute =
+    request.nextUrl.pathname.startsWith("/dashboard") ||
+    request.nextUrl.pathname === "/select-organization";
+  const isAuthRoute =
+    request.nextUrl.pathname.startsWith("/auth/login") ||
+    request.nextUrl.pathname.startsWith("/auth/register");
 
   if ((error || !data?.claims?.sub) && isProtectedRoute) {
     const loginUrl = new URL("/auth/login", request.url);
@@ -35,11 +45,16 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (!error && data?.claims?.sub && isAuthRoute) {
-    const redirectResponse = NextResponse.redirect(new URL("/dashboard", request.url));
+    const redirectResponse = NextResponse.redirect(
+      new URL("/dashboard", request.url),
+    );
     redirectResponse.headers.set("Cache-Control", "private, no-store");
     return redirectResponse;
   }
 
-  response.headers.set("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
+  response.headers.set(
+    "Cache-Control",
+    "private, no-cache, no-store, must-revalidate, max-age=0",
+  );
   return response;
 }

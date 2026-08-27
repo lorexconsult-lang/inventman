@@ -2,14 +2,32 @@ import { z } from "zod";
 
 export const loginSchema = z.object({
   email: z.email("Enter a valid email address"),
-  password: z.string().min(8, "Password must contain at least 8 characters")
+  password: z.string().min(8, "Password must contain at least 8 characters"),
 });
 
 export const registrationSchema = loginSchema.extend({
-  fullName: z.string().trim().min(2, "Enter your full name").max(120)
+  fullName: z.string().trim().min(2, "Enter your full name").max(120),
 });
 
 export const verificationSchema = z.object({
   email: z.email("Enter a valid email address"),
-  token: z.string().trim().regex(/^[a-zA-Z0-9]{6,10}$/, "Enter the Supabase one-time code"),
+  token: z
+    .string()
+    .trim()
+    .regex(/^[a-zA-Z0-9]{6,10}$/, "Enter the Supabase one-time code"),
 });
+
+export const forgotPasswordSchema = z.object({
+  email: z.email("Enter a valid email address"),
+});
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(12, "Password must contain at least 12 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((value) => value.password === value.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });

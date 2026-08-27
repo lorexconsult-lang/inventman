@@ -1,14 +1,30 @@
 import { expect, test } from "@playwright/test";
 
-test("renders the public home and auth routes without console errors", async ({ page }) => {
+test("renders the public home and auth routes without console errors", async ({
+  page,
+}) => {
   const errors: string[] = [];
-  page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Operational clarity starts with a sound foundation." })).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Operational clarity starts with a sound foundation.",
+    }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Sign in" }).click();
-  await expect(page.getByRole("heading", { name: "Sign in to your workspace" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Sign in to your workspace" }),
+  ).toBeVisible();
   await page.goto("/auth/register");
-  await expect(page.getByRole("heading", { name: "Create your account" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Create your account" }),
+  ).toBeVisible();
+  await page.goto("/auth/forgot-password");
+  await expect(
+    page.getByRole("heading", { name: "Reset your password" }),
+  ).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -22,8 +38,13 @@ test("rejects unauthenticated onboarding access", async ({ page }) => {
   await expect(page).toHaveURL(/\/auth\/login$/);
 });
 
-test("fails closed on invalid callbacks and ignores external redirect targets", async ({ request }) => {
-  const response = await request.get("/auth/callback?code=invalid&next=https://example.com", { maxRedirects: 0 });
+test("fails closed on invalid callbacks and ignores external redirect targets", async ({
+  request,
+}) => {
+  const response = await request.get(
+    "/auth/callback?code=invalid&next=https://example.com",
+    { maxRedirects: 0 },
+  );
   expect(response.status()).toBe(307);
   expect(response.headers().location).toMatch(/\/auth\/login\?error=callback$/);
   expect(response.headers()["cache-control"]).toContain("no-store");

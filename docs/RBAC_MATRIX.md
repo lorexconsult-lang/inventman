@@ -35,3 +35,7 @@ Hosted verification additionally uses a restricted custom role with PO-create ca
 ## Phase 4 Sales permissions
 
 Customer view/create/update, customer-credit management, quotation view/create/update/submit/approve, order view/create/update/confirm/cancel, fulfilment view/create/post, invoice view/create/issue/void, return view/create/approve/receive/post, Credit Note view/create/approve, discount/price/credit overrides, receivables/aging/statements, and Sales reports are separate capabilities. Branch-aware documents repeat `can_access_branch` checks in RLS and RPCs. Price and discount override controls are enforced on quotation lines in PostgreSQL.
+
+## Phase 5 Team and access permissions
+
+`team.view`, `team.invite`, `team.update`, and `team.suspend` separate directory visibility, invitations, role/branch assignment, and lifecycle control. `roles.view` permits inspection; `roles.manage` governs custom-role mutation. Actors may delegate only capabilities they hold. System Owner roles, self-modification, cross-tenant references, and the final active owner are protected in PostgreSQL.

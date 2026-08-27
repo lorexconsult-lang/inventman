@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -11,6 +11,31 @@ export type Database = {
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.17"
+  }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -2370,12 +2395,18 @@ export type Database = {
         Row: {
           accepted_at: string | null
           accepted_by: string | null
+          branch_ids: string[]
           created_at: string
+          display_name: string | null
           email: string
           expires_at: string
           id: string
+          invitation_note: string | null
           invited_by: string
+          last_sent_at: string
           organization_id: string
+          resend_count: number
+          role_id: string | null
           status: string
           token_hash: string
           updated_at: string
@@ -2383,12 +2414,18 @@ export type Database = {
         Insert: {
           accepted_at?: string | null
           accepted_by?: string | null
+          branch_ids?: string[]
           created_at?: string
+          display_name?: string | null
           email: string
           expires_at: string
           id?: string
+          invitation_note?: string | null
           invited_by: string
+          last_sent_at?: string
           organization_id: string
+          resend_count?: number
+          role_id?: string | null
           status?: string
           token_hash: string
           updated_at?: string
@@ -2396,12 +2433,18 @@ export type Database = {
         Update: {
           accepted_at?: string | null
           accepted_by?: string | null
+          branch_ids?: string[]
           created_at?: string
+          display_name?: string | null
           email?: string
           expires_at?: string
           id?: string
+          invitation_note?: string | null
           invited_by?: string
+          last_sent_at?: string
           organization_id?: string
+          resend_count?: number
+          role_id?: string | null
           status?: string
           token_hash?: string
           updated_at?: string
@@ -2414,39 +2457,61 @@ export type Database = {
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "organization_invitations_role_fk"
+            columns: ["organization_id", "role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["organization_id", "id"]
+          },
         ]
       }
       organization_members: {
         Row: {
           created_at: string
+          deactivated_at: string | null
+          display_name: string | null
+          email: string | null
           id: string
           invited_at: string
           invited_by: string | null
           joined_at: string | null
           organization_id: string
           status: Database["public"]["Enums"]["membership_status"]
+          suspended_at: string | null
+          suspension_reason: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          deactivated_at?: string | null
+          display_name?: string | null
+          email?: string | null
           id?: string
           invited_at?: string
           invited_by?: string | null
           joined_at?: string | null
           organization_id: string
           status?: Database["public"]["Enums"]["membership_status"]
+          suspended_at?: string | null
+          suspension_reason?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
+          deactivated_at?: string | null
+          display_name?: string | null
+          email?: string | null
           id?: string
           invited_at?: string
           invited_by?: string | null
           joined_at?: string | null
           organization_id?: string
           status?: Database["public"]["Enums"]["membership_status"]
+          suspended_at?: string | null
+          suspension_reason?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -6962,6 +7027,10 @@ export type Database = {
       }
     }
     Functions: {
+      accept_team_invitation: {
+        Args: { target_token: string }
+        Returns: string
+      }
       act_on_approval: {
         Args: {
           target_action: string
@@ -7027,6 +7096,18 @@ export type Database = {
       approve_supplier_invoice: {
         Args: { target_invoice_id: string; target_organization_id: string }
         Returns: undefined
+      }
+      assert_team_actor: {
+        Args: { target_organization_id: string; target_permission: string }
+        Returns: string
+      }
+      assign_team_member_roles: {
+        Args: {
+          target_membership_id: string
+          target_organization_id: string
+          target_role_ids: string[]
+        }
+        Returns: string
       }
       award_quotation: {
         Args: {
@@ -7277,6 +7358,15 @@ export type Database = {
         }
         Returns: string
       }
+      create_team_role: {
+        Args: {
+          target_description: string
+          target_name: string
+          target_organization_id: string
+          target_permission_ids: string[]
+        }
+        Returns: string
+      }
       create_variant_product: {
         Args: {
           option_definitions: Json
@@ -7317,6 +7407,10 @@ export type Database = {
         Args: { target_organization_id: string }
         Returns: string
       }
+      get_effective_permissions: {
+        Args: { target_organization_id: string }
+        Returns: string[]
+      }
       has_permission: {
         Args: { permission_code: string; target_organization_id: string }
         Returns: boolean
@@ -7329,8 +7423,25 @@ export type Database = {
         }
         Returns: undefined
       }
+      invite_team_member: {
+        Args: {
+          target_branch_ids: string[]
+          target_display_name: string
+          target_email: string
+          target_expires_at: string
+          target_note: string
+          target_organization_id: string
+          target_role_id: string
+          target_token: string
+        }
+        Returns: string
+      }
       is_active_organization_member: {
         Args: { target_organization_id: string }
+        Returns: boolean
+      }
+      is_protected_owner: {
+        Args: { target_membership_id: string; target_organization_id: string }
         Returns: boolean
       }
       issue_customer_credit_note: {
@@ -7432,6 +7543,14 @@ export type Database = {
         Args: { target_organization_id: string }
         Returns: undefined
       }
+      purge_ephemeral_sales_verification: {
+        Args: { target_organization_id: string }
+        Returns: undefined
+      }
+      purge_ephemeral_team_verification: {
+        Args: { target_organization_id: string }
+        Returns: undefined
+      }
       receive_stock_transfer: {
         Args: {
           target_idempotency_key: string
@@ -7503,6 +7622,15 @@ export type Database = {
         }
         Returns: string
       }
+      resend_team_invitation: {
+        Args: {
+          target_expires_at: string
+          target_invitation_id: string
+          target_organization_id: string
+          target_token: string
+        }
+        Returns: string
+      }
       reserve_inventory: {
         Args: {
           target_expires_at: string
@@ -7537,6 +7665,10 @@ export type Database = {
         }
         Returns: Json
       }
+      revoke_team_invitation: {
+        Args: { target_invitation_id: string; target_organization_id: string }
+        Returns: string
+      }
       sales_assert_access: {
         Args: {
           target_branch_id: string
@@ -7562,6 +7694,15 @@ export type Database = {
         Args: { target_branch_id: string; target_warehouse_id: string }
         Returns: undefined
       }
+      set_team_member_status: {
+        Args: {
+          target_membership_id: string
+          target_organization_id: string
+          target_reason: string
+          target_status: Database["public"]["Enums"]["membership_status"]
+        }
+        Returns: string
+      }
       submit_purchase_requisition: {
         Args: {
           target_idempotency_key: string
@@ -7586,6 +7727,17 @@ export type Database = {
         }
         Returns: string
       }
+      update_inventory_settings: {
+        Args: {
+          target_accounting_start_date: string
+          target_allow_backdated: boolean
+          target_costing_method: string
+          target_count_mode: string
+          target_negative_stock_policy: string
+          target_organization_id: string
+        }
+        Returns: undefined
+      }
       update_sales_quotation: {
         Args: {
           target_billing_address: Json
@@ -7599,16 +7751,24 @@ export type Database = {
         }
         Returns: string
       }
-      update_inventory_settings: {
+      update_team_member_branches: {
         Args: {
-          target_accounting_start_date: string
-          target_allow_backdated: boolean
-          target_costing_method: string
-          target_count_mode: string
-          target_negative_stock_policy: string
+          target_branch_ids: string[]
+          target_membership_id: string
           target_organization_id: string
         }
-        Returns: undefined
+        Returns: string
+      }
+      update_team_role: {
+        Args: {
+          target_description: string
+          target_is_active: boolean
+          target_name: string
+          target_organization_id: string
+          target_permission_ids: string[]
+          target_role_id: string
+        }
+        Returns: string
       }
     }
     Enums: {
@@ -7738,6 +7898,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       membership_status: ["invited", "active", "suspended", "deactivated"],

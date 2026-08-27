@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Built Team and Access Administration with staff filtering, member details, secure invitations, custom roles, grouped permissions, role duplication, effective permissions, branch scope, suspension/reactivation, and audit activity.
+- Replaced implicit first-membership selection with an HTTP-only, server-validated organization switcher and added capability-aware responsive navigation plus a forbidden state.
+- Added forgot/reset-password flows and hosted Team security/browser verification. Production custom SMTP remains a release gate.
+
 - Completed the Phase 4 Customer, Sales and Receivables application surface: customer maintenance, editable draft quotations, Sales Orders, partial/full fulfilment, invoices, aging and customer statements, returns, Credit Notes, dashboard, reporting, print views, and CSV exports.
 - Added database-enforced price/discount override protection plus customer and draft-quotation update RPCs.
 - Added authenticated hosted 20→10→4→6 Sales verification with exact reservation, ledger COGS, invoice stock invariance, historical-cost return, AR, security, browser, and cleanup checks. POS, Payments, and Finance remain unimplemented.

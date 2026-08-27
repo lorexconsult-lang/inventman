@@ -3,8 +3,15 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { login, register, type AuthActionState } from "../actions";
+import Link from "next/link";
 
-export function AuthForm({ mode }: { mode: "login" | "register" }) {
+export function AuthForm({
+  mode,
+  next,
+}: {
+  mode: "login" | "register";
+  next?: string;
+}) {
   const action = mode === "login" ? login : register;
   const [state, formAction, pending] = useActionState<
     AuthActionState,
@@ -12,6 +19,9 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   >(action, {});
   return (
     <form action={formAction} className="mt-8 space-y-5">
+      {mode === "login" && next && (
+        <input type="hidden" name="next" value={next} />
+      )}
       {mode === "register" && (
         <Field label="Full name" name="fullName" autoComplete="name" />
       )}
@@ -42,6 +52,16 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
             ? "Sign in"
             : "Create account"}
       </Button>
+      {mode === "login" && (
+        <p className="text-center text-sm">
+          <Link
+            className="text-accent hover:underline"
+            href="/auth/forgot-password"
+          >
+            Forgot password?
+          </Link>
+        </p>
+      )}
     </form>
   );
 }

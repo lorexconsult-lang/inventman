@@ -94,3 +94,16 @@ The communication gate is a pre-production release blocker, not a blocker for ap
 ## Next.js security release hold
 
 Next.js 16.3.2 is acceptable for foundation verification. The Next.js team announced a scheduled security release for 2026-08-26 covering the 16.3 line and a critical vulnerability. Upgrade to the patched stable 16.3.x version and rerun this gate before any production deployment.
+
+## PHASE 5 TEAM AND ACCESS ADMINISTRATION GATE
+
+| Verification | Status | Evidence |
+|---|---|---|
+| Membership and owner safety | PASS | Staff lifecycle, suspension/reactivation, self-change denial, and final-owner protection use locked RPCs. |
+| Invitations | PASS | Hashed expiring tokens, verified-email binding, assignment snapshots, resend rotation, revocation, duplicate handling, and one-time acceptance are implemented. |
+| Roles and branch access | PASS | Grouped permissions, custom role duplication/editing, atomic replacement, effective permissions, and branch scope remain capability-driven. |
+| Context and navigation | PASS | Server-validated HTTP-only workspace selection replaces first-membership selection; navigation is capability-aware with a forbidden experience. |
+| Account lifecycle | PASS | Forgot/reset-password flows use Supabase Auth PKCE callbacks and safe relative redirects. Production delivery remains gated by custom SMTP. |
+| Database tests | PASS | 36 Phase 5 hosted pgTAP assertions cover invitation, role, branch, suspension, tenant, escalation, and owner controls. |
+
+No POS, Payments, Finance, Offline/PWA, Subscriptions, Super Admin, Industry Packs, AI, or public-site work is included.

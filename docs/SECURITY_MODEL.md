@@ -45,3 +45,9 @@ Sales tables force RLS and expose writes through capability-checked RPCs. Sales 
 Browser configuration is limited to `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Service-role and secret keys are not declared in the public template or referenced in application source.
 
 Custom SMTP credentials belong in Supabase Auth settings, not the Next.js application. Production email-delivery requirements are documented in `AUTH_EMAIL_DELIVERY.md`.
+
+## Phase 5 Team and access administration
+
+Critical membership, invitation, role, permission, assignment, and branch-access tables reject authenticated direct writes. Security-definer RPCs derive actors from `auth.uid()`, lock mutable state, validate tenant references, and restrict grants to capabilities held by the actor. Invitation tokens are stored only as SHA-256 hashes. Suspended users immediately fail membership, permission, and branch checks while historical attribution remains intact.
+
+The HTTP-only organization cookie is only a requested context; every workspace request validates an active membership. Capability-aware navigation is usability, not an authorization boundary.

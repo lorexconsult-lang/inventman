@@ -46,3 +46,7 @@ The procurement domain adds supplier masters, reusable approvals, requisitions, 
 ## Phase 4 Sales and receivables
 
 The Sales domain adds customers, quotations, Sales Orders, inventory reservations, partial/full fulfilment, invoices, receivables, returns, Credit Notes, and operational reporting. Fulfilment posts through the Phase 2 Inventory Ledger and records actual COGS. Invoice and Credit Note issuance affect receivables but never mutate stock independently. Payment settlement, POS, and Finance remain future boundaries.
+
+## Phase 5 Team and access administration
+
+The administration surface manages existing memberships, roles, capabilities, invitations, and branch scope. It adds secure invitation acceptance, suspension/reactivation, atomic permission replacement, effective-capability inspection, explicit multi-organization context, capability-aware navigation, forbidden states, and password recovery. See `TEAM_ACCESS_ARCHITECTURE.md`.
