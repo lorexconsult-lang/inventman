@@ -1,5 +1,9 @@
 # Sales Architecture
 
+## Settlement integration
+
+Issued invoices settle only through customer payment or Credit allocations. Receipts update derived outstanding and exposure without stock mutation. Overpayments remain unapplied credit; refunds and reversals preserve history. See `PAYMENTS_ARCHITECTURE.md`.
+
 ## Database-first boundary
 
 Phase 4 uses PostgreSQL RPCs as the only write boundary for Sales documents. Transactional tables are forced through RLS, authenticated clients receive read access subject to capability and branch policies, and direct writes remain revoked. The browser UI and POS are intentionally outside this database gate.

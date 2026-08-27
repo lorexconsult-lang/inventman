@@ -1,5 +1,9 @@
 # RBAC Matrix
 
+## Phase 6 payment permissions
+
+Customer and supplier payment view/create/post/allocate/reverse capabilities are independent. Refund view/create/approve/post and settlement-account view/manage are separately assignable. Receivables/payables visibility is explicit. Mutations also enforce branch scope; role names never authorize actions.
+
 This matrix is a default template. Organizations may create custom roles; authorization always evaluates capabilities rather than role names.
 
 | Capability group | Owner | Administrator | Branch Manager | Inventory Manager | Storekeeper | Procurement | Sales Manager | Cashier | Accountant | Auditor | Viewer |

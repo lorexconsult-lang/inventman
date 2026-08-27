@@ -9,6 +9,7 @@ const links = [
   ["Fulfilments", "/dashboard/sales/fulfilments"],
   ["Invoices", "/dashboard/sales/invoices"],
   ["Receivables", "/dashboard/sales/receivables"],
+  ["Payments", "/dashboard/sales/payments"],
   ["Returns", "/dashboard/sales/returns"],
   ["Credit Notes", "/dashboard/sales/credit-notes"],
   ["Reports", "/dashboard/sales/reports"],

@@ -1,5 +1,9 @@
 # Product Architecture
 
+## Phase 6 operational settlement
+
+Payments are shared by Sales and Procurement. Receipts, supplier payments, allocations, credits, refunds, reversals, accounts, statements, and reporting use one tenant-safe engine. POS, external processing, bank reconciliation, and General Ledger remain outside this phase.
+
 ## Purpose
 
 Inventman is a multi-tenant operations platform for inventory-based businesses. Version 1 covers the complete commercial scope described in the master specification; AI capabilities are explicitly deferred.

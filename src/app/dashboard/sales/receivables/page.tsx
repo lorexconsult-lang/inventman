@@ -10,9 +10,9 @@ export default async function Receivables({
   const { client, organization } =
     await requireOrganizationPermission("receivables.view");
   let request = client
-    .from("customer_invoices")
+    .from("customer_invoice_settlement")
     .select(
-      "id,invoice_number,invoice_date,due_date,base_currency_total,credit_note_total_base,amount_paid_base,status,customers(id,display_name)",
+      "id,invoice_number,invoice_date,due_date,base_currency_total,credit_allocated_base,payment_allocated_base,outstanding_base,status,customers(id,display_name)",
     )
     .not("status", "in", "(DRAFT,VOID)");
   if (filters.customer) request = request.eq("customer_id", filters.customer);
@@ -22,10 +22,7 @@ export default async function Receivables({
   const today = new Date();
   const buckets = { Current: 0, "1–30": 0, "31–60": 0, "61–90": 0, "90+": 0 };
   for (const i of data ?? []) {
-    const out =
-        Number(i.base_currency_total) -
-        Number(i.credit_note_total_base) -
-        Number(i.amount_paid_base),
+    const out = Number(i.outstanding_base),
       days = i.due_date
         ? Math.floor(
             (today.getTime() - new Date(i.due_date).getTime()) / 86400000,
@@ -54,10 +51,7 @@ export default async function Receivables({
   >();
   for (const invoice of data ?? []) {
     if (!invoice.customers) continue;
-    const outstanding =
-      Number(invoice.base_currency_total) -
-      Number(invoice.credit_note_total_base) -
-      Number(invoice.amount_paid_base);
+    const outstanding = Number(invoice.outstanding_base);
     const current = customers.get(invoice.customers.id) ?? {
       id: invoice.customers.id,
       name: invoice.customers.display_name,
@@ -71,7 +65,7 @@ export default async function Receivables({
       <PageHeader
         eyebrow="Sales / Receivables"
         title="Accounts Receivable"
-        description="Outstanding balances are derived from issued invoices and Credits. Payments are intentionally deferred."
+        description="Outstanding balances are derived from issued invoices, allocated Credit Notes, and posted payment allocations."
         actions={
           <Link
             href={`/dashboard/sales/export?report=receivables&customer=${filters.customer ?? ""}&from=${filters.from ?? ""}&to=${filters.to ?? ""}`}
@@ -173,9 +167,10 @@ export default async function Receivables({
               </p>
             </div>
             <strong>
-              {Number(i.base_currency_total) -
-                Number(i.credit_note_total_base) -
-                Number(i.amount_paid_base)}
+              {Number(i.outstanding_base)}
+              <span className="block text-xs font-normal text-subtle">
+                Credits {Number(i.credit_allocated_base).toLocaleString()} · Payments {Number(i.payment_allocated_base).toLocaleString()}
+              </span>
             </strong>
           </article>
         ))}

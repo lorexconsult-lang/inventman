@@ -77,7 +77,7 @@ The application-controlled foundation gate is complete. Temporary users and tena
 | Database tests | PASS | 39 Phase 4 hosted pgTAP assertions pass. Tenant, Catalogue, Inventory, Procurement and Sales run together as 203 assertions. |
 | Database lint | PASS | Public-schema lint has no Phase 4 errors; pgTAP extension-internal findings are excluded from the application schema result. |
 
-POS, customer/supplier payment settlement, payment allocation, and Finance have not started and are not claimed by Phase 4.
+Phase 4 itself did not include settlement. Customer/supplier settlement and allocation are now implemented by Phase 6; POS and Finance remain deferred.
 
 ## PRODUCTION COMMUNICATION GATE
 
@@ -107,3 +107,15 @@ Next.js 16.3.2 is acceptable for foundation verification. The Next.js team annou
 | Database tests | PASS | 36 Phase 5 hosted pgTAP assertions cover invitation, role, branch, suspension, tenant, escalation, and owner controls. |
 
 No POS, Payments, Finance, Offline/PWA, Subscriptions, Super Admin, Industry Packs, AI, or public-site work is included.
+
+## PHASE 6 PAYMENTS AND SETTLEMENT GATE
+
+| Verification | Status | Evidence |
+|---|---|---|
+| Shared settlement model | PASS | Customer and supplier transactions reuse accounts, methods, payments, allocations, reversal, refund, numbering, idempotency, and audit architecture. |
+| AR/AP integration | PASS | Outstanding, unapplied credit/advances, statements, and exposure derive from invoices, credits, payments, and reversals. |
+| Security | PASS | PostgreSQL enforces tenant, branch, capability, currency, over-allocation, immutability, and cross-reference controls. |
+| Application | PASS | Receipt/voucher entry, allocation, refund/reversal, configuration, statements, dashboard, filters, print, and CSV routes are implemented. |
+| Verification | PASS | 38 new Phase 6 pgTAP assertions bring the hosted total to 277; 41 unit tests, 4 baseline Playwright tests, the 37-check payment workflow, Team/Sales regressions, lint, typecheck, build, and database lint pass. |
+
+POS, gateways, bank APIs/reconciliation, General Ledger, expenses, subscriptions, and offline operation remain deferred.

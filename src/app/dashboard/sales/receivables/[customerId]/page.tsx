@@ -22,44 +22,28 @@ export default async function CustomerStatementPage({
     .eq("id", customerId)
     .maybeSingle();
   if (!customer) notFound();
-  let invoicesRequest = client
-    .from("customer_invoices")
-    .select("id,invoice_number,invoice_date,base_currency_total,status")
-    .eq("customer_id", customerId)
-    .not("status", "in", "(DRAFT,VOID)");
-  let creditsRequest = client
-    .from("customer_credit_notes")
-    .select("id,credit_note_number,credit_date,base_currency_total,status")
-    .eq("customer_id", customerId)
-    .eq("status", "ISSUED");
-  if (filters.from) {
-    invoicesRequest = invoicesRequest.gte("invoice_date", filters.from);
-    creditsRequest = creditsRequest.gte("credit_date", filters.from);
-  }
-  if (filters.to) {
-    invoicesRequest = invoicesRequest.lte("invoice_date", filters.to);
-    creditsRequest = creditsRequest.lte("credit_date", filters.to);
-  }
-  const [{ data: invoices }, { data: credits }] = await Promise.all([
-    invoicesRequest,
-    creditsRequest,
-  ]);
-  const entries = [
-    ...(invoices ?? []).map((item) => ({
-      date: item.invoice_date,
-      document: item.invoice_number,
-      href: `/dashboard/sales/invoices/${item.id}`,
-      debit: Number(item.base_currency_total),
-      credit: 0,
-    })),
-    ...(credits ?? []).map((item) => ({
-      date: item.credit_date,
-      document: item.credit_note_number,
-      href: `/dashboard/sales/credit-notes/${item.id}`,
-      debit: 0,
-      credit: Number(item.base_currency_total),
-    })),
-  ].sort(
+  let statementRequest = client
+    .from("customer_statement_transactions")
+    .select("transaction_date,document_type,document_id,document_number,debit_base,credit_base")
+    .eq("customer_id", customerId);
+  if (filters.from) statementRequest = statementRequest.gte("transaction_date", filters.from);
+  if (filters.to) statementRequest = statementRequest.lte("transaction_date", filters.to);
+  const { data: transactions } = await statementRequest;
+  const entries = (transactions ?? []).map((item) => ({
+    date: item.transaction_date ?? "",
+    document: item.document_number ?? "",
+    type: item.document_type,
+    href:
+      item.document_type === "INVOICE"
+        ? `/dashboard/sales/invoices/${item.document_id}`
+        : item.document_type === "CREDIT_NOTE"
+          ? `/dashboard/sales/credit-notes/${item.document_id}`
+          : item.document_type === "PAYMENT"
+            ? `/dashboard/sales/payments/${item.document_id}`
+            : "#",
+    debit: Number(item.debit_base),
+    credit: Number(item.credit_base),
+  })).sort(
     (a, b) =>
       a.date.localeCompare(b.date) || a.document.localeCompare(b.document),
   );
@@ -78,7 +62,7 @@ export default async function CustomerStatementPage({
       <PageHeader
         eyebrow="Customer Statement"
         title={customer.display_name}
-        description={`${customer.customer_code} · invoices and Credit Notes only; payment settlement is not part of Phase 4.`}
+        description={`${customer.customer_code} · invoices, Credit Notes, customer payments, and posted refunds.`}
         actions={
           <div className="flex gap-2">
             <Link

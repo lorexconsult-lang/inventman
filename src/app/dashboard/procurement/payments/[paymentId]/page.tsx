@@ -1,0 +1,6 @@
+import { notFound } from "next/navigation";
+import { PaymentDetail } from "@/features/payments/components/payment-detail";
+import { paymentDetail } from "@/features/payments/queries";
+import { requireOrganizationPermission } from "@/features/organizations/context";
+
+export default async function SupplierPaymentDetail({params,searchParams}:{params:Promise<{paymentId:string}>;searchParams:Promise<{error?:string}>}) {const{paymentId}=await params;const query=await searchParams;await requireOrganizationPermission("payments.supplier.view");const data=await paymentDetail(paymentId,"SUPPLIER");if(!data.payment)notFound();const{data:invoices}=await data.client.from("supplier_invoice_settlement").select("id,invoice_number,outstanding_base").eq("supplier_id",data.payment.supplier_id!).eq("currency",data.payment.currency).gt("outstanding_base",0);const openInvoices=(invoices??[]).flatMap(x=>x.id&&x.invoice_number&&x.outstanding_base!==null?[{id:x.id,invoice_number:x.invoice_number,outstanding_base:x.outstanding_base}]:[]);return <div className="space-y-5">{query.error&&<p className="rounded-xl border border-danger p-3 text-danger">{query.error}</p>}<PaymentDetail payment={data.payment} kind="SUPPLIER" openInvoices={openInvoices} accounts={[]} methods={[]}/></div>;}

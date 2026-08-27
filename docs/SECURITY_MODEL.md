@@ -1,5 +1,9 @@
 # Security Model
 
+## Payment settlement controls
+
+Payment RPCs derive actor and tenant from `auth.uid()`, enforce capabilities and branch access, and reject cross-tenant references. Posted rows and allocations reject direct mutation. Locks prevent concurrent over-settlement; reversals and refunds preserve audit history. Only safe external references may be retained; PCI card secrets are prohibited.
+
 ## Layers
 
 Authentication proves identity; it does not grant tenant data access. Authorization is enforced in PostgreSQL using active organization membership, capabilities, and optional branch scope. UI checks improve usability but are never the security boundary.

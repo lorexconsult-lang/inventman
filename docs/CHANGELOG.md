@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added the shared Phase 6 settlement engine: accounts/methods, customer receipts, supplier payments, allocations, overpayments/advances, credits, controlled refunds/reversals, derived AR/AP, statements, reports, and audit controls.
+- Added capability- and branch-enforced administration plus database, unit, and authenticated workflow coverage. This is operational settlement, not POS, gateway processing, reconciliation, or General Ledger accounting.
+- Hosted verification now passes 277/277 pgTAP assertions and a 37-check authenticated Payments workflow with complete fixture cleanup.
+
 - Built Team and Access Administration with staff filtering, member details, secure invitations, custom roles, grouped permissions, role duplication, effective permissions, branch scope, suspension/reactivation, and audit activity.
 - Replaced implicit first-membership selection with an HTTP-only, server-validated organization switcher and added capability-aware responsive navigation plus a forbidden state.
 - Added forgot/reset-password flows and hosted Team security/browser verification. Production custom SMTP remains a release gate.

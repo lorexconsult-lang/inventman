@@ -1,5 +1,9 @@
 # Procurement Architecture
 
+## Settlement integration
+
+Approved supplier invoices settle through shared supplier payments and supplier-credit allocations. Partial payments and advances are supported; settlement never mutates quantities or Inventory Ledger records. See `PAYMENTS_ARCHITECTURE.md`.
+
 ## Supplier master
 
 Suppliers are organization-owned lifecycle records with many addresses, contacts, private documents, and product relationships. A variant can have many suppliers; preferred status is relationship metadata rather than a product foreign key. Supplier quotation prices append to immutable history in transaction and base currency.

@@ -653,6 +653,71 @@ export type Database = {
           },
         ]
       }
+      customer_credit_allocations: {
+        Row: {
+          allocated_amount: number
+          allocated_base_amount: number
+          allocation_date: string
+          created_at: string
+          created_by: string
+          credit_note_id: string
+          id: string
+          invoice_id: string
+          organization_id: string
+        }
+        Insert: {
+          allocated_amount: number
+          allocated_base_amount: number
+          allocation_date: string
+          created_at?: string
+          created_by: string
+          credit_note_id: string
+          id?: string
+          invoice_id: string
+          organization_id: string
+        }
+        Update: {
+          allocated_amount?: number
+          allocated_base_amount?: number
+          allocation_date?: string
+          created_at?: string
+          created_by?: string
+          credit_note_id?: string
+          id?: string
+          invoice_id?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_credit_allocations_organization_id_credit_note_id_fkey"
+            columns: ["organization_id", "credit_note_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_notes"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_credit_allocations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_credit_allocations_organization_id_invoice_id_fkey"
+            columns: ["organization_id", "invoice_id"]
+            isOneToOne: false
+            referencedRelation: "customer_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_credit_allocations_organization_id_invoice_id_fkey"
+            columns: ["organization_id", "invoice_id"]
+            isOneToOne: false
+            referencedRelation: "customer_invoices"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       customer_credit_notes: {
         Row: {
           approved_at: string | null
@@ -761,6 +826,13 @@ export type Database = {
             foreignKeyName: "customer_credit_notes_organization_id_customer_invoice_id_fkey"
             columns: ["organization_id", "customer_invoice_id"]
             isOneToOne: false
+            referencedRelation: "customer_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_credit_notes_organization_id_customer_invoice_id_fkey"
+            columns: ["organization_id", "customer_invoice_id"]
+            isOneToOne: false
             referencedRelation: "customer_invoices"
             referencedColumns: ["organization_id", "id"]
           },
@@ -855,6 +927,13 @@ export type Database = {
             foreignKeyName: "customer_invoice_fulfillments_organization_id_invoice_id_fkey"
             columns: ["organization_id", "invoice_id"]
             isOneToOne: false
+            referencedRelation: "customer_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_invoice_fulfillments_organization_id_invoice_id_fkey"
+            columns: ["organization_id", "invoice_id"]
+            isOneToOne: false
             referencedRelation: "customer_invoices"
             referencedColumns: ["organization_id", "id"]
           },
@@ -910,6 +989,13 @@ export type Database = {
           unit_price?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "customer_invoice_lines_organization_id_invoice_id_fkey"
+            columns: ["organization_id", "invoice_id"]
+            isOneToOne: false
+            referencedRelation: "customer_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "customer_invoice_lines_organization_id_invoice_id_fkey"
             columns: ["organization_id", "invoice_id"]
@@ -1075,6 +1161,175 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "sales_orders"
             referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      customer_refunds: {
+        Row: {
+          amount: number
+          approval_request_id: string | null
+          approved_by: string | null
+          base_currency_amount: number
+          branch_id: string
+          created_at: string
+          created_by: string
+          currency: string
+          customer_id: string
+          exchange_rate_snapshot: number
+          external_reference: string | null
+          id: string
+          idempotency_key: string
+          organization_id: string
+          payment_method_id: string
+          posted_at: string | null
+          processed_by: string | null
+          reason: string
+          refund_date: string
+          refund_number: string
+          request_hash: string
+          settlement_account_id: string
+          source_credit_note_id: string | null
+          source_payment_id: string | null
+          status: string
+        }
+        Insert: {
+          amount: number
+          approval_request_id?: string | null
+          approved_by?: string | null
+          base_currency_amount: number
+          branch_id: string
+          created_at?: string
+          created_by: string
+          currency: string
+          customer_id: string
+          exchange_rate_snapshot: number
+          external_reference?: string | null
+          id?: string
+          idempotency_key: string
+          organization_id: string
+          payment_method_id: string
+          posted_at?: string | null
+          processed_by?: string | null
+          reason: string
+          refund_date: string
+          refund_number: string
+          request_hash: string
+          settlement_account_id: string
+          source_credit_note_id?: string | null
+          source_payment_id?: string | null
+          status: string
+        }
+        Update: {
+          amount?: number
+          approval_request_id?: string | null
+          approved_by?: string | null
+          base_currency_amount?: number
+          branch_id?: string
+          created_at?: string
+          created_by?: string
+          currency?: string
+          customer_id?: string
+          exchange_rate_snapshot?: number
+          external_reference?: string | null
+          id?: string
+          idempotency_key?: string
+          organization_id?: string
+          payment_method_id?: string
+          posted_at?: string | null
+          processed_by?: string | null
+          reason?: string
+          refund_date?: string
+          refund_number?: string
+          request_hash?: string
+          settlement_account_id?: string
+          source_credit_note_id?: string | null
+          source_payment_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_refunds_organization_id_approval_request_id_fkey"
+            columns: ["organization_id", "approval_request_id"]
+            isOneToOne: false
+            referencedRelation: "approval_requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_exposure"
+            referencedColumns: ["organization_id", "customer_id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_payment_method_id_fkey"
+            columns: ["organization_id", "payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_settlement_account_id_fkey"
+            columns: ["organization_id", "settlement_account_id"]
+            isOneToOne: false
+            referencedRelation: "operational_settlement_balances"
+            referencedColumns: ["organization_id", "account_id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_settlement_account_id_fkey"
+            columns: ["organization_id", "settlement_account_id"]
+            isOneToOne: false
+            referencedRelation: "payment_accounts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_source_credit_note_id_fkey"
+            columns: ["organization_id", "source_credit_note_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_notes"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_source_payment_id_fkey"
+            columns: ["organization_id", "source_payment_id"]
+            isOneToOne: false
+            referencedRelation: "customer_unapplied_credits"
+            referencedColumns: ["organization_id", "payment_id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_source_payment_id_fkey"
+            columns: ["organization_id", "source_payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_refunds_organization_id_source_payment_id_fkey"
+            columns: ["organization_id", "source_payment_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_advances"
+            referencedColumns: ["organization_id", "payment_id"]
           },
         ]
       }
@@ -2566,6 +2821,452 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      payment_accounts: {
+        Row: {
+          account_code: string
+          account_type: string
+          branch_id: string | null
+          created_at: string
+          created_by: string
+          currency: string
+          description: string | null
+          id: string
+          name: string
+          organization_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          account_code: string
+          account_type: string
+          branch_id?: string | null
+          created_at?: string
+          created_by: string
+          currency: string
+          description?: string | null
+          id?: string
+          name: string
+          organization_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          account_code?: string
+          account_type?: string
+          branch_id?: string | null
+          created_at?: string
+          created_by?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_accounts_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_accounts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_allocations: {
+        Row: {
+          allocated_amount: number
+          allocated_base_amount: number
+          allocation_date: string
+          created_at: string
+          created_by: string
+          customer_invoice_id: string | null
+          id: string
+          is_reversal: boolean
+          organization_id: string
+          original_allocation_id: string | null
+          payment_id: string
+          supplier_invoice_id: string | null
+        }
+        Insert: {
+          allocated_amount: number
+          allocated_base_amount: number
+          allocation_date: string
+          created_at?: string
+          created_by: string
+          customer_invoice_id?: string | null
+          id?: string
+          is_reversal?: boolean
+          organization_id: string
+          original_allocation_id?: string | null
+          payment_id: string
+          supplier_invoice_id?: string | null
+        }
+        Update: {
+          allocated_amount?: number
+          allocated_base_amount?: number
+          allocation_date?: string
+          created_at?: string
+          created_by?: string
+          customer_invoice_id?: string | null
+          id?: string
+          is_reversal?: boolean
+          organization_id?: string
+          original_allocation_id?: string | null
+          payment_id?: string
+          supplier_invoice_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_allocations_organization_id_customer_invoice_id_fkey"
+            columns: ["organization_id", "customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "customer_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_allocations_organization_id_customer_invoice_id_fkey"
+            columns: ["organization_id", "customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "customer_invoices"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_allocations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_allocations_organization_id_original_allocation_id_fkey"
+            columns: ["organization_id", "original_allocation_id"]
+            isOneToOne: false
+            referencedRelation: "payment_allocations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_allocations_organization_id_payment_id_fkey"
+            columns: ["organization_id", "payment_id"]
+            isOneToOne: false
+            referencedRelation: "customer_unapplied_credits"
+            referencedColumns: ["organization_id", "payment_id"]
+          },
+          {
+            foreignKeyName: "payment_allocations_organization_id_payment_id_fkey"
+            columns: ["organization_id", "payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_allocations_organization_id_payment_id_fkey"
+            columns: ["organization_id", "payment_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_advances"
+            referencedColumns: ["organization_id", "payment_id"]
+          },
+          {
+            foreignKeyName: "payment_allocations_organization_id_supplier_invoice_id_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_allocations_organization_id_supplier_invoice_id_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoices"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      payment_methods: {
+        Row: {
+          allows_overpayment: boolean
+          branch_id: string | null
+          code: string
+          created_at: string
+          created_by: string
+          default_account_id: string | null
+          id: string
+          method_type: string
+          name: string
+          organization_id: string
+          requires_approval: boolean
+          requires_reference: boolean
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          allows_overpayment?: boolean
+          branch_id?: string | null
+          code: string
+          created_at?: string
+          created_by: string
+          default_account_id?: string | null
+          id?: string
+          method_type: string
+          name: string
+          organization_id: string
+          requires_approval?: boolean
+          requires_reference?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          allows_overpayment?: boolean
+          branch_id?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string
+          default_account_id?: string | null
+          id?: string
+          method_type?: string
+          name?: string
+          organization_id?: string
+          requires_approval?: boolean
+          requires_reference?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_methods_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_methods_organization_id_default_account_id_fkey"
+            columns: ["organization_id", "default_account_id"]
+            isOneToOne: false
+            referencedRelation: "operational_settlement_balances"
+            referencedColumns: ["organization_id", "account_id"]
+          },
+          {
+            foreignKeyName: "payment_methods_organization_id_default_account_id_fkey"
+            columns: ["organization_id", "default_account_id"]
+            isOneToOne: false
+            referencedRelation: "payment_accounts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_methods_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_number_counters: {
+        Row: {
+          next_value: number
+          organization_id: string
+          prefix: string
+          updated_at: string
+        }
+        Insert: {
+          next_value?: number
+          organization_id: string
+          prefix: string
+          updated_at?: string
+        }
+        Update: {
+          next_value?: number
+          organization_id?: string
+          prefix?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_number_counters_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          base_currency_amount: number
+          branch_id: string
+          counterparty_type: string
+          created_at: string
+          created_by: string
+          currency: string
+          customer_id: string | null
+          direction: string
+          exchange_rate_snapshot: number
+          external_reference: string | null
+          id: string
+          idempotency_key: string
+          is_reversal: boolean
+          notes: string | null
+          organization_id: string
+          original_payment_id: string | null
+          payment_date: string
+          payment_method_id: string
+          payment_number: string
+          posted_at: string
+          posted_by: string
+          request_hash: string
+          reversal_reason: string | null
+          settlement_account_id: string
+          status: string
+          supplier_id: string | null
+        }
+        Insert: {
+          amount: number
+          base_currency_amount: number
+          branch_id: string
+          counterparty_type: string
+          created_at?: string
+          created_by: string
+          currency: string
+          customer_id?: string | null
+          direction: string
+          exchange_rate_snapshot: number
+          external_reference?: string | null
+          id?: string
+          idempotency_key: string
+          is_reversal?: boolean
+          notes?: string | null
+          organization_id: string
+          original_payment_id?: string | null
+          payment_date: string
+          payment_method_id: string
+          payment_number: string
+          posted_at?: string
+          posted_by: string
+          request_hash: string
+          reversal_reason?: string | null
+          settlement_account_id: string
+          status: string
+          supplier_id?: string | null
+        }
+        Update: {
+          amount?: number
+          base_currency_amount?: number
+          branch_id?: string
+          counterparty_type?: string
+          created_at?: string
+          created_by?: string
+          currency?: string
+          customer_id?: string | null
+          direction?: string
+          exchange_rate_snapshot?: number
+          external_reference?: string | null
+          id?: string
+          idempotency_key?: string
+          is_reversal?: boolean
+          notes?: string | null
+          organization_id?: string
+          original_payment_id?: string | null
+          payment_date?: string
+          payment_method_id?: string
+          payment_number?: string
+          posted_at?: string
+          posted_by?: string
+          request_hash?: string
+          reversal_reason?: string | null
+          settlement_account_id?: string
+          status?: string
+          supplier_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_exposure"
+            referencedColumns: ["organization_id", "customer_id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_original_payment_id_fkey"
+            columns: ["organization_id", "original_payment_id"]
+            isOneToOne: false
+            referencedRelation: "customer_unapplied_credits"
+            referencedColumns: ["organization_id", "payment_id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_original_payment_id_fkey"
+            columns: ["organization_id", "original_payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_original_payment_id_fkey"
+            columns: ["organization_id", "original_payment_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_advances"
+            referencedColumns: ["organization_id", "payment_id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_payment_method_id_fkey"
+            columns: ["organization_id", "payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_settlement_account_id_fkey"
+            columns: ["organization_id", "settlement_account_id"]
+            isOneToOne: false
+            referencedRelation: "operational_settlement_balances"
+            referencedColumns: ["organization_id", "account_id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_settlement_account_id_fkey"
+            columns: ["organization_id", "settlement_account_id"]
+            isOneToOne: false
+            referencedRelation: "payment_accounts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
       }
       permissions: {
         Row: {
@@ -5155,6 +5856,13 @@ export type Database = {
             foreignKeyName: "sales_returns_organization_id_customer_invoice_id_fkey"
             columns: ["organization_id", "customer_invoice_id"]
             isOneToOne: false
+            referencedRelation: "customer_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "sales_returns_organization_id_customer_invoice_id_fkey"
+            columns: ["organization_id", "customer_invoice_id"]
+            isOneToOne: false
             referencedRelation: "customer_invoices"
             referencedColumns: ["organization_id", "id"]
           },
@@ -5826,6 +6534,71 @@ export type Database = {
           },
         ]
       }
+      supplier_credit_allocations: {
+        Row: {
+          allocated_amount: number
+          allocated_base_amount: number
+          allocation_date: string
+          created_at: string
+          created_by: string
+          id: string
+          organization_id: string
+          supplier_credit_id: string
+          supplier_invoice_id: string
+        }
+        Insert: {
+          allocated_amount: number
+          allocated_base_amount: number
+          allocation_date: string
+          created_at?: string
+          created_by: string
+          id?: string
+          organization_id: string
+          supplier_credit_id: string
+          supplier_invoice_id: string
+        }
+        Update: {
+          allocated_amount?: number
+          allocated_base_amount?: number
+          allocation_date?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          organization_id?: string
+          supplier_credit_id?: string
+          supplier_invoice_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_credit_allocations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_credit_allocations_organization_id_supplier_credi_fkey"
+            columns: ["organization_id", "supplier_credit_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_credits"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_credit_allocations_organization_id_supplier_invoi_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_credit_allocations_organization_id_supplier_invoi_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoices"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       supplier_credits: {
         Row: {
           amount: number
@@ -5881,6 +6654,13 @@ export type Database = {
             columns: ["organization_id", "supplier_id"]
             isOneToOne: false
             referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_credits_organization_id_supplier_invoice_id_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoice_settlement"
             referencedColumns: ["organization_id", "id"]
           },
           {
@@ -6028,6 +6808,13 @@ export type Database = {
             foreignKeyName: "supplier_invoice_lines_organization_id_supplier_invoice_id_fkey"
             columns: ["organization_id", "supplier_invoice_id"]
             isOneToOne: false
+            referencedRelation: "supplier_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_lines_organization_id_supplier_invoice_id_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
             referencedRelation: "supplier_invoices"
             referencedColumns: ["organization_id", "id"]
           },
@@ -6065,6 +6852,13 @@ export type Database = {
             columns: ["organization_id", "purchase_order_id"]
             isOneToOne: false
             referencedRelation: "purchase_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_links_organization_id_supplier_invoice_id_fkey"
+            columns: ["organization_id", "supplier_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoice_settlement"
             referencedColumns: ["organization_id", "id"]
           },
           {
@@ -6821,6 +7615,153 @@ export type Database = {
           },
         ]
       }
+      customer_invoice_settlement: {
+        Row: {
+          amount_paid_base: number | null
+          base_currency: string | null
+          base_currency_total: number | null
+          billing_address_snapshot: Json | null
+          branch_id: string | null
+          business_id: string | null
+          created_at: string | null
+          created_by: string | null
+          credit_allocated_base: number | null
+          credit_note_total_base: number | null
+          currency: string | null
+          customer_id: string | null
+          customer_name_snapshot: string | null
+          discount: number | null
+          due_date: string | null
+          exchange_rate: number | null
+          id: string | null
+          idempotency_key: string | null
+          invoice_date: string | null
+          invoice_number: string | null
+          issued_at: string | null
+          issued_by: string | null
+          notes: string | null
+          organization_id: string | null
+          outstanding_base: number | null
+          payment_allocated_base: number | null
+          payment_terms: string | null
+          request_hash: string | null
+          sales_order_id: string | null
+          status: string | null
+          subtotal: number | null
+          tax: number | null
+          total: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount_paid_base?: number | null
+          base_currency?: string | null
+          base_currency_total?: number | null
+          billing_address_snapshot?: Json | null
+          branch_id?: string | null
+          business_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          credit_allocated_base?: never
+          credit_note_total_base?: number | null
+          currency?: string | null
+          customer_id?: string | null
+          customer_name_snapshot?: string | null
+          discount?: number | null
+          due_date?: string | null
+          exchange_rate?: number | null
+          id?: string | null
+          idempotency_key?: string | null
+          invoice_date?: string | null
+          invoice_number?: string | null
+          issued_at?: string | null
+          issued_by?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          outstanding_base?: never
+          payment_allocated_base?: never
+          payment_terms?: string | null
+          request_hash?: string | null
+          sales_order_id?: string | null
+          status?: string | null
+          subtotal?: number | null
+          tax?: number | null
+          total?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount_paid_base?: number | null
+          base_currency?: string | null
+          base_currency_total?: number | null
+          billing_address_snapshot?: Json | null
+          branch_id?: string | null
+          business_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          credit_allocated_base?: never
+          credit_note_total_base?: number | null
+          currency?: string | null
+          customer_id?: string | null
+          customer_name_snapshot?: string | null
+          discount?: number | null
+          due_date?: string | null
+          exchange_rate?: number | null
+          id?: string | null
+          idempotency_key?: string | null
+          invoice_date?: string | null
+          invoice_number?: string | null
+          issued_at?: string | null
+          issued_by?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          outstanding_base?: never
+          payment_allocated_base?: never
+          payment_terms?: string | null
+          request_hash?: string | null
+          sales_order_id?: string | null
+          status?: string | null
+          subtotal?: number | null
+          tax?: number | null
+          total?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_invoices_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_invoices_organization_id_business_id_fkey"
+            columns: ["organization_id", "business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_invoices_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_exposure"
+            referencedColumns: ["organization_id", "customer_id"]
+          },
+          {
+            foreignKeyName: "customer_invoices_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "customer_invoices_organization_id_sales_order_id_fkey"
+            columns: ["organization_id", "sales_order_id"]
+            isOneToOne: false
+            referencedRelation: "sales_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       customer_receivables: {
         Row: {
           customer_id: string | null
@@ -6843,6 +7784,83 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      customer_statement_transactions: {
+        Row: {
+          credit_base: number | null
+          customer_id: string | null
+          debit_base: number | null
+          document_id: string | null
+          document_number: string | null
+          document_type: string | null
+          organization_id: string | null
+          transaction_date: string | null
+        }
+        Relationships: []
+      }
+      customer_unapplied_credit_documents: {
+        Row: {
+          currency: string | null
+          customer_id: string | null
+          document_number: string | null
+          organization_id: string | null
+          source_id: string | null
+          source_type: string | null
+          unapplied_amount: number | null
+        }
+        Relationships: []
+      }
+      customer_unapplied_credits: {
+        Row: {
+          amount: number | null
+          currency: string | null
+          customer_id: string | null
+          organization_id: string | null
+          payment_id: string | null
+          payment_number: string | null
+          unapplied_amount: number | null
+        }
+        Insert: {
+          amount?: number | null
+          currency?: string | null
+          customer_id?: string | null
+          organization_id?: string | null
+          payment_id?: string | null
+          payment_number?: string | null
+          unapplied_amount?: never
+        }
+        Update: {
+          amount?: number | null
+          currency?: string | null
+          customer_id?: string | null
+          organization_id?: string | null
+          payment_id?: string | null
+          payment_number?: string | null
+          unapplied_amount?: never
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_exposure"
+            referencedColumns: ["organization_id", "customer_id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -6920,6 +7938,41 @@ export type Database = {
           },
           {
             foreignKeyName: "inventory_balances_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      operational_settlement_balances: {
+        Row: {
+          account_code: string | null
+          account_id: string | null
+          currency: string | null
+          name: string | null
+          operational_balance: number | null
+          organization_id: string | null
+        }
+        Insert: {
+          account_code?: string | null
+          account_id?: string | null
+          currency?: string | null
+          name?: string | null
+          operational_balance?: never
+          organization_id?: string | null
+        }
+        Update: {
+          account_code?: string | null
+          account_id?: string | null
+          currency?: string | null
+          name?: string | null
+          operational_balance?: never
+          organization_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_accounts_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -7009,6 +8062,152 @@ export type Database = {
           },
         ]
       }
+      supplier_advances: {
+        Row: {
+          amount: number | null
+          currency: string | null
+          organization_id: string | null
+          payment_id: string | null
+          payment_number: string | null
+          supplier_id: string | null
+          unapplied_amount: number | null
+        }
+        Insert: {
+          amount?: number | null
+          currency?: string | null
+          organization_id?: string | null
+          payment_id?: string | null
+          payment_number?: string | null
+          supplier_id?: string | null
+          unapplied_amount?: never
+        }
+        Update: {
+          amount?: number | null
+          currency?: string | null
+          organization_id?: string | null
+          payment_id?: string | null
+          payment_number?: string | null
+          supplier_id?: string | null
+          unapplied_amount?: never
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      supplier_invoice_settlement: {
+        Row: {
+          amount_paid_base: number | null
+          approved_at: string | null
+          approved_by: string | null
+          attachment_path: string | null
+          base_currency: string | null
+          base_currency_total: number | null
+          created_at: string | null
+          created_by: string | null
+          credit_allocated_base: number | null
+          currency: string | null
+          discount: number | null
+          due_date: string | null
+          exchange_rate: number | null
+          freight_charges: number | null
+          id: string | null
+          invoice_date: string | null
+          invoice_number: string | null
+          match_status: string | null
+          notes: string | null
+          organization_id: string | null
+          outstanding_base: number | null
+          payment_allocated_base: number | null
+          status: string | null
+          subtotal: number | null
+          supplier_id: string | null
+          tax: number | null
+          total: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount_paid_base?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          attachment_path?: string | null
+          base_currency?: string | null
+          base_currency_total?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          credit_allocated_base?: never
+          currency?: string | null
+          discount?: number | null
+          due_date?: string | null
+          exchange_rate?: number | null
+          freight_charges?: number | null
+          id?: string | null
+          invoice_date?: string | null
+          invoice_number?: string | null
+          match_status?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          outstanding_base?: never
+          payment_allocated_base?: never
+          status?: string | null
+          subtotal?: number | null
+          supplier_id?: string | null
+          tax?: number | null
+          total?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount_paid_base?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
+          attachment_path?: string | null
+          base_currency?: string | null
+          base_currency_total?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          credit_allocated_base?: never
+          currency?: string | null
+          discount?: number | null
+          due_date?: string | null
+          exchange_rate?: number | null
+          freight_charges?: number | null
+          id?: string | null
+          invoice_date?: string | null
+          invoice_number?: string | null
+          match_status?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          outstanding_base?: never
+          payment_allocated_base?: never
+          status?: string | null
+          subtotal?: number | null
+          supplier_id?: string | null
+          tax?: number | null
+          total?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_invoices_organization_id_supplier_id_fkey"
+            columns: ["organization_id", "supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       supplier_payables: {
         Row: {
           organization_id: string | null
@@ -7024,6 +8223,19 @@ export type Database = {
             referencedColumns: ["organization_id", "id"]
           },
         ]
+      }
+      supplier_statement_transactions: {
+        Row: {
+          credit_base: number | null
+          debit_base: number | null
+          document_id: string | null
+          document_number: string | null
+          document_type: string | null
+          organization_id: string | null
+          supplier_id: string | null
+          transaction_date: string | null
+        }
+        Relationships: []
       }
     }
     Functions: {
@@ -7071,6 +8283,23 @@ export type Database = {
         }
         Returns: string
       }
+      allocate_customer_credit: {
+        Args: {
+          target_amount: number
+          target_credit_note_id: string
+          target_invoice_id: string
+          target_organization_id: string
+        }
+        Returns: string
+      }
+      allocate_existing_payment: {
+        Args: {
+          target_allocations: Json
+          target_organization_id: string
+          target_payment_id: string
+        }
+        Returns: Json
+      }
       allocate_landed_cost: {
         Args: {
           target_amount: number
@@ -7082,6 +8311,15 @@ export type Database = {
           target_manual_allocations?: Json
           target_method: string
           target_organization_id: string
+        }
+        Returns: string
+      }
+      allocate_supplier_credit: {
+        Args: {
+          target_amount: number
+          target_organization_id: string
+          target_supplier_credit_id: string
+          target_supplier_invoice_id: string
         }
         Returns: string
       }
@@ -7185,6 +8423,32 @@ export type Database = {
           organization_name: string
           organization_slug: string
           organization_timezone: string
+        }
+        Returns: string
+      }
+      create_payment_account: {
+        Args: {
+          target_account_code: string
+          target_account_type: string
+          target_branch_id: string
+          target_currency: string
+          target_description: string
+          target_name: string
+          target_organization_id: string
+        }
+        Returns: string
+      }
+      create_payment_method: {
+        Args: {
+          target_allows_overpayment: boolean
+          target_branch_id: string
+          target_code: string
+          target_default_account_id: string
+          target_method_type: string
+          target_name: string
+          target_organization_id: string
+          target_requires_approval: boolean
+          target_requires_reference: boolean
         }
         Returns: string
       }
@@ -7403,6 +8667,10 @@ export type Database = {
         }
         Returns: Json
       }
+      finalize_approved_customer_refund: {
+        Args: { target_organization_id: string; target_refund_id: string }
+        Returns: string
+      }
       generate_sku: {
         Args: { target_organization_id: string }
         Returns: string
@@ -7467,9 +8735,50 @@ export type Database = {
         Args: { target_organization_id: string; target_prefix: string }
         Returns: string
       }
+      next_payment_number: {
+        Args: { target_organization_id: string; target_prefix: string }
+        Returns: string
+      }
       next_procurement_number: {
         Args: { target_organization_id: string; target_prefix: string }
         Returns: string
+      }
+      post_customer_payment: {
+        Args: {
+          target_allocations: Json
+          target_amount: number
+          target_branch_id: string
+          target_currency: string
+          target_customer_id: string
+          target_exchange_rate: number
+          target_external_reference: string
+          target_idempotency_key: string
+          target_notes: string
+          target_organization_id: string
+          target_payment_date: string
+          target_payment_method_id: string
+          target_settlement_account_id: string
+        }
+        Returns: Json
+      }
+      post_customer_refund: {
+        Args: {
+          target_amount: number
+          target_branch_id: string
+          target_currency: string
+          target_customer_id: string
+          target_exchange_rate: number
+          target_external_reference: string
+          target_idempotency_key: string
+          target_organization_id: string
+          target_payment_method_id: string
+          target_reason: string
+          target_refund_date: string
+          target_settlement_account_id: string
+          target_source_credit_note_id: string
+          target_source_payment_id: string
+        }
+        Returns: Json
       }
       post_goods_receipt: {
         Args: {
@@ -7530,6 +8839,25 @@ export type Database = {
         Args: { target_organization_id: string; target_sales_return_id: string }
         Returns: Json
       }
+      post_shared_payment: {
+        Args: {
+          target_allocations: Json
+          target_amount: number
+          target_branch_id: string
+          target_counterparty_id: string
+          target_counterparty_type: string
+          target_currency: string
+          target_exchange_rate: number
+          target_external_reference: string
+          target_idempotency_key: string
+          target_notes: string
+          target_organization_id: string
+          target_payment_date: string
+          target_payment_method_id: string
+          target_settlement_account_id: string
+        }
+        Returns: Json
+      }
       post_stock_count: {
         Args: {
           target_count_id: string
@@ -7538,6 +8866,28 @@ export type Database = {
           target_reason_code_id: string
         }
         Returns: Json
+      }
+      post_supplier_payment: {
+        Args: {
+          target_allocations: Json
+          target_amount: number
+          target_branch_id: string
+          target_currency: string
+          target_exchange_rate: number
+          target_external_reference: string
+          target_idempotency_key: string
+          target_notes: string
+          target_organization_id: string
+          target_payment_date: string
+          target_payment_method_id: string
+          target_settlement_account_id: string
+          target_supplier_id: string
+        }
+        Returns: Json
+      }
+      purge_ephemeral_payment_verification: {
+        Args: { target_organization_id: string }
+        Returns: undefined
       }
       purge_ephemeral_procurement_verification: {
         Args: { target_organization_id: string }
@@ -7613,6 +8963,14 @@ export type Database = {
         }
         Returns: string
       }
+      refresh_customer_invoice_settlement: {
+        Args: { target_invoice_id: string; target_organization_id: string }
+        Returns: undefined
+      }
+      refresh_supplier_invoice_settlement: {
+        Args: { target_invoice_id: string; target_organization_id: string }
+        Returns: undefined
+      }
       release_inventory_reservation: {
         Args: {
           target_idempotency_key: string
@@ -7662,6 +9020,15 @@ export type Database = {
           target_notes: string
           target_organization_id: string
           target_transaction_id: string
+        }
+        Returns: Json
+      }
+      reverse_payment: {
+        Args: {
+          target_idempotency_key: string
+          target_organization_id: string
+          target_payment_id: string
+          target_reason: string
         }
         Returns: Json
       }
@@ -7737,6 +9104,28 @@ export type Database = {
           target_organization_id: string
         }
         Returns: undefined
+      }
+      update_payment_account: {
+        Args: {
+          target_account_id: string
+          target_description: string
+          target_name: string
+          target_organization_id: string
+          target_status: string
+        }
+        Returns: string
+      }
+      update_payment_method: {
+        Args: {
+          target_allows_overpayment: boolean
+          target_method_id: string
+          target_name: string
+          target_organization_id: string
+          target_requires_approval: boolean
+          target_requires_reference: boolean
+          target_status: string
+        }
+        Returns: string
       }
       update_sales_quotation: {
         Args: {

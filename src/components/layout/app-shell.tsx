@@ -59,6 +59,7 @@ export function AppShell({
           />
           <form action={logout}>
             <button
+              aria-label="Sign out"
               className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 hover:bg-muted hover:text-ink"
               type="submit"
             >

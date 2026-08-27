@@ -1,5 +1,9 @@
 # Database Architecture
 
+## Payments and settlement
+
+`payments` is the common customer/supplier settlement record. Tenant-composite foreign keys bind accounts, methods, parties, invoices, allocations, credits, and refunds. Posting RPCs lock targets and use request hashes for exact retries. Views derive invoice settlement, AR/AP, unapplied receipts/advances, operational balances, and statements. See `PAYMENTS_ARCHITECTURE.md`.
+
 ## Tenant hierarchy
 
 `auth.users` → `organization_members` → `organizations` → `businesses` → `branches` → `warehouses`.

@@ -24,6 +24,11 @@ export default async function SettingsPage() {
           title="Roles & permissions"
           text="Create capability-based roles and inspect assignments."
         />
+        <Card
+          href="/dashboard/settings/payments"
+          title="Payment accounts & methods"
+          text="Configure operational settlement accounts and payment methods."
+        />
       </div>
     </>
   );

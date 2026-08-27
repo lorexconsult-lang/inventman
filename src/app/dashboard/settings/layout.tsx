@@ -38,6 +38,12 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
         >
           Inventory
         </Link>
+        <Link
+          className="whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-muted"
+          href="/dashboard/settings/payments"
+        >
+          Payments
+        </Link>
       </nav>
       {children}
     </div>

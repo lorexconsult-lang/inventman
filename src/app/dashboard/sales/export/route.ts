@@ -15,42 +15,19 @@ export async function GET(request: Request) {
   );
   let rows: unknown[][];
   if (report === "statement" && customer) {
-    let invoicesRequest = client
-      .from("customer_invoices")
-      .select("invoice_number,invoice_date,base_currency_total,status")
-      .eq("customer_id", customer)
-      .not("status", "in", "(DRAFT,VOID)");
-    let creditsRequest = client
-      .from("customer_credit_notes")
-      .select("credit_note_number,credit_date,base_currency_total,status")
-      .eq("customer_id", customer)
-      .eq("status", "ISSUED");
-    if (from) {
-      invoicesRequest = invoicesRequest.gte("invoice_date", from);
-      creditsRequest = creditsRequest.gte("credit_date", from);
-    }
-    if (to) {
-      invoicesRequest = invoicesRequest.lte("invoice_date", to);
-      creditsRequest = creditsRequest.lte("credit_date", to);
-    }
-    const [{ data: invoices }, { data: credits }] = await Promise.all([
-      invoicesRequest,
-      creditsRequest,
-    ]);
-    const entries = [
-      ...(invoices ?? []).map((item) => ({
-        date: item.invoice_date,
-        document: item.invoice_number,
-        debit: Number(item.base_currency_total),
-        credit: 0,
-      })),
-      ...(credits ?? []).map((item) => ({
-        date: item.credit_date,
-        document: item.credit_note_number,
-        debit: 0,
-        credit: Number(item.base_currency_total),
-      })),
-    ].sort(
+    let statement = client
+      .from("customer_statement_transactions")
+      .select("transaction_date,document_number,debit_base,credit_base")
+      .eq("customer_id", customer);
+    if (from) statement = statement.gte("transaction_date", from);
+    if (to) statement = statement.lte("transaction_date", to);
+    const { data } = await statement;
+    const entries = (data ?? []).map((item) => ({
+      date: item.transaction_date ?? "",
+      document: item.document_number ?? "",
+      debit: Number(item.debit_base),
+      credit: Number(item.credit_base),
+    })).sort(
       (a, b) =>
         a.date.localeCompare(b.date) || a.document.localeCompare(b.document),
     );
@@ -67,9 +44,9 @@ export async function GET(request: Request) {
     ];
   } else if (report === "receivables") {
     let query = client
-      .from("customer_invoices")
+      .from("customer_invoice_settlement")
       .select(
-        "invoice_number,invoice_date,due_date,status,base_currency_total,credit_note_total_base,amount_paid_base,customers(display_name)",
+        "invoice_number,invoice_date,due_date,status,base_currency_total,credit_allocated_base,payment_allocated_base,outstanding_base,customers(display_name)",
       )
       .not("status", "in", "(DRAFT,VOID)");
     if (customer) query = query.eq("customer_id", customer);
@@ -84,7 +61,8 @@ export async function GET(request: Request) {
         "due",
         "status",
         "debit",
-        "credit",
+        "credits",
+        "payments",
         "outstanding",
       ],
       ...(data ?? []).map((x) => [
@@ -94,10 +72,9 @@ export async function GET(request: Request) {
         x.due_date,
         x.status,
         x.base_currency_total,
-        x.credit_note_total_base,
-        Number(x.base_currency_total) -
-          Number(x.credit_note_total_base) -
-          Number(x.amount_paid_base),
+        x.credit_allocated_base,
+        x.payment_allocated_base,
+        x.outstanding_base,
       ]),
     ];
   } else {
