@@ -63,3 +63,7 @@ Payment allocation, POS, Finance, and independent manual Credit Notes remain out
 ## Verification cleanup
 
 `purge_ephemeral_sales_verification` remains in permanent migration history because it was already deployed and is the fail-closed cleanup boundary for authenticated hosted verification. Execution is restricted to `service_role`, and the target organization must use the `phase4-e2e-` slug prefix. It is not available to application users.
+
+## POS consumer
+
+Phase 7 POS consumes the same Sales Order, confirmation/reservation, fulfilment, invoice, return, Credit Note, and activity functions. POS adds terminal/session context and a receipt link but does not create a parallel sale document or inventory mutation path. Named-customer pay-later checkout remains ordinary receivables and uses the existing credit checks.

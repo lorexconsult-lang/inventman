@@ -33,3 +33,7 @@ The first migration establishes the tenant and RBAC foundation. It is applied to
 ## Procurement
 
 Procurement documents use composite organization foreign keys and tenant-safe counter numbering. Commercial documents snapshot mutable master values, currency, exchange rate, packaging conversion, price, and tax. GRN and purchase-return posting functions lock parent/line rows and invoke `post_inventory_transaction`; no procurement table is a stock authority. Supplier payables are derived from invoices and credits rather than a mutable supplier balance.
+
+## POS orchestration
+
+`pos_terminals`, `pos_sessions`, `pos_held_carts`, `pos_sales`, `pos_sale_settlements`, `pos_cash_events`, and `pos_receipt_reprints` hold operational POS context and immutable links. `post_pos_sale` composes existing Sales, Inventory, invoice, and Payment RPCs inside one transaction. POS totals do not replace ledger, AR, or settlement truth. Forced RLS and tenant-composite references protect every exposed POS record.

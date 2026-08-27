@@ -29,6 +29,11 @@ export default async function SettingsPage() {
           title="Payment accounts & methods"
           text="Configure operational settlement accounts and payment methods."
         />
+        <Card
+          href="/dashboard/settings/pos"
+          title="Point of sale"
+          text="Configure terminals, walk-in sales, receipts and till controls."
+        />
       </div>
     </>
   );

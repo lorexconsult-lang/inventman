@@ -119,3 +119,15 @@ No POS, Payments, Finance, Offline/PWA, Subscriptions, Super Admin, Industry Pac
 | Verification | PASS | 38 new Phase 6 pgTAP assertions bring the hosted total to 277; 41 unit tests, 4 baseline Playwright tests, the 37-check payment workflow, Team/Sales regressions, lint, typecheck, build, and database lint pass. |
 
 POS, gateways, bank APIs/reconciliation, General Ledger, expenses, subscriptions, and offline operation remain deferred.
+
+## PHASE 7 POS AND CASHIER OPERATIONS GATE
+
+| Verification | Status | Evidence |
+|---|---|---|
+| Shared transaction path | IMPLEMENTED | Atomic POS checkout composes existing Sales Order, reservation, fulfilment/`SALE`, invoice, Payment allocation, and customer-credit controls. |
+| Till operations | IMPLEMENTED | Branch terminals, one open session, opening float, cash events, blind close, tolerance, manager review, held carts, and audit history are implemented. |
+| Register application | IMPLEMENTED | Barcode/SKU search, responsive cart, discounts, split tender, cash change, customer pay-later credit, receipts, returns link, settings, sessions, reports, and CSV exist. |
+| Security | IMPLEMENTED | Forced RLS, revoked direct writes, composite tenant references, capability/branch checks, state locks, idempotency, safe card metadata boundary, and audit events are in place. |
+| Verification | PASS | 42 new Phase 7 pgTAP assertions bring the hosted total to 319; 46 unit tests, 4 baseline Playwright tests, the 34-check authenticated POS workflow, Sales/Team regressions, lint, typecheck, build, and public-schema database lint pass. |
+
+Offline POS, gateways/card processing, peripheral integrations, bank reconciliation, General Ledger, expenses, subscriptions, and PWA remain deferred.

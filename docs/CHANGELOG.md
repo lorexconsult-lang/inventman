@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added the Phase 7 POS orchestration layer with branch terminals, one-open-session till controls, barcode/SKU product search, touch-friendly cart, held sales, split tender, cash change, named-customer credit, printable receipts, reprint audit, session variance review, reports, and CSV export.
+- POS checkout reuses the existing Sales Order, Inventory `SALE`, invoice/AR, payment allocation, Credit Note, return/refund, capability, branch, idempotency, and audit boundaries. No second Sales, stock, or payment truth was introduced.
+- Added 42 POS pgTAP assertions and 5 POS unit assertions; final hosted and browser gate results are recorded in the Phase 7 implementation gate.
+
 - Added the shared Phase 6 settlement engine: accounts/methods, customer receipts, supplier payments, allocations, overpayments/advances, credits, controlled refunds/reversals, derived AR/AP, statements, reports, and audit controls.
 - Added capability- and branch-enforced administration plus database, unit, and authenticated workflow coverage. This is operational settlement, not POS, gateway processing, reconciliation, or General Ledger accounting.
 - Hosted verification now passes 277/277 pgTAP assertions and a 37-check authenticated Payments workflow with complete fixture cleanup.

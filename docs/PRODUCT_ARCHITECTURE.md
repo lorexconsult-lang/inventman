@@ -54,3 +54,7 @@ The Sales domain adds customers, quotations, Sales Orders, inventory reservation
 ## Phase 5 Team and access administration
 
 The administration surface manages existing memberships, roles, capabilities, invitations, and branch scope. It adds secure invitation acceptance, suspension/reactivation, atomic permission replacement, effective-capability inspection, explicit multi-organization context, capability-aware navigation, forbidden states, and password recovery. See `TEAM_ACCESS_ARCHITECTURE.md`.
+
+## Phase 7 point of sale
+
+The POS application is a branch-scoped orchestration surface over Sales, Inventory, Receivables, and Payments. Terminal sessions and till events add operational cashier control, while checkout reuses existing authoritative document, ledger, allocation, credit, return, and refund paths. See `POS_ARCHITECTURE.md`.

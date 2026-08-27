@@ -8,6 +8,7 @@ import {
   Building2,
   LayoutDashboard,
   PackageSearch,
+  ScanLine,
   Settings2,
   ShoppingCart,
   WalletCards,
@@ -20,6 +21,12 @@ const groups = [
   {
     label: "Main",
     items: [
+      {
+        label: "POS",
+        href: "/dashboard/pos",
+        icon: ScanLine,
+        capabilities: ["pos.access"],
+      },
       {
         label: "Dashboard",
         href: "/dashboard",

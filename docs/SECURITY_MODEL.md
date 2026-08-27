@@ -55,3 +55,7 @@ Custom SMTP credentials belong in Supabase Auth settings, not the Next.js applic
 Critical membership, invitation, role, permission, assignment, and branch-access tables reject authenticated direct writes. Security-definer RPCs derive actors from `auth.uid()`, lock mutable state, validate tenant references, and restrict grants to capabilities held by the actor. Invitation tokens are stored only as SHA-256 hashes. Suspended users immediately fail membership, permission, and branch checks while historical attribution remains intact.
 
 The HTTP-only organization cookie is only a requested context; every workspace request validates an active membership. Capability-aware navigation is usability, not an authorization boundary.
+
+## POS security boundary
+
+POS tables are read through branch- and capability-aware forced RLS; direct authenticated mutation is revoked. Terminal, session, held-cart, checkout, cash-event, refund-event, and reprint functions authenticate, validate capability and branch scope, lock mutable state, use tenant-bound references, and audit actions. Checkout never accepts browser organization, price override, stock balance, paid status, or customer exposure as authoritative. Full card numbers, CVV, PIN, and magnetic-stripe data are not represented.

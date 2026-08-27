@@ -17,3 +17,7 @@ Approval-required refunds reuse the approval engine and need a matching active p
 ## Boundaries
 
 Exchange-rate snapshots are retained, but realized FX is deferred to Finance. Account balances are operational settlement balances, not accounting cash balances. Future POS can reuse this engine, but no POS workflow is included.
+
+## POS consumer
+
+POS split tender creates ordinary customer payments through `post_customer_payment`, with one allocation to the issued POS invoice per tender. Cash, card-clearing, transfer, and mobile-money remain configured methods/accounts. Existing unapplied payments and Credit Notes can settle a POS invoice as non-cash credit; a pay-later remainder stays in AR. No card secrets or gateway confirmations are stored, and till totals are operational rather than General Ledger balances.

@@ -3289,6 +3289,695 @@ export type Database = {
         }
         Relationships: []
       }
+      pos_cash_events: {
+        Row: {
+          actor_id: string
+          amount: number
+          branch_id: string
+          created_at: string
+          direction: string
+          event_type: string
+          id: string
+          organization_id: string
+          reason: string | null
+          session_id: string
+          source_id: string | null
+          source_type: string | null
+          terminal_id: string
+        }
+        Insert: {
+          actor_id: string
+          amount: number
+          branch_id: string
+          created_at?: string
+          direction: string
+          event_type: string
+          id?: string
+          organization_id: string
+          reason?: string | null
+          session_id: string
+          source_id?: string | null
+          source_type?: string | null
+          terminal_id: string
+        }
+        Update: {
+          actor_id?: string
+          amount?: number
+          branch_id?: string
+          created_at?: string
+          direction?: string
+          event_type?: string
+          id?: string
+          organization_id?: string
+          reason?: string | null
+          session_id?: string
+          source_id?: string | null
+          source_type?: string | null
+          terminal_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_cash_events_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_cash_events_organization_id_session_id_fkey"
+            columns: ["organization_id", "session_id"]
+            isOneToOne: false
+            referencedRelation: "pos_session_summaries"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_cash_events_organization_id_session_id_fkey"
+            columns: ["organization_id", "session_id"]
+            isOneToOne: false
+            referencedRelation: "pos_sessions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_cash_events_organization_id_terminal_id_fkey"
+            columns: ["organization_id", "terminal_id"]
+            isOneToOne: false
+            referencedRelation: "pos_terminals"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pos_held_carts: {
+        Row: {
+          branch_id: string
+          cart: Json
+          cashier_user_id: string
+          customer_id: string | null
+          expires_at: string
+          held_at: string
+          id: string
+          notes: string | null
+          organization_id: string
+          session_id: string
+          status: string
+          terminal_id: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          cart: Json
+          cashier_user_id: string
+          customer_id?: string | null
+          expires_at: string
+          held_at?: string
+          id?: string
+          notes?: string | null
+          organization_id: string
+          session_id: string
+          status?: string
+          terminal_id: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          cart?: Json
+          cashier_user_id?: string
+          customer_id?: string | null
+          expires_at?: string
+          held_at?: string
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          session_id?: string
+          status?: string
+          terminal_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_held_carts_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_held_carts_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_exposure"
+            referencedColumns: ["organization_id", "customer_id"]
+          },
+          {
+            foreignKeyName: "pos_held_carts_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_held_carts_organization_id_session_id_fkey"
+            columns: ["organization_id", "session_id"]
+            isOneToOne: false
+            referencedRelation: "pos_session_summaries"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_held_carts_organization_id_session_id_fkey"
+            columns: ["organization_id", "session_id"]
+            isOneToOne: false
+            referencedRelation: "pos_sessions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_held_carts_organization_id_terminal_id_fkey"
+            columns: ["organization_id", "terminal_id"]
+            isOneToOne: false
+            referencedRelation: "pos_terminals"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pos_receipt_reprints: {
+        Row: {
+          id: string
+          organization_id: string
+          pos_sale_id: string
+          reason: string | null
+          reprinted_at: string
+          reprinted_by: string
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          pos_sale_id: string
+          reason?: string | null
+          reprinted_at?: string
+          reprinted_by: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          pos_sale_id?: string
+          reason?: string | null
+          reprinted_at?: string
+          reprinted_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_receipt_reprints_organization_id_pos_sale_id_fkey"
+            columns: ["organization_id", "pos_sale_id"]
+            isOneToOne: false
+            referencedRelation: "pos_receipts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_receipt_reprints_organization_id_pos_sale_id_fkey"
+            columns: ["organization_id", "pos_sale_id"]
+            isOneToOne: false
+            referencedRelation: "pos_sales"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pos_sale_settlements: {
+        Row: {
+          amount: number
+          change_amount: number
+          created_at: string
+          external_reference: string | null
+          id: string
+          organization_id: string
+          payment_id: string | null
+          payment_method_id: string | null
+          pos_sale_id: string
+          settlement_type: string
+          source_id: string | null
+          tendered_amount: number | null
+        }
+        Insert: {
+          amount: number
+          change_amount?: number
+          created_at?: string
+          external_reference?: string | null
+          id?: string
+          organization_id: string
+          payment_id?: string | null
+          payment_method_id?: string | null
+          pos_sale_id: string
+          settlement_type: string
+          source_id?: string | null
+          tendered_amount?: number | null
+        }
+        Update: {
+          amount?: number
+          change_amount?: number
+          created_at?: string
+          external_reference?: string | null
+          id?: string
+          organization_id?: string
+          payment_id?: string | null
+          payment_method_id?: string | null
+          pos_sale_id?: string
+          settlement_type?: string
+          source_id?: string | null
+          tendered_amount?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_sale_settlements_organization_id_payment_id_fkey"
+            columns: ["organization_id", "payment_id"]
+            isOneToOne: false
+            referencedRelation: "customer_unapplied_credits"
+            referencedColumns: ["organization_id", "payment_id"]
+          },
+          {
+            foreignKeyName: "pos_sale_settlements_organization_id_payment_id_fkey"
+            columns: ["organization_id", "payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sale_settlements_organization_id_payment_id_fkey"
+            columns: ["organization_id", "payment_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_advances"
+            referencedColumns: ["organization_id", "payment_id"]
+          },
+          {
+            foreignKeyName: "pos_sale_settlements_organization_id_payment_method_id_fkey"
+            columns: ["organization_id", "payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sale_settlements_organization_id_pos_sale_id_fkey"
+            columns: ["organization_id", "pos_sale_id"]
+            isOneToOne: false
+            referencedRelation: "pos_receipts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sale_settlements_organization_id_pos_sale_id_fkey"
+            columns: ["organization_id", "pos_sale_id"]
+            isOneToOne: false
+            referencedRelation: "pos_sales"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pos_sales: {
+        Row: {
+          branch_id: string
+          cash_tendered: number | null
+          cashier_user_id: string
+          change_due: number
+          completed_at: string
+          currency: string
+          customer_id: string
+          customer_invoice_id: string
+          discount: number
+          fulfilment_id: string
+          id: string
+          idempotency_key: string
+          inventory_transaction_id: string
+          organization_id: string
+          receipt_number: string
+          request_hash: string
+          sales_order_id: string
+          session_id: string
+          status: string
+          subtotal: number
+          tax: number
+          terminal_id: string
+          total: number
+          voided_at: string | null
+        }
+        Insert: {
+          branch_id: string
+          cash_tendered?: number | null
+          cashier_user_id: string
+          change_due?: number
+          completed_at?: string
+          currency: string
+          customer_id: string
+          customer_invoice_id: string
+          discount?: number
+          fulfilment_id: string
+          id?: string
+          idempotency_key: string
+          inventory_transaction_id: string
+          organization_id: string
+          receipt_number: string
+          request_hash: string
+          sales_order_id: string
+          session_id: string
+          status?: string
+          subtotal: number
+          tax?: number
+          terminal_id: string
+          total: number
+          voided_at?: string | null
+        }
+        Update: {
+          branch_id?: string
+          cash_tendered?: number | null
+          cashier_user_id?: string
+          change_due?: number
+          completed_at?: string
+          currency?: string
+          customer_id?: string
+          customer_invoice_id?: string
+          discount?: number
+          fulfilment_id?: string
+          id?: string
+          idempotency_key?: string
+          inventory_transaction_id?: string
+          organization_id?: string
+          receipt_number?: string
+          request_hash?: string
+          sales_order_id?: string
+          session_id?: string
+          status?: string
+          subtotal?: number
+          tax?: number
+          terminal_id?: string
+          total?: number
+          voided_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_sales_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_exposure"
+            referencedColumns: ["organization_id", "customer_id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_customer_invoice_id_fkey"
+            columns: ["organization_id", "customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "customer_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_customer_invoice_id_fkey"
+            columns: ["organization_id", "customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "customer_invoices"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_fulfilment_id_fkey"
+            columns: ["organization_id", "fulfilment_id"]
+            isOneToOne: false
+            referencedRelation: "sales_fulfillments"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_inventory_transaction_id_fkey"
+            columns: ["organization_id", "inventory_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_transactions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_sales_order_id_fkey"
+            columns: ["organization_id", "sales_order_id"]
+            isOneToOne: false
+            referencedRelation: "sales_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_session_id_fkey"
+            columns: ["organization_id", "session_id"]
+            isOneToOne: false
+            referencedRelation: "pos_session_summaries"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_session_id_fkey"
+            columns: ["organization_id", "session_id"]
+            isOneToOne: false
+            referencedRelation: "pos_sessions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_terminal_id_fkey"
+            columns: ["organization_id", "terminal_id"]
+            isOneToOne: false
+            referencedRelation: "pos_terminals"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pos_sessions: {
+        Row: {
+          approved_by: string | null
+          branch_id: string
+          cashier_user_id: string
+          closed_at: string | null
+          closing_notes: string | null
+          counted_cash: number | null
+          created_at: string
+          expected_cash: number | null
+          id: string
+          opened_at: string
+          opening_float: number
+          opening_notes: string | null
+          organization_id: string
+          session_number: string
+          status: string
+          terminal_id: string
+          variance: number | null
+          variance_reason: string | null
+        }
+        Insert: {
+          approved_by?: string | null
+          branch_id: string
+          cashier_user_id: string
+          closed_at?: string | null
+          closing_notes?: string | null
+          counted_cash?: number | null
+          created_at?: string
+          expected_cash?: number | null
+          id?: string
+          opened_at?: string
+          opening_float: number
+          opening_notes?: string | null
+          organization_id: string
+          session_number: string
+          status?: string
+          terminal_id: string
+          variance?: number | null
+          variance_reason?: string | null
+        }
+        Update: {
+          approved_by?: string | null
+          branch_id?: string
+          cashier_user_id?: string
+          closed_at?: string | null
+          closing_notes?: string | null
+          counted_cash?: number | null
+          created_at?: string
+          expected_cash?: number | null
+          id?: string
+          opened_at?: string
+          opening_float?: number
+          opening_notes?: string | null
+          organization_id?: string
+          session_number?: string
+          status?: string
+          terminal_id?: string
+          variance?: number | null
+          variance_reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_sessions_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sessions_organization_id_terminal_id_fkey"
+            columns: ["organization_id", "terminal_id"]
+            isOneToOne: false
+            referencedRelation: "pos_terminals"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pos_settings: {
+        Row: {
+          allow_discounts: boolean
+          allow_walk_in: boolean
+          cash_variance_tolerance: number
+          discount_threshold_percent: number
+          hold_expiration_minutes: number
+          organization_id: string
+          require_customer: boolean
+          require_open_session: boolean
+          return_policy: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          allow_discounts?: boolean
+          allow_walk_in?: boolean
+          cash_variance_tolerance?: number
+          discount_threshold_percent?: number
+          hold_expiration_minutes?: number
+          organization_id: string
+          require_customer?: boolean
+          require_open_session?: boolean
+          return_policy?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          allow_discounts?: boolean
+          allow_walk_in?: boolean
+          cash_variance_tolerance?: number
+          discount_threshold_percent?: number
+          hold_expiration_minutes?: number
+          organization_id?: string
+          require_customer?: boolean
+          require_open_session?: boolean
+          return_policy?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pos_terminals: {
+        Row: {
+          branch_id: string
+          created_at: string
+          created_by: string
+          default_cash_account_id: string
+          default_customer_id: string | null
+          default_storage_location_id: string
+          default_warehouse_id: string
+          id: string
+          name: string
+          organization_id: string
+          receipt_footer: string | null
+          receipt_width: string
+          status: string
+          terminal_code: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          created_by: string
+          default_cash_account_id: string
+          default_customer_id?: string | null
+          default_storage_location_id: string
+          default_warehouse_id: string
+          id?: string
+          name: string
+          organization_id: string
+          receipt_footer?: string | null
+          receipt_width?: string
+          status?: string
+          terminal_code: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          created_by?: string
+          default_cash_account_id?: string
+          default_customer_id?: string | null
+          default_storage_location_id?: string
+          default_warehouse_id?: string
+          id?: string
+          name?: string
+          organization_id?: string
+          receipt_footer?: string | null
+          receipt_width?: string
+          status?: string
+          terminal_code?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_terminals_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_terminals_organization_id_default_cash_account_id_fkey"
+            columns: ["organization_id", "default_cash_account_id"]
+            isOneToOne: false
+            referencedRelation: "operational_settlement_balances"
+            referencedColumns: ["organization_id", "account_id"]
+          },
+          {
+            foreignKeyName: "pos_terminals_organization_id_default_cash_account_id_fkey"
+            columns: ["organization_id", "default_cash_account_id"]
+            isOneToOne: false
+            referencedRelation: "payment_accounts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_terminals_organization_id_default_customer_id_fkey"
+            columns: ["organization_id", "default_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_exposure"
+            referencedColumns: ["organization_id", "customer_id"]
+          },
+          {
+            foreignKeyName: "pos_terminals_organization_id_default_customer_id_fkey"
+            columns: ["organization_id", "default_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_terminals_organization_id_default_storage_location_id_fkey"
+            columns: ["organization_id", "default_storage_location_id"]
+            isOneToOne: false
+            referencedRelation: "storage_locations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_terminals_organization_id_default_warehouse_id_fkey"
+            columns: ["organization_id", "default_warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       price_lists: {
         Row: {
           code: string
@@ -7980,6 +8669,181 @@ export type Database = {
           },
         ]
       }
+      pos_daily_summary: {
+        Row: {
+          average_transaction: number | null
+          branch_id: string | null
+          currency: string | null
+          discounts: number | null
+          gross_sales: number | null
+          organization_id: string | null
+          sale_date: string | null
+          tax: number | null
+          transaction_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_sales_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pos_receipts: {
+        Row: {
+          branch_id: string | null
+          branch_name: string | null
+          cash_tendered: number | null
+          cashier_user_id: string | null
+          change_due: number | null
+          completed_at: string | null
+          currency: string | null
+          customer_id: string | null
+          customer_invoice_id: string | null
+          customer_name: string | null
+          discount: number | null
+          fulfilment_id: string | null
+          id: string | null
+          inventory_transaction_id: string | null
+          invoice_number: string | null
+          organization_id: string | null
+          receipt_number: string | null
+          sales_order_id: string | null
+          session_id: string | null
+          settlements: Json | null
+          status: string | null
+          subtotal: number | null
+          tax: number | null
+          terminal_code: string | null
+          terminal_id: string | null
+          terminal_name: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_sales_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_credit_exposure"
+            referencedColumns: ["organization_id", "customer_id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_customer_id_fkey"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_customer_invoice_id_fkey"
+            columns: ["organization_id", "customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "customer_invoice_settlement"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_customer_invoice_id_fkey"
+            columns: ["organization_id", "customer_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "customer_invoices"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_fulfilment_id_fkey"
+            columns: ["organization_id", "fulfilment_id"]
+            isOneToOne: false
+            referencedRelation: "sales_fulfillments"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_inventory_transaction_id_fkey"
+            columns: ["organization_id", "inventory_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_transactions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_sales_order_id_fkey"
+            columns: ["organization_id", "sales_order_id"]
+            isOneToOne: false
+            referencedRelation: "sales_orders"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_session_id_fkey"
+            columns: ["organization_id", "session_id"]
+            isOneToOne: false
+            referencedRelation: "pos_session_summaries"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_session_id_fkey"
+            columns: ["organization_id", "session_id"]
+            isOneToOne: false
+            referencedRelation: "pos_sessions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sales_organization_id_terminal_id_fkey"
+            columns: ["organization_id", "terminal_id"]
+            isOneToOne: false
+            referencedRelation: "pos_terminals"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pos_session_summaries: {
+        Row: {
+          approved_by: string | null
+          branch_id: string | null
+          cashier_user_id: string | null
+          closed_at: string | null
+          closing_notes: string | null
+          counted_cash: number | null
+          created_at: string | null
+          expected_cash: number | null
+          id: string | null
+          live_expected_cash: number | null
+          opened_at: string | null
+          opening_float: number | null
+          opening_notes: string | null
+          organization_id: string | null
+          sales_total: number | null
+          session_number: string | null
+          status: string | null
+          terminal_code: string | null
+          terminal_id: string | null
+          terminal_name: string | null
+          transaction_count: number | null
+          variance: number | null
+          variance_reason: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_sessions_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pos_sessions_organization_id_terminal_id_fkey"
+            columns: ["organization_id", "terminal_id"]
+            isOneToOne: false
+            referencedRelation: "pos_terminals"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       purchase_order_outstanding: {
         Row: {
           accepted_base_quantity: number | null
@@ -8239,6 +9103,10 @@ export type Database = {
       }
     }
     Functions: {
+      abandon_pos_cart: {
+        Args: { target_cart_id: string; target_organization_id: string }
+        Returns: undefined
+      }
       accept_team_invitation: {
         Args: { target_token: string }
         Returns: string
@@ -8371,6 +9239,16 @@ export type Database = {
         Args: { target_organization_id: string; target_sales_order_id: string }
         Returns: Json
       }
+      close_pos_session: {
+        Args: {
+          target_counted_cash: number
+          target_notes: string
+          target_organization_id: string
+          target_session_id: string
+          target_variance_reason: string
+        }
+        Returns: Json
+      }
       confirm_sales_order: {
         Args: {
           target_allow_backorder?: boolean
@@ -8449,6 +9327,21 @@ export type Database = {
           target_organization_id: string
           target_requires_approval: boolean
           target_requires_reference: boolean
+        }
+        Returns: string
+      }
+      create_pos_terminal: {
+        Args: {
+          target_branch_id: string
+          target_cash_account_id: string
+          target_code: string
+          target_customer_id: string
+          target_location_id: string
+          target_name: string
+          target_organization_id: string
+          target_receipt_footer: string
+          target_receipt_width: string
+          target_warehouse_id: string
         }
         Returns: string
       }
@@ -8683,6 +9576,17 @@ export type Database = {
         Args: { permission_code: string; target_organization_id: string }
         Returns: boolean
       }
+      hold_pos_cart: {
+        Args: {
+          target_cart: Json
+          target_cart_id?: string
+          target_customer_id: string
+          target_notes: string
+          target_organization_id: string
+          target_session_id: string
+        }
+        Returns: string
+      }
       inspect_sales_return: {
         Args: {
           target_lines: Json
@@ -8742,6 +9646,19 @@ export type Database = {
       next_procurement_number: {
         Args: { target_organization_id: string; target_prefix: string }
         Returns: string
+      }
+      open_pos_session: {
+        Args: {
+          target_notes: string
+          target_opening_float: number
+          target_organization_id: string
+          target_terminal_id: string
+        }
+        Returns: string
+      }
+      pos_expected_cash: {
+        Args: { target_session_id: string }
+        Returns: number
       }
       post_customer_payment: {
         Args: {
@@ -8812,6 +9729,21 @@ export type Database = {
           target_source?: string
           target_transaction_date: string
           target_transaction_type: string
+        }
+        Returns: Json
+      }
+      post_pos_sale: {
+        Args: {
+          target_cash_tendered: number
+          target_customer_credit_amount: number
+          target_customer_id: string
+          target_held_cart_id: string
+          target_idempotency_key: string
+          target_lines: Json
+          target_notes: string
+          target_organization_id: string
+          target_session_id: string
+          target_settlements: Json
         }
         Returns: Json
       }
@@ -8889,6 +9821,10 @@ export type Database = {
         Args: { target_organization_id: string }
         Returns: undefined
       }
+      purge_ephemeral_pos_verification: {
+        Args: { target_organization_id: string }
+        Returns: undefined
+      }
       purge_ephemeral_procurement_verification: {
         Args: { target_organization_id: string }
         Returns: undefined
@@ -8913,6 +9849,32 @@ export type Database = {
       reconcile_inventory_balances: {
         Args: { rebuild?: boolean; target_organization_id: string }
         Returns: Json
+      }
+      record_pos_cash_event: {
+        Args: {
+          target_amount: number
+          target_event_type: string
+          target_organization_id: string
+          target_reason: string
+          target_session_id: string
+        }
+        Returns: string
+      }
+      record_pos_cash_refund: {
+        Args: {
+          target_organization_id: string
+          target_refund_id: string
+          target_session_id: string
+        }
+        Returns: string
+      }
+      record_pos_receipt_reprint: {
+        Args: {
+          target_organization_id: string
+          target_reason: string
+          target_sale_id: string
+        }
+        Returns: string
       }
       record_stock_count: {
         Args: {
@@ -9032,6 +9994,15 @@ export type Database = {
         }
         Returns: Json
       }
+      review_pos_session: {
+        Args: {
+          target_approve: boolean
+          target_notes: string
+          target_organization_id: string
+          target_session_id: string
+        }
+        Returns: undefined
+      }
       revoke_team_invitation: {
         Args: { target_invitation_id: string; target_organization_id: string }
         Returns: string
@@ -9126,6 +10097,32 @@ export type Database = {
           target_status: string
         }
         Returns: string
+      }
+      update_pos_settings: {
+        Args: {
+          target_allow_discounts: boolean
+          target_allow_walk_in: boolean
+          target_cash_variance_tolerance: number
+          target_discount_threshold_percent: number
+          target_hold_expiration_minutes: number
+          target_organization_id: string
+          target_require_customer: boolean
+          target_return_policy: string
+        }
+        Returns: undefined
+      }
+      update_pos_terminal: {
+        Args: {
+          target_cash_account_id: string
+          target_customer_id: string
+          target_name: string
+          target_organization_id: string
+          target_receipt_footer: string
+          target_receipt_width: string
+          target_status: string
+          target_terminal_id: string
+        }
+        Returns: undefined
       }
       update_sales_quotation: {
         Args: {

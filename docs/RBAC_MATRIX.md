@@ -43,3 +43,7 @@ Customer view/create/update, customer-credit management, quotation view/create/u
 ## Phase 5 Team and access permissions
 
 `team.view`, `team.invite`, `team.update`, and `team.suspend` separate directory visibility, invitations, role/branch assignment, and lifecycle control. `roles.view` permits inspection; `roles.manage` governs custom-role mutation. Actors may delegate only capabilities they hold. System Owner roles, self-modification, cross-tenant references, and the final active owner are protected in PostgreSQL.
+
+## Phase 7 POS permissions
+
+POS capabilities independently govern register access, sale completion, discount application/override, held carts, safe void/return/refund initiation, session open/close/review, cash in/out/drop, receipt reprint, terminal administration, and reports. Owner and Administrator receive all POS capabilities. Cashier receives the operational POS capabilities and the minimum Sales, Inventory, Catalogue, Customer, and Payment dependencies needed by atomic checkout. Branch access remains mandatory.
