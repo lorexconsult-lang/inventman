@@ -15,13 +15,29 @@ if (
   throw new Error(
     "Secure development credentials and explicit development confirmation are required.",
   );
-const url = `https://${ref}.supabase.co`,
+const retryFetch = async (input, init) => {
+    let lastError;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        const response = await fetch(input, init);
+        if (response.status < 500) return response;
+        lastError = new Error(`Hosted response ${response.status}`);
+      } catch (error) {
+        lastError = error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 400 * 2 ** attempt));
+    }
+    throw lastError;
+  },
+  url = `https://${ref}.supabase.co`,
   admin = createClient(url, secret, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: retryFetch },
   }),
   anon = () =>
     createClient(url, publishable, {
       auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: retryFetch },
     });
 if (process.env.CLEANUP_PHASE7 === "1") {
   const { data, error } = await admin
@@ -69,9 +85,14 @@ const rpc = async (name, args) => {
 };
 const cleanup = async () => {
   if (orgId) {
-    const { error } = await admin.rpc("purge_ephemeral_pos_verification", {
-      target_organization_id: orgId,
-    });
+    let error;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      ({ error } = await admin.rpc("purge_ephemeral_pos_verification", {
+        target_organization_id: orgId,
+      }));
+      if (!error) break;
+      await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+    }
     if (error) throw new Error(`Organization cleanup failed: ${error.message}`);
   }
   for (const id of [ownerId, outsiderId])
@@ -540,6 +561,13 @@ try {
     target_variance_reason: "",
   });
   ok(true, "21. Blind close balances session");
+  const offlineSessionId = await rpc("open_pos_session", {
+    target_organization_id: orgId,
+    target_terminal_id: terminalId,
+    target_opening_float: 50,
+    target_notes: "Offline verification session",
+  });
+  ok(Boolean(offlineSessionId), "22. Dedicated offline verification session opened");
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({
       viewport: { width: 1440, height: 1000 },
@@ -557,7 +585,7 @@ try {
     page.waitForURL(/dashboard/),
     page.getByRole("button", { name: "Sign in" }).click(),
   ]);
-  ok(page.url().includes("/dashboard"), "22. Owner authenticates in browser");
+  ok(page.url().includes("/dashboard"), "23. Owner authenticates in browser");
   const openPage = async (target) => {
     await page.goto(target);
     await page.waitForLoadState("networkidle");
@@ -565,7 +593,251 @@ try {
   await openPage("http://localhost:3100/dashboard/pos");
   ok(
     await page.getByRole("heading", { name: "Register" }).isVisible(),
-    "23. Register renders",
+    "24. Register renders",
+  );
+  await page.getByText("Offline Ready", { exact: true }).waitFor();
+  ok(true, "25. Required reference caches complete before Offline Ready");
+
+  const addCachedProduct = async () => {
+    const search = page.getByLabel("Scan barcode or search products");
+    await search.fill(`POS-${suffix}`);
+    await page.getByRole("button", { name: /POS Test Product/ }).first().click();
+  };
+  await page.context().setOffline(true);
+  await page.getByText("OFFLINE", { exact: true }).waitFor();
+  await addCachedProduct();
+  await page.getByRole("button", { name: "Hold cart" }).click();
+  await page.getByText("Cart held safely on this device.").waitFor();
+  const heldBeforeReload = await page.evaluate(async () => {
+    const request = indexedDB.open("inventman-offline");
+    const db = await new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    return await new Promise((resolve, reject) => {
+      const count = db.transaction("held_carts", "readonly").objectStore("held_carts").count();
+      count.onsuccess = () => resolve(count.result);
+      count.onerror = () => reject(count.error);
+    });
+  });
+  ok(heldBeforeReload === 1, "26. Held cart persists without posting");
+  await page.reload();
+  await page.getByRole("heading", { name: "You are offline" }).waitFor();
+  const heldAfterOfflineReload = await page.evaluate(async () => {
+    const request = indexedDB.open("inventman-offline");
+    const db = await new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    return await new Promise((resolve, reject) => {
+      const count = db.transaction("held_carts", "readonly").objectStore("held_carts").count();
+      count.onsuccess = () => resolve(count.result);
+      count.onerror = () => reject(count.error);
+    });
+  });
+  ok(heldAfterOfflineReload === 1, "27. Held cart survives an offline browser reload");
+  await page.context().setOffline(false);
+  await openPage("http://localhost:3100/dashboard/pos/receipts");
+  await openPage("http://localhost:3100/dashboard/pos");
+  await page.getByText("Offline Ready", { exact: true }).waitFor();
+  await page.getByText("Held carts (1)").click();
+  await page.getByRole("button", { name: /Held on this device/ }).click();
+  ok(await page.getByText("POS Test Product").first().isVisible(), "28. Held cart survives navigation and is recoverable");
+
+  await page.context().setOffline(true);
+  await page.getByText("OFFLINE", { exact: true }).waitFor();
+  const completeOfflineSale = async () => {
+    await page.getByRole("button", { name: "+ Add tender" }).click();
+    await page.locator("aside select").first().selectOption({ label: "Cash" });
+    await page.getByRole("button", { name: "Complete sale" }).click();
+    await page.getByText("Pending Sync", { exact: true }).waitFor();
+  };
+  await completeOfflineSale();
+  await addCachedProduct();
+  await page.getByRole("button", { name: /Add POS Test Product/ }).click();
+  await completeOfflineSale();
+  const queued = await page.evaluate(async () => {
+    const request = indexedDB.open("inventman-offline");
+    const db = await new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const rows = await new Promise((resolve, reject) => {
+      const get = db.transaction("sync_queue", "readonly").objectStore("sync_queue").getAll();
+      get.onsuccess = () => resolve(get.result);
+      get.onerror = () => reject(get.error);
+    });
+    return rows.map((row) => ({ local: row.localTransactionId, key: row.idempotencyKey, status: row.status }));
+  });
+  ok(
+    queued.length === 2 &&
+      new Set(queued.map((item) => item.local)).size === 2 &&
+      new Set(queued.map((item) => item.key)).size === 2 &&
+      queued.every((item) => item.status === "PENDING"),
+    "29. Two durable offline sales have unique references and ordered pending queue records",
+  );
+  await page.reload();
+  await page.getByRole("heading", { name: "You are offline" }).waitFor();
+  ok(await page.getByText("2 local queue records preserved on this device.").isVisible(), "30. Offline reload preserves queued receipts and transactions");
+  await page.context().setOffline(false);
+  await openPage("http://localhost:3100/dashboard/pos");
+  await page.waitForFunction(async () => {
+    const request = indexedDB.open("inventman-offline");
+    const db = await new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const rows = await new Promise((resolve, reject) => {
+      const get = db.transaction("sync_queue", "readonly").objectStore("sync_queue").getAll();
+      get.onsuccess = () => resolve(get.result);
+      get.onerror = () => reject(get.error);
+    });
+    return rows.length === 2 && rows.every((row) => row.status === "SYNCED");
+  });
+  const offlineSales = (
+    await admin
+      .from("pos_sales")
+      .select("id,local_transaction_id,inventory_transaction_id,receipt_number")
+      .eq("organization_id", orgId)
+      .eq("session_id", offlineSessionId)
+      .eq("originated_offline", true)
+  ).data;
+  ok(
+    offlineSales?.length === 2 && offlineSales.every((sale) => sale.inventory_transaction_id && sale.receipt_number),
+    "31. Reconnect reconciles exactly two server sales through Inventory and receipts",
+  );
+  const localTransactions = await page.evaluate(async () => {
+    const request = indexedDB.open("inventman-offline");
+    const db = await new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    return await new Promise((resolve, reject) => {
+      const get = db.transaction("offline_transactions", "readonly").objectStore("offline_transactions").getAll();
+      get.onsuccess = () => resolve(get.result);
+      get.onerror = () => reject(get.error);
+    });
+  });
+  const replayArgs = (transaction, overrides = {}) => ({
+    target_organization_id: transaction.organizationId,
+    target_device_id: transaction.deviceId,
+    target_local_transaction_id: transaction.localTransactionId,
+    target_local_created_at: transaction.localCreatedAt,
+    target_session_id: transaction.sessionId,
+    target_customer_id: transaction.payload.customerId,
+    target_lines: transaction.payload.lines,
+    target_settlements: transaction.payload.settlements,
+    target_customer_credit_amount: transaction.payload.customerCreditAmount,
+    target_cash_tendered: transaction.payload.cashTendered,
+    target_notes: transaction.payload.notes,
+    target_idempotency_key: transaction.idempotencyKey,
+    ...overrides,
+  });
+  const responseLossRetry = await rpc(
+    "replay_offline_pos_sale",
+    replayArgs(localTransactions[0]),
+  );
+  ok(
+    responseLossRetry.replayed === true &&
+      offlineSales.some((sale) => sale.id === responseLossRetry.pos_sale_id),
+    "32. Response-loss retry reconciles to the original server sale",
+  );
+  const payloadConflict = await owner.rpc(
+    "replay_offline_pos_sale",
+    replayArgs(localTransactions[0], {
+      target_lines: localTransactions[0].payload.lines.map((line) => ({
+        ...line,
+        quantity: line.quantity + 1,
+      })),
+    }),
+  );
+  ok(
+    payloadConflict.error?.message.includes("SYNC_IDEMPOTENCY_CONFLICT"),
+    "33. Reused local reference with changed payload is rejected",
+  );
+  const stockConflict = await owner.rpc(
+    "replay_offline_pos_sale",
+    replayArgs(localTransactions[0], {
+      target_local_transaction_id: crypto.randomUUID(),
+      target_idempotency_key: crypto.randomUUID(),
+      target_lines: localTransactions[0].payload.lines.map((line) => ({
+        ...line,
+        quantity: 10000,
+      })),
+      target_settlements: localTransactions[0].payload.settlements.map((settlement) => ({
+        ...settlement,
+        amount: 100000,
+        tendered_amount: 100000,
+      })),
+      target_cash_tendered: 100000,
+    }),
+  );
+  const stockConflictCount = await admin
+    .from("pos_sales")
+    .select("id", { count: "exact", head: true })
+    .eq("organization_id", orgId)
+    .eq("session_id", offlineSessionId);
+  if (
+    !["BACKORDER_NOT_ALLOWED", "INSUFFICIENT_STOCK"].some((code) =>
+      stockConflict.error?.message.includes(code),
+    ) ||
+    stockConflictCount.count !== 2
+  )
+    console.error("Stock conflict diagnostic", {
+      error: stockConflict.error?.message,
+      saleCount: stockConflictCount.count,
+      countError: stockConflictCount.error?.message,
+    });
+  ok(
+    ["BACKORDER_NOT_ALLOWED", "INSUFFICIENT_STOCK"].some((code) =>
+      stockConflict.error?.message.includes(code),
+    ) &&
+      stockConflictCount.count === 2,
+    "34. Stock conflict leaves no partial or duplicate server sale",
+  );
+  const deviceId = localTransactions[0].deviceId;
+  await admin.from("offline_devices").update({ status: "REVOKED" }).eq("id", deviceId);
+  const revokedDevice = await owner.rpc(
+    "replay_offline_pos_sale",
+    replayArgs(localTransactions[0], {
+      target_local_transaction_id: crypto.randomUUID(),
+      target_idempotency_key: crypto.randomUUID(),
+    }),
+  );
+  ok(
+    revokedDevice.error?.message.includes("SYNC_TERMINAL_REVOKED"),
+    "35. Revoked device cannot replay queued work",
+  );
+  await admin.from("offline_devices").update({ status: "ACTIVE", revoked_at: null, revoked_by: null }).eq("id", deviceId);
+  await admin.from("organization_members").update({ status: "suspended", suspended_at: new Date().toISOString(), suspension_reason: "Offline verification" }).eq("organization_id", orgId).eq("user_id", ownerId);
+  const suspendedUser = await owner.rpc(
+    "replay_offline_pos_sale",
+    replayArgs(localTransactions[0], {
+      target_local_transaction_id: crypto.randomUUID(),
+      target_idempotency_key: crypto.randomUUID(),
+    }),
+  );
+  ok(Boolean(suspendedUser.error), "36. Current server suspension overrides cached permissions");
+  await admin.from("organization_members").update({ status: "active", suspended_at: null, suspension_reason: null }).eq("organization_id", orgId).eq("user_id", ownerId);
+  consoleErrors.length = 0;
+  failed.length = 0;
+  await rpc("close_pos_session", {
+    target_organization_id: orgId,
+    target_session_id: offlineSessionId,
+    target_counted_cash: 80,
+    target_notes: "Offline verification balanced",
+    target_variance_reason: "",
+  });
+  const closedSession = await owner.rpc(
+    "replay_offline_pos_sale",
+    replayArgs(localTransactions[0], {
+      target_local_transaction_id: crypto.randomUUID(),
+      target_idempotency_key: crypto.randomUUID(),
+    }),
+  );
+  ok(
+    closedSession.error?.message.includes("SYNC_SESSION_INVALID"),
+    "37. Closed original session is not silently replaced",
   );
   await openPage("http://localhost:3100/dashboard/pos/receipts");
   ok(
@@ -610,6 +882,9 @@ try {
   await page.waitForURL(/auth\/login/);
   ok(true, "31. Owner logs out");
   console.log("AUTHENTICATED POS WORKFLOW: PASS");
+} catch (error) {
+  console.error("POS workflow failure before cleanup:", error);
+  throw error;
 } finally {
   if (browser) await browser.close();
   await cleanup();

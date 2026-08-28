@@ -53,3 +53,14 @@
 - Added a development-only, fail-closed Admin API utility that provisions confirmed ephemeral users, runs real password/session/onboarding/logout and authenticated tenant-boundary checks, and always cleans up its fixtures.
 - Completed the application-controlled authentication foundation gate without weakening production email confirmation.
 - Split application foundation readiness from the pre-production communication gate and documented custom Supabase SMTP requirements.
+# Phase 8 — Offline PWA and sync engine
+
+- Added an installable Inventman PWA with explicit safe caching and offline fallback.
+- Added versioned Dexie reference caches, held carts, durable offline transactions, queue history, results, and conflicts.
+- Added tenant/branch/terminal-bound device registration and revocation.
+- Added conservative offline POS cash checkout and pending local receipts.
+- Added deterministic replay through the existing POS/Sales/Inventory/Payments orchestration with idempotent receipt reconciliation.
+- Added sync status, manual/automatic replay, multi-tab locking, backoff, and Offline & Sync administration.
+- Added seven synchronized database migrations, refreshed generated types, 13 unit assertions, and 31 database assertions.
+- Verified durable held-cart recovery, two-sale offline browser replay, all 350 hosted pgTAP assertions, and guarded POS/payment fixture cleanup ordering.
+- Kept production custom SMTP, redirect allowlists, and delivery monitoring as release prerequisites.

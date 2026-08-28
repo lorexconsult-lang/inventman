@@ -23,3 +23,6 @@ All exposed POS tables use forced RLS. Direct authenticated writes are revoked; 
 ## Deferred boundaries
 
 Phase 7 does not include offline queues, payment gateways, card processing, cash drawers/printers, bank reconciliation, General Ledger, expenses, subscriptions, or accounting close. Receipts use browser printing. Operational till and settlement totals are not accounting cash balances.
+# Offline POS
+
+An authenticated cashier with a previously cached active terminal/session can record a policy-approved immediate-settlement sale offline. The browser commits an immutable transaction and queue item before showing a pending receipt. Reconnect uses `replay_offline_pos_sale`, which revalidates current access and calls `post_pos_sale`. Offline refunds and authoritative returns remain disabled.

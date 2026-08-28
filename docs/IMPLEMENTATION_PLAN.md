@@ -131,3 +131,6 @@ POS, gateways, bank APIs/reconciliation, General Ledger, expenses, subscriptions
 | Verification | PASS | 42 new Phase 7 pgTAP assertions bring the hosted total to 319; 46 unit tests, 4 baseline Playwright tests, the 34-check authenticated POS workflow, Sales/Team regressions, lint, typecheck, build, and public-schema database lint pass. |
 
 Offline POS, gateways/card processing, peripheral integrations, bank reconciliation, General Ledger, expenses, subscriptions, and PWA remain deferred.
+# Phase 8 — Offline-first PWA and POS sync
+
+Complete and verified: installable manifest and safe service worker, Dexie v3 scoped cache/queue, durable held carts and offline cash sale receipts, device registration/revocation, explicit replay through POS, retry/locking/conflicts/reconciliation UI, 13 new Vitest assertions, and 31 new pgTAP assertions. All 69 hosted migrations and generated types are synchronized; all 350 hosted assertions and the authenticated two-sale offline browser workflow pass. Production SMTP remains a release prerequisite.

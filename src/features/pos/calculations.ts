@@ -7,6 +7,9 @@ export type PosLine = {
   unitPrice: number;
   taxRate: number;
   discount: number;
+  /** Last-known device snapshot fields. Never authoritative on the server. */
+  availableBase?: number;
+  conversion?: number;
 };
 
 export type PosSettlement = {

@@ -59,3 +59,6 @@ The HTTP-only organization cookie is only a requested context; every workspace r
 ## POS security boundary
 
 POS tables are read through branch- and capability-aware forced RLS; direct authenticated mutation is revoked. Terminal, session, held-cart, checkout, cash-event, refund-event, and reprint functions authenticate, validate capability and branch scope, lock mutable state, use tenant-bound references, and audit actions. Checkout never accepts browser organization, price override, stock balance, paid status, or customer exposure as authoritative. Full card numbers, CVV, PIN, and magnetic-stripe data are not represented.
+# Offline security boundary
+
+Device UUIDs and cached permission snapshots cannot authorize server work. Replay rechecks the authenticated user, membership capabilities, branch, terminal, device, session, products, pricing, stock, customer, and tenders. RLS scopes device and sync-event reads. Cache Storage excludes API/auth responses, and IndexedDB deliberately stores no credentials or card secrets.

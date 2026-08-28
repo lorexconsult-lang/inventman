@@ -67,3 +67,6 @@ Payment allocation, POS, Finance, and independent manual Credit Notes remain out
 ## POS consumer
 
 Phase 7 POS consumes the same Sales Order, confirmation/reservation, fulfilment, invoice, return, Credit Note, and activity functions. POS adds terminal/session context and a receipt link but does not create a parallel sale document or inventory mutation path. Named-customer pay-later checkout remains ordinary receivables and uses the existing credit checks.
+# Offline-originated sales
+
+An offline record becomes a financial sale only after replay reaches the existing POS/Sales orchestration. The server sale is reported exactly once and retains device, local reference, local creation time, server receipt time, and replay hash for support lookup.

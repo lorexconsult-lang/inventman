@@ -47,3 +47,14 @@ Customer view/create/update, customer-credit management, quotation view/create/u
 ## Phase 7 POS permissions
 
 POS capabilities independently govern register access, sale completion, discount application/override, held carts, safe void/return/refund initiation, session open/close/review, cash in/out/drop, receipt reprint, terminal administration, and reports. Owner and Administrator receive all POS capabilities. Cashier receives the operational POS capabilities and the minimum Sales, Inventory, Catalogue, Customer, and Payment dependencies needed by atomic checkout. Branch access remains mandatory.
+# Offline capabilities
+
+| Capability | Owner/Admin | Cashier | Purpose |
+| --- | --- | --- | --- |
+| `offline.use` | Yes | Yes | Prepare and use approved offline POS |
+| `offline.sync` | Yes | Yes | Replay the device queue |
+| `offline.conflicts.view` | Yes | Yes | Inspect own/authorized conflicts |
+| `offline.conflicts.resolve` | Yes | No | Controlled resolution authority |
+| `offline.devices.view` | Yes | No | Inspect registered devices |
+| `offline.devices.manage` | Yes | No | Rename or revoke devices |
+| `offline.settings.manage` | Yes | No | Change offline risk policy |

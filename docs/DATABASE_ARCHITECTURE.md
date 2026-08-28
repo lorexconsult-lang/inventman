@@ -37,3 +37,6 @@ Procurement documents use composite organization foreign keys and tenant-safe co
 ## POS orchestration
 
 `pos_terminals`, `pos_sessions`, `pos_held_carts`, `pos_sales`, `pos_sale_settlements`, `pos_cash_events`, and `pos_receipt_reprints` hold operational POS context and immutable links. `post_pos_sale` composes existing Sales, Inventory, invoice, and Payment RPCs inside one transaction. POS totals do not replace ledger, AR, or settlement truth. Forced RLS and tenant-composite references protect every exposed POS record.
+# Phase 8 offline support
+
+Migrations `20260831200000` through `20260831206000` add tenant-bound offline devices, sparse sync audit events, POS origin metadata, explicit replay/device/settings RPCs, RLS, offline capabilities, strict idempotency-key reuse checks, and guarded ephemeral verification cleanup. Replay delegates to `post_pos_sale`; it does not introduce another ledger. Local and hosted history are synchronized at 69 migrations.

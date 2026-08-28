@@ -58,3 +58,6 @@ The administration surface manages existing memberships, roles, capabilities, in
 ## Phase 7 point of sale
 
 The POS application is a branch-scoped orchestration surface over Sales, Inventory, Receivables, and Payments. Terminal sessions and till events add operational cashier control, while checkout reuses existing authoritative document, ledger, allocation, credit, return, and refund paths. See `POS_ARCHITECTURE.md`.
+# Phase 8 offline continuity
+
+The installable PWA adds conservative offline POS continuity. IndexedDB holds scoped reference snapshots and immutable queued sale intent; the existing server modules remain the sole business engines. See `OFFLINE_SYNC_ARCHITECTURE.md`.

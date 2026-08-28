@@ -44,6 +44,8 @@ export default async function PosPage({
         success={query.held ? "Cart held safely." : undefined}
       />
       <PosRegister
+        organizationId={data.organization.id}
+        userId={data.user.id}
         terminals={data.terminals}
         sessions={data.sessions}
         customers={data.customers}

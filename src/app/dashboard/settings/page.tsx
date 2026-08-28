@@ -34,6 +34,11 @@ export default async function SettingsPage() {
           title="Point of sale"
           text="Configure terminals, walk-in sales, receipts and till controls."
         />
+        <Card
+          href="/dashboard/settings/offline"
+          title="Offline & Sync"
+          text="Inspect device readiness, queued sales, conflicts, and synchronization policy."
+        />
       </div>
     </>
   );

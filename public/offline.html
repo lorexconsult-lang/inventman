@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#24483b" />
+    <title>Inventman — Offline</title>
+    <style>
+      :root{font-family:system-ui,sans-serif;color:#18352c;background:#f7f7f3}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px}.card{max-width:520px;border:1px solid #d8ddd9;border-radius:24px;background:#fff;padding:32px;box-shadow:0 18px 50px #18352c14}.logo{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:#24483b;color:#fff;font-weight:900}h1{margin:24px 0 8px;font-size:28px}p{line-height:1.55;color:#567067}.status{margin:20px 0;padding:14px;border-radius:12px;background:#f2ede0;font-weight:650}button{border:0;border-radius:10px;background:#24483b;color:#fff;padding:12px 16px;font-weight:700;cursor:pointer}
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="logo">I</div>
+      <h1>You are offline</h1>
+      <p>The secure application shell cannot contact the server. Any sale already saved on this device remains in IndexedDB and will not be discarded.</p>
+      <div class="status" id="queue">Checking this device’s queue…</div>
+      <button onclick="location.reload()">Try again</button>
+    </main>
+    <script>
+      const request=indexedDB.open('inventman-offline');request.onsuccess=()=>{const db=request.result;if(!db.objectStoreNames.contains('sync_queue'))return;const tx=db.transaction('sync_queue','readonly');const count=tx.objectStore('sync_queue').count();count.onsuccess=()=>{document.querySelector('#queue').textContent=count.result?`${count.result} local queue record${count.result===1?'':'s'} preserved on this device.`:'No local queue records were found.'}};request.onerror=()=>{document.querySelector('#queue').textContent='Offline storage could not be inspected. Do not clear browser data.'}
+    </script>
+  </body>
+</html>

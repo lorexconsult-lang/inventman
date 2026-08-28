@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { LogOut } from "lucide-react";
 import { appConfig } from "@/config/app";
-import { logout } from "@/features/auth/actions";
-import { switchOrganization } from "@/features/organizations/actions";
+import { OfflineStatus } from "@/features/offline/components/offline-status";
+import { PwaRegistration } from "@/features/offline/components/pwa-registration";
+import { WorkspaceControls } from "./workspace-controls";
 import { WorkspaceNavigation } from "./workspace-navigation";
 
 type Organization = { id: string; name: string; status: string };
@@ -31,42 +31,15 @@ export function AppShell({
           </span>
           <span className="hidden sm:inline">{appConfig.name}</span>
         </Link>
-        <div className="flex min-w-0 items-center gap-2 text-sm">
-          <form action={switchOrganization}>
-            <label className="sr-only" htmlFor="workspace-switcher">
-              Current organization
-            </label>
-            <select
-              id="workspace-switcher"
-              name="organizationId"
-              defaultValue={organization.id}
-              className="max-w-44 rounded-lg border bg-surface px-3 py-2 text-sm"
-              title="Select organization"
-            >
-              {organizations.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-            <button className="ml-1 rounded-lg border px-3 py-2 text-xs font-semibold">
-              Switch
-            </button>
-          </form>
-          <span
-            className="hidden size-2 rounded-full bg-positive sm:inline"
-            aria-label="Online"
+        <div className="flex min-w-0 items-center gap-1">
+          <OfflineStatus
+            organizationId={organization.id}
+            canSync={permissions.includes("offline.sync")}
           />
-          <form action={logout}>
-            <button
-              aria-label="Sign out"
-              className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 hover:bg-muted hover:text-ink"
-              type="submit"
-            >
-              <LogOut className="size-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Sign out</span>
-            </button>
-          </form>
+          <WorkspaceControls
+            organization={organization}
+            organizations={organizations}
+          />
         </div>
       </header>
       <div className="mx-auto grid max-w-[1600px] md:grid-cols-[240px_1fr]">
@@ -76,6 +49,7 @@ export function AppShell({
         </main>
       </div>
       <WorkspaceNavigation permissions={permissions} mode="mobile" />
+      <PwaRegistration />
     </div>
   );
 }

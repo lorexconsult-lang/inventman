@@ -45,3 +45,6 @@ Negative stock defaults to DISALLOW. Override needs configuration, explicit capa
 ## Future integrations
 
 Procurement, Sales/POS, Returns, Production, and Offline Sync must call the same posting boundary with reference and idempotency metadata. Offline clients submit business events, never absolute balances. Nullable lot, serial, and expiry extension keys preserve room for later batch/IMEI/FEFO workflows without implementing them prematurely.
+# Offline stock snapshots
+
+Offline POS caches last-known branch availability only for cashier guidance. It subtracts this device's unsynced sale intent but never writes balances, costing layers, WAC, or FIFO. The server inventory posting inside POS checkout remains authoritative and can reject a conflicting replay.

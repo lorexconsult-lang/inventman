@@ -1,6 +1,14 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CreditCard, Minus, Pause, Plus, ScanLine, Trash2 } from "lucide-react";
+import {
+  CloudOff,
+  CreditCard,
+  Minus,
+  Pause,
+  Plus,
+  ScanLine,
+  Trash2,
+} from "lucide-react";
 import { completeSale, holdCart, openSession } from "@/features/pos/actions";
 import {
   cartTotals,
@@ -8,6 +16,16 @@ import {
   type PosSettlement,
 } from "@/features/pos/calculations";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
+import {
+  cacheBootstrap,
+  getOfflineReadiness,
+  searchCachedProducts,
+  type OfflineBootstrap,
+} from "@/features/offline/cache";
+import { offlineDb, offlineScope } from "@/features/offline/db";
+import { persistOfflineSale } from "@/features/offline/queue";
+import { processSyncQueue, verifyConnectivity } from "@/features/offline/sync";
 
 type Terminal = {
   id: string;
@@ -61,6 +79,8 @@ type SearchItem = {
 };
 
 export function PosRegister({
+  organizationId,
+  userId,
   terminals,
   sessions,
   customers,
@@ -71,6 +91,8 @@ export function PosRegister({
   currency,
   checkoutKey,
 }: {
+  organizationId: string;
+  userId: string;
   terminals: Terminal[];
   sessions: { id: string; terminal_id: string; session_number: string }[];
   customers: Customer[];
@@ -104,23 +126,148 @@ export function PosRegister({
   const [storeCreditAmount, setStoreCreditAmount] = useState(0);
   const [heldCartId, setHeldCartId] = useState("");
   const [busy, setBusy] = useState(false);
+  const [online, setOnline] = useState(true);
+  const [offlineReady, setOfflineReady] = useState(false);
+  const [offlineReasons, setOfflineReasons] = useState<string[]>([]);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string>();
+  const [offlineDeviceId, setOfflineDeviceId] = useState<string>();
+  const [offlinePolicy, setOfflinePolicy] = useState({
+    creditAllowed: false,
+    cardAllowed: false,
+    transferAllowed: false,
+  });
+  const [localReceipt, setLocalReceipt] = useState<{
+    number: string;
+    transactionId: string;
+  }>();
+  const [offlineMessage, setOfflineMessage] = useState<string>();
+  const [localHeld, setLocalHeld] = useState<
+    Array<{
+      cacheKey: string;
+      payload: {
+        id: string;
+        sessionId: string;
+        customerId: string;
+        cart: PosLine[];
+        status: string;
+      };
+    }>
+  >([]);
+  const [resumedLocalHeldKey, setResumedLocalHeldKey] = useState("");
   const input = useRef<HTMLInputElement>(null);
+  const onlineSubmit = useRef(false);
   const totals = useMemo(() => cartTotals(lines), [lines]);
+  const scopeKey = terminal
+    ? offlineScope(organizationId, terminal.branch_id, terminal.id)
+    : "";
+
+  useEffect(() => {
+    if (!terminal || !activeSession || !scopeKey) return;
+    let active = true;
+    const prepare = async () => {
+      const connected = await verifyConnectivity();
+      if (active) setOnline(connected);
+      if (connected) {
+        try {
+          const response = await fetch(
+            `/dashboard/pos/offline/bootstrap?terminalId=${terminal.id}`,
+            { cache: "no-store" },
+          );
+          if (!response.ok) throw new Error("OFFLINE_CACHE_NOT_READY");
+          const bootstrap = (await response.json()) as OfflineBootstrap;
+          const local = await cacheBootstrap(bootstrap);
+          const client = createClient();
+          const { data, error } = await client.rpc(
+            "register_offline_device" as never,
+            {
+              target_organization_id: organizationId,
+              target_branch_id: terminal.branch_id,
+              target_terminal_id: terminal.id,
+              target_device_identifier: local.deviceIdentifier,
+              target_label: `${navigator.platform || "Browser"} · ${terminal.name}`,
+              target_app_version: bootstrap.appVersion,
+            } as never,
+          );
+          if (error || typeof data !== "string") throw error ?? new Error("OFFLINE_DEVICE_INVALID");
+          await offlineDb().app_meta.put({
+            key: `device:${scopeKey}`,
+            value: data,
+            updatedAt: bootstrap.syncedAt,
+          });
+          if (active) {
+            setOfflineDeviceId(data);
+            setOfflinePolicy({
+              creditAllowed: bootstrap.settings.creditAllowed,
+              cardAllowed: bootstrap.settings.cardAllowed,
+              transferAllowed: bootstrap.settings.transferAllowed,
+            });
+            setLastSyncedAt(bootstrap.syncedAt);
+          }
+          await processSyncQueue(scopeKey);
+        } catch {
+          if (active) setOfflineMessage("Offline cache refresh failed. Existing durable data was preserved.");
+        }
+      } else {
+        const device = await offlineDb().app_meta.get(`device:${scopeKey}`);
+        if (active && typeof device?.value === "string") setOfflineDeviceId(device.value);
+      }
+      const readiness = await getOfflineReadiness(scopeKey);
+      const localCarts = await offlineDb().held_carts
+        .where("scopeKey")
+        .equals(scopeKey)
+        .toArray();
+      if (active) {
+        setOfflineReady(readiness.ready);
+        setOfflineReasons(readiness.reasons);
+        setLastSyncedAt(readiness.lastSyncedAt);
+        setLocalHeld(
+          localCarts.map((cart) => ({
+            cacheKey: cart.cacheKey,
+            payload: cart.payload as {
+              id: string;
+              sessionId: string;
+              customerId: string;
+              cart: PosLine[];
+              status: string;
+            },
+          })),
+        );
+      }
+    };
+    void prepare();
+    const connected = () => void prepare();
+    const disconnected = () => setOnline(false);
+    window.addEventListener("online", connected);
+    window.addEventListener("offline", disconnected);
+    return () => {
+      active = false;
+      window.removeEventListener("online", connected);
+      window.removeEventListener("offline", disconnected);
+    };
+  }, [activeSession, organizationId, scopeKey, terminal]);
+
   useEffect(() => {
     if (query.trim().length < 2) return;
     const controller = new AbortController();
     const timer = setTimeout(async () => {
-      const response = await fetch(
-        `/dashboard/pos/products/search?q=${encodeURIComponent(query)}&branchId=${terminal?.branch_id ?? ""}&customerId=${customerId}`,
-        { signal: controller.signal },
-      );
-      if (response.ok) setResults((await response.json()) as SearchItem[]);
+      try {
+        if (!online) throw new Error("OFFLINE");
+        const response = await fetch(
+          `/dashboard/pos/products/search?q=${encodeURIComponent(query)}&branchId=${terminal?.branch_id ?? ""}&customerId=${customerId}`,
+          { signal: controller.signal },
+        );
+        if (!response.ok) throw new Error("SEARCH_FAILED");
+        setResults((await response.json()) as SearchItem[]);
+      } catch (error) {
+        if ((error as Error).name !== "AbortError" && scopeKey)
+          setResults((await searchCachedProducts(scopeKey, query)) as SearchItem[]);
+      }
     }, 180);
     return () => {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [query, terminal?.branch_id, customerId]);
+  }, [query, terminal?.branch_id, customerId, online, scopeKey]);
   const add = (item: SearchItem) => {
     setLines((current) => {
       const found = current.find(
@@ -248,6 +395,143 @@ export function PosRegister({
   const availableCredits = credits.filter(
     (item) => item.customer_id === customerId && item.currency === currency,
   );
+  const serializedSettlements = settlements.map((item) => ({
+    source_type: item.sourceType,
+    payment_method_id: item.paymentMethodId,
+    account_id: item.accountId,
+    source_id: item.sourceId,
+    amount: item.amount,
+    tendered_amount: item.tenderedAmount,
+    reference: item.reference,
+  }));
+  const saveOfflineSale = async () => {
+    if (!offlineReady || !offlineDeviceId || !scopeKey) {
+      setOfflineMessage(
+        offlineReasons[0] ?? "This device is not ready for offline sales.",
+      );
+      return false;
+    }
+    if (credit > 0 && !offlinePolicy.creditAllowed) {
+      setOfflineMessage("Customer credit is online-only for this organization.");
+      return false;
+    }
+    if (storeCreditAmount > 0) {
+      setOfflineMessage("Store and unapplied credit require an online balance check.");
+      return false;
+    }
+    for (const payment of payments.filter((item) => item.amount > 0)) {
+      const method = methods.find((item) => item.id === payment.methodId);
+      const allowed =
+        method?.method_type === "CASH" ||
+        (method?.method_type === "CARD" && offlinePolicy.cardAllowed) ||
+        (method?.method_type === "BANK_TRANSFER" &&
+          offlinePolicy.transferAllowed);
+      if (!allowed) {
+        setOfflineMessage(`${method?.name ?? "This payment method"} is online-only.`);
+        return false;
+      }
+    }
+    const insufficient = lines.find(
+      (line) =>
+        line.quantity * (line.conversion ?? 1) > (line.availableBase ?? 0),
+    );
+    if (insufficient) {
+      setOfflineMessage(
+        `${insufficient.label} exceeds the last-synced local stock snapshot.`,
+      );
+      return false;
+    }
+    try {
+      const saved = await persistOfflineSale({
+        scopeKey,
+        organizationId,
+        branchId: terminal.branch_id,
+        terminalId: terminal.id,
+        cashierUserId: userId,
+        sessionId: activeSession.id,
+        deviceId: offlineDeviceId,
+        payload: {
+          organizationId,
+          branchId: terminal.branch_id,
+          terminalId: terminal.id,
+          sessionId: activeSession.id,
+          customerId,
+          lines: linesPayload,
+          settlements: serializedSettlements.map((item) => ({
+            source_type: "PAYMENT" as const,
+            payment_method_id: item.payment_method_id ?? "",
+            account_id: item.account_id,
+            amount: item.amount,
+            tendered_amount: item.tendered_amount,
+            reference: item.reference,
+          })),
+          customerCreditAmount: credit,
+          cashTendered: payments.reduce(
+            (sum, payment) => sum + payment.tendered,
+            0,
+          ),
+          notes: "Offline POS checkout",
+        },
+      });
+      if (resumedLocalHeldKey) {
+        await offlineDb().held_carts.delete(resumedLocalHeldKey);
+        setLocalHeld((current) =>
+          current.filter((cart) => cart.cacheKey !== resumedLocalHeldKey),
+        );
+        setResumedLocalHeldKey("");
+      }
+      setLocalReceipt({
+        number: saved.localReceiptNumber,
+        transactionId: saved.localTransactionId,
+      });
+      setLines([]);
+      setPayments([]);
+      setCredit(0);
+      setStoreCreditAmount(0);
+      setOfflineMessage(undefined);
+      const registration = await navigator.serviceWorker?.ready;
+      const syncManager = (
+        registration as ServiceWorkerRegistration & {
+          sync?: { register(tag: string): Promise<void> };
+        }
+      )?.sync;
+      await syncManager?.register("inventman-offline-sync").catch(() => undefined);
+      window.dispatchEvent(new Event("inventman:queue-updated"));
+      return true;
+    } catch {
+      setOfflineMessage(
+        "The sale was not safely written to offline storage. No receipt was issued.",
+      );
+      return false;
+    }
+  };
+  const saveHeldCartOffline = async () => {
+    if (!scopeKey || !offlineReady || !lines.length) return false;
+    const id = crypto.randomUUID();
+    const record = {
+      cacheKey: `${scopeKey}:held:${id}`,
+      scopeKey,
+      organizationId,
+      branchId: terminal.branch_id,
+      terminalId: terminal.id,
+      payload: {
+        id,
+        sessionId: activeSession.id,
+        customerId,
+        cart: lines,
+        status: "HELD",
+      },
+      syncedAt: new Date().toISOString(),
+    };
+    await offlineDb().held_carts.put(record);
+    setLines([]);
+    setLocalHeld((current) => [
+      ...current,
+      { cacheKey: record.cacheKey, payload: record.payload },
+    ]);
+    setOfflineMessage("Cart held safely on this device. It is not a posted sale.");
+    return true;
+  };
   return (
     <div className="grid min-h-[calc(100dvh-9rem)] gap-4 xl:grid-cols-[1.25fr_.75fr]">
       <section className="min-w-0 rounded-2xl border bg-surface p-4 sm:p-5">
@@ -270,6 +554,16 @@ export function PosRegister({
               </option>
             ))}
           </select>
+        </div>
+        <div
+          className={`mt-3 flex flex-wrap items-center gap-2 rounded-xl p-3 text-xs font-semibold ${online ? "bg-positive-soft" : "bg-warning-soft"}`}
+          role="status"
+        >
+          {online ? <span>ONLINE</span> : <><CloudOff className="size-4" /><span>OFFLINE</span></>}
+          <span>{offlineReady ? "Offline Ready" : "Offline Not Ready"}</span>
+          {lastSyncedAt ? (
+            <span className="font-normal">Last synced {new Date(lastSyncedAt).toLocaleString()}</span>
+          ) : null}
         </div>
         <div className="relative mt-4">
           <ScanLine className="absolute left-3 top-3.5 size-5 text-subtle" />
@@ -602,7 +896,17 @@ export function PosRegister({
             Remaining: {currency} {remaining.toLocaleString()}
           </p>
         </div>
-        <form action={holdCart} className="mt-4">
+        <form
+          action={holdCart}
+          className="mt-4"
+          onSubmit={(event) => {
+            if (online) return;
+            event.preventDefault();
+            void saveHeldCartOffline().catch(() =>
+              setOfflineMessage("Offline storage unavailable. The cart was not held."),
+            );
+          }}
+        >
           <input type="hidden" name="sessionId" value={activeSession.id} />
           <input type="hidden" name="customerId" value={customerId} />
           <input type="hidden" name="cart" value={JSON.stringify(lines)} />
@@ -619,7 +923,26 @@ export function PosRegister({
         </form>
         <form
           action={completeSale}
-          onSubmit={() => setBusy(true)}
+          onSubmit={(event) => {
+            if (onlineSubmit.current) {
+              onlineSubmit.current = false;
+              setBusy(true);
+              return;
+            }
+            event.preventDefault();
+            const form = event.currentTarget;
+            setBusy(true);
+            void verifyConnectivity().then(async (connected) => {
+              setOnline(connected);
+              if (connected) {
+                onlineSubmit.current = true;
+                form.requestSubmit();
+                return;
+              }
+              await saveOfflineSale();
+              setBusy(false);
+            });
+          }}
           className="mt-3"
         >
           <input type="hidden" name="sessionId" value={activeSession.id} />
@@ -660,10 +983,23 @@ export function PosRegister({
             {busy ? "Completing sale…" : "Complete sale"}
           </Button>
         </form>
-        {held.length > 0 && (
+        {offlineMessage ? (
+          <p className="mt-3 rounded-xl bg-warning-soft p-3 text-sm" role="alert">
+            {offlineMessage}
+          </p>
+        ) : null}
+        {localReceipt ? (
+          <section className="mt-3 rounded-xl border border-dashed p-4" aria-label="Local receipt">
+            <p className="text-xs font-bold uppercase tracking-wide text-warning">Pending Sync</p>
+            <h3 className="mt-1 font-mono font-semibold">{localReceipt.number}</h3>
+            <p className="mt-1 text-xs text-subtle">Local reference {localReceipt.transactionId}</p>
+            <p className="mt-2 text-sm">Cash sale recorded durably on this device.</p>
+          </section>
+        ) : null}
+        {held.length + localHeld.length > 0 && (
           <details className="mt-5 border-t pt-4">
             <summary className="cursor-pointer text-sm font-semibold">
-              Held carts ({held.length})
+              Held carts ({held.length + localHeld.length})
             </summary>
             <div className="mt-3 space-y-2">
               {held
@@ -684,6 +1020,22 @@ export function PosRegister({
                   >
                     {Array.isArray(cart.cart) ? cart.cart.length : 0} items ·{" "}
                     {cart.notes ?? "Held sale"}
+                  </button>
+                ))}
+              {localHeld
+                .filter((cart) => cart.payload.sessionId === activeSession.id)
+                .map((cart) => (
+                  <button
+                    key={cart.cacheKey}
+                    onClick={() => {
+                      setLines(cart.payload.cart);
+                      setCustomerId(cart.payload.customerId || customerId);
+                      setHeldCartId("");
+                      setResumedLocalHeldKey(cart.cacheKey);
+                    }}
+                    className="w-full rounded-lg border border-warning p-3 text-left text-sm"
+                  >
+                    {cart.payload.cart.length} items · Held on this device
                   </button>
                 ))}
             </div>

@@ -44,6 +44,12 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
         >
           Payments
         </Link>
+        <Link
+          className="whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-muted"
+          href="/dashboard/settings/offline"
+        >
+          Offline & Sync
+        </Link>
       </nav>
       {children}
     </div>

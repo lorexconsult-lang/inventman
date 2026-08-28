@@ -21,3 +21,6 @@ Exchange-rate snapshots are retained, but realized FX is deferred to Finance. Ac
 ## POS consumer
 
 POS split tender creates ordinary customer payments through `post_customer_payment`, with one allocation to the issued POS invoice per tender. Cash, card-clearing, transfer, and mobile-money remain configured methods/accounts. Existing unapplied payments and Credit Notes can settle a POS invoice as non-cash credit; a pay-later remainder stays in AR. No card secrets or gateway confirmations are stored, and till totals are operational rather than General Ledger balances.
+# Offline tender boundary
+
+Cash is the default offline tender. Card and transfer records require explicit policy and remain unverified metadata; customer/store credit defaults to online-only. Replay revalidates active payment methods and the existing settlement engine creates authoritative payment and till effects exactly once.

@@ -2646,6 +2646,149 @@ export type Database = {
           },
         ]
       }
+      offline_devices: {
+        Row: {
+          app_version: string
+          branch_id: string
+          device_identifier: string
+          first_seen_at: string
+          id: string
+          label: string
+          last_seen_at: string
+          last_successful_sync_at: string | null
+          organization_id: string
+          registered_by: string
+          revoked_at: string | null
+          revoked_by: string | null
+          status: string
+          terminal_id: string
+          updated_at: string
+        }
+        Insert: {
+          app_version: string
+          branch_id: string
+          device_identifier: string
+          first_seen_at?: string
+          id?: string
+          label: string
+          last_seen_at?: string
+          last_successful_sync_at?: string | null
+          organization_id: string
+          registered_by: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          status?: string
+          terminal_id: string
+          updated_at?: string
+        }
+        Update: {
+          app_version?: string
+          branch_id?: string
+          device_identifier?: string
+          first_seen_at?: string
+          id?: string
+          label?: string
+          last_seen_at?: string
+          last_successful_sync_at?: string | null
+          organization_id?: string
+          registered_by?: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          status?: string
+          terminal_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offline_devices_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "offline_devices_organization_id_terminal_id_fkey"
+            columns: ["organization_id", "terminal_id"]
+            isOneToOne: false
+            referencedRelation: "pos_terminals"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      offline_sync_events: {
+        Row: {
+          actor_id: string
+          attempted_at: string
+          branch_id: string
+          device_id: string
+          error_code: string | null
+          id: string
+          local_transaction_id: string | null
+          metadata: Json
+          operation_type: string
+          organization_id: string
+          server_sale_id: string | null
+          status: string
+        }
+        Insert: {
+          actor_id: string
+          attempted_at?: string
+          branch_id: string
+          device_id: string
+          error_code?: string | null
+          id?: string
+          local_transaction_id?: string | null
+          metadata?: Json
+          operation_type: string
+          organization_id: string
+          server_sale_id?: string | null
+          status: string
+        }
+        Update: {
+          actor_id?: string
+          attempted_at?: string
+          branch_id?: string
+          device_id?: string
+          error_code?: string | null
+          id?: string
+          local_transaction_id?: string | null
+          metadata?: Json
+          operation_type?: string
+          organization_id?: string
+          server_sale_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offline_sync_events_organization_id_branch_id_fkey"
+            columns: ["organization_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "offline_sync_events_organization_id_device_id_fkey"
+            columns: ["organization_id", "device_id"]
+            isOneToOne: false
+            referencedRelation: "offline_devices"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "offline_sync_events_organization_id_server_sale_id_fkey"
+            columns: ["organization_id", "server_sale_id"]
+            isOneToOne: false
+            referencedRelation: "pos_receipts"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "offline_sync_events_organization_id_server_sale_id_fkey"
+            columns: ["organization_id", "server_sale_id"]
+            isOneToOne: false
+            referencedRelation: "pos_sales"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       organization_invitations: {
         Row: {
           accepted_at: string | null
@@ -3602,10 +3745,16 @@ export type Database = {
           id: string
           idempotency_key: string
           inventory_transaction_id: string
+          local_created_at: string | null
+          local_transaction_id: string | null
+          offline_device_id: string | null
+          offline_request_hash: string | null
           organization_id: string
+          originated_offline: boolean
           receipt_number: string
           request_hash: string
           sales_order_id: string
+          server_received_at: string | null
           session_id: string
           status: string
           subtotal: number
@@ -3628,10 +3777,16 @@ export type Database = {
           id?: string
           idempotency_key: string
           inventory_transaction_id: string
+          local_created_at?: string | null
+          local_transaction_id?: string | null
+          offline_device_id?: string | null
+          offline_request_hash?: string | null
           organization_id: string
+          originated_offline?: boolean
           receipt_number: string
           request_hash: string
           sales_order_id: string
+          server_received_at?: string | null
           session_id: string
           status?: string
           subtotal: number
@@ -3654,10 +3809,16 @@ export type Database = {
           id?: string
           idempotency_key?: string
           inventory_transaction_id?: string
+          local_created_at?: string | null
+          local_transaction_id?: string | null
+          offline_device_id?: string | null
+          offline_request_hash?: string | null
           organization_id?: string
+          originated_offline?: boolean
           receipt_number?: string
           request_hash?: string
           sales_order_id?: string
+          server_received_at?: string | null
           session_id?: string
           status?: string
           subtotal?: number
@@ -3667,6 +3828,13 @@ export type Database = {
           voided_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "pos_sales_offline_device_fk"
+            columns: ["organization_id", "offline_device_id"]
+            isOneToOne: false
+            referencedRelation: "offline_devices"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "pos_sales_organization_id_branch_id_fkey"
             columns: ["organization_id", "branch_id"]
@@ -3831,6 +3999,14 @@ export type Database = {
           cash_variance_tolerance: number
           discount_threshold_percent: number
           hold_expiration_minutes: number
+          offline_cache_max_age_hours: number
+          offline_card_allowed: boolean
+          offline_credit_allowed: boolean
+          offline_enabled: boolean
+          offline_history_retention_days: number
+          offline_price_policy: string
+          offline_stock_policy: string
+          offline_transfer_allowed: boolean
           organization_id: string
           require_customer: boolean
           require_open_session: boolean
@@ -3844,6 +4020,14 @@ export type Database = {
           cash_variance_tolerance?: number
           discount_threshold_percent?: number
           hold_expiration_minutes?: number
+          offline_cache_max_age_hours?: number
+          offline_card_allowed?: boolean
+          offline_credit_allowed?: boolean
+          offline_enabled?: boolean
+          offline_history_retention_days?: number
+          offline_price_policy?: string
+          offline_stock_policy?: string
+          offline_transfer_allowed?: boolean
           organization_id: string
           require_customer?: boolean
           require_open_session?: boolean
@@ -3857,6 +4041,14 @@ export type Database = {
           cash_variance_tolerance?: number
           discount_threshold_percent?: number
           hold_expiration_minutes?: number
+          offline_cache_max_age_hours?: number
+          offline_card_allowed?: boolean
+          offline_credit_allowed?: boolean
+          offline_enabled?: boolean
+          offline_history_retention_days?: number
+          offline_price_policy?: string
+          offline_stock_policy?: string
+          offline_transfer_allowed?: boolean
           organization_id?: string
           require_customer?: boolean
           require_open_session?: boolean
@@ -8708,9 +8900,14 @@ export type Database = {
           id: string | null
           inventory_transaction_id: string | null
           invoice_number: string | null
+          local_created_at: string | null
+          local_transaction_id: string | null
+          offline_device_id: string | null
           organization_id: string | null
+          originated_offline: boolean | null
           receipt_number: string | null
           sales_order_id: string | null
+          server_received_at: string | null
           session_id: string | null
           settlements: Json | null
           status: string | null
@@ -8722,6 +8919,13 @@ export type Database = {
           total: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "pos_sales_offline_device_fk"
+            columns: ["organization_id", "offline_device_id"]
+            isOneToOne: false
+            referencedRelation: "offline_devices"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "pos_sales_organization_id_branch_id_fkey"
             columns: ["organization_id", "branch_id"]
@@ -9635,6 +9839,15 @@ export type Database = {
         Args: { target_organization_id: string; target_rfq_id: string }
         Returns: undefined
       }
+      manage_offline_device: {
+        Args: {
+          target_device_id: string
+          target_label: string
+          target_organization_id: string
+          target_status: string
+        }
+        Returns: undefined
+      }
       next_inventory_number: {
         Args: { target_organization_id: string; target_prefix: string }
         Returns: string
@@ -9850,6 +10063,16 @@ export type Database = {
         Args: { rebuild?: boolean; target_organization_id: string }
         Returns: Json
       }
+      record_offline_sync_failure: {
+        Args: {
+          target_device_id: string
+          target_error_code: string
+          target_local_transaction_id: string
+          target_organization_id: string
+          target_status: string
+        }
+        Returns: string
+      }
       record_pos_cash_event: {
         Args: {
           target_amount: number
@@ -9933,6 +10156,17 @@ export type Database = {
         Args: { target_invoice_id: string; target_organization_id: string }
         Returns: undefined
       }
+      register_offline_device: {
+        Args: {
+          target_app_version: string
+          target_branch_id: string
+          target_device_identifier: string
+          target_label: string
+          target_organization_id: string
+          target_terminal_id: string
+        }
+        Returns: string
+      }
       release_inventory_reservation: {
         Args: {
           target_idempotency_key: string
@@ -9941,6 +10175,23 @@ export type Database = {
           target_reservation_id: string
         }
         Returns: string
+      }
+      replay_offline_pos_sale: {
+        Args: {
+          target_cash_tendered: number
+          target_customer_credit_amount: number
+          target_customer_id: string
+          target_device_id: string
+          target_idempotency_key: string
+          target_lines: Json
+          target_local_created_at: string
+          target_local_transaction_id: string
+          target_notes: string
+          target_organization_id: string
+          target_session_id: string
+          target_settlements: Json
+        }
+        Returns: Json
       }
       resend_team_invitation: {
         Args: {
@@ -10073,6 +10324,20 @@ export type Database = {
           target_count_mode: string
           target_negative_stock_policy: string
           target_organization_id: string
+        }
+        Returns: undefined
+      }
+      update_offline_settings: {
+        Args: {
+          target_cache_max_age_hours: number
+          target_card_allowed: boolean
+          target_credit_allowed: boolean
+          target_history_retention_days: number
+          target_offline_enabled: boolean
+          target_organization_id: string
+          target_price_policy: string
+          target_stock_policy: string
+          target_transfer_allowed: boolean
         }
         Returns: undefined
       }
