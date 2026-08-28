@@ -26,3 +26,6 @@ Phase 7 does not include offline queues, payment gateways, card processing, cash
 # Offline POS
 
 An authenticated cashier with a previously cached active terminal/session can record a policy-approved immediate-settlement sale offline. The browser commits an immutable transaction and queue item before showing a pending receipt. Reconnect uses `replay_offline_pos_sale`, which revalidates current access and calls `post_pos_sale`. Offline refunds and authoritative returns remain disabled.
+# Finance integration
+
+POS continues to compose Sales, Inventory and Payments. Those authoritative records produce Finance postings, preventing a second POS-specific accounting path. Drawer events alone do not affect GL; only an actual mapped cash/bank transfer posts.

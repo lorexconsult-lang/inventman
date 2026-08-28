@@ -48,3 +48,6 @@ Procurement, Sales/POS, Returns, Production, and Offline Sync must call the same
 # Offline stock snapshots
 
 Offline POS caches last-known branch availability only for cashier guidance. It subtracts this device's unsynced sale intent but never writes balances, costing layers, WAC, or FIFO. The server inventory posting inside POS checkout remains authoritative and can reject a conflicting replay.
+# Finance integration
+
+Inventory remains the valuation authority. Posted fulfilment COGS and return restoration costs feed GL Inventory/COGS journals from recorded authoritative cost fields; catalogue reference costs are never used. `finance_reconciliation` compares signed Inventory Ledger valuation to the Inventory control account.

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Built the Phase 9 Finance foundation: activation-date setup, generic hierarchical Chart of Accounts, protected control mappings, idempotent accounting outbox, immutable double-entry journals, periods and reversals.
+- Integrated issued Sales invoices, authoritative Inventory COGS, supplier invoices, customer/supplier payments, refunds and returns without duplicating their operational systems.
+- Added expenses with shared approvals, cash/bank transfers, configurable CSV statement imports, deterministic user-confirmed reconciliation, GL financial statements, CSV/print exports, forced RLS and finance capabilities.
+
 - Added the Phase 7 POS orchestration layer with branch terminals, one-open-session till controls, barcode/SKU product search, touch-friendly cart, held sales, split tender, cash change, named-customer credit, printable receipts, reprint audit, session variance review, reports, and CSV export.
 - POS checkout reuses the existing Sales Order, Inventory `SALE`, invoice/AR, payment allocation, Credit Note, return/refund, capability, branch, idempotency, and audit boundaries. No second Sales, stock, or payment truth was introduced.
 - Added 42 POS pgTAP assertions and 5 POS unit assertions; final hosted and browser gate results are recorded in the Phase 7 implementation gate.

@@ -70,3 +70,6 @@ Phase 7 POS consumes the same Sales Order, confirmation/reservation, fulfilment,
 # Offline-originated sales
 
 An offline record becomes a financial sale only after replay reaches the existing POS/Sales orchestration. The server sale is reported exactly once and retains device, local reference, local creation time, server receipt time, and replay hash for support lookup.
+# Finance integration
+
+Issued invoices recognize AR, revenue and output tax. Posted fulfilments recognize COGS from authoritative Inventory Engine cost. Credit Notes and Sales Returns reverse revenue/tax/AR and restore Inventory/COGS at historical return cost. Source IDs provide drill-through and idempotency.

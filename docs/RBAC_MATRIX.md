@@ -58,3 +58,6 @@ POS capabilities independently govern register access, sale completion, discount
 | `offline.devices.view` | Yes | No | Inspect registered devices |
 | `offline.devices.manage` | Yes | No | Rename or revoke devices |
 | `offline.settings.manage` | Yes | No | Change offline risk policy |
+# Finance capabilities
+
+Finance capabilities cover dashboard/settings, account view/manage, journal view/create/approve/post/reverse, expense view/create/approve/post, bank view/transfer/reconcile, reports and period management. Authorization always checks capabilities, never role names; Owner/Administrator are merely default templates receiving the capabilities.

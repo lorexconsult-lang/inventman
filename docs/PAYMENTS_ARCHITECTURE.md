@@ -24,3 +24,6 @@ POS split tender creates ordinary customer payments through `post_customer_payme
 # Offline tender boundary
 
 Cash is the default offline tender. Card and transfer records require explicit policy and remain unverified metadata; customer/store credit defaults to online-only. Replay revalidates active payment methods and the existing settlement engine creates authoritative payment and till effects exactly once.
+# Finance integration
+
+Phase 6 settlement accounts map to GL asset/clearing accounts; no second cash model exists. Customer receipts, supplier payments, refunds and reversals post through their authoritative payment records. A reversal creates an opposite linked journal and never deletes the original.

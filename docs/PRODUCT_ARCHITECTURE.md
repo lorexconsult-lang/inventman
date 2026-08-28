@@ -61,3 +61,6 @@ The POS application is a branch-scoped orchestration surface over Sales, Invento
 # Phase 8 offline continuity
 
 The installable PWA adds conservative offline POS continuity. IndexedDB holds scoped reference snapshots and immutable queued sale intent; the existing server modules remain the sole business engines. See `OFFLINE_SYNC_ARCHITECTURE.md`.
+# Phase 9 finance boundary
+
+Finance now consumes existing operational events and owns only accounting truth: immutable journals, GL balances, periods, expenses, mappings, reconciliation and financial statements. It does not recreate Sales, Procurement, Inventory, Payments, POS, Returns or Credits. See `FINANCE_ACCOUNTING_ARCHITECTURE.md`.

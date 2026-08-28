@@ -40,3 +40,6 @@ Procurement documents use composite organization foreign keys and tenant-safe co
 # Phase 8 offline support
 
 Migrations `20260831200000` through `20260831206000` add tenant-bound offline devices, sparse sync audit events, POS origin metadata, explicit replay/device/settings RPCs, RLS, offline capabilities, strict idempotency-key reuse checks, and guarded ephemeral verification cleanup. Replay delegates to `post_pos_sale`; it does not introduce another ledger. Local and hosted history are synchronized at 69 migrations.
+# Phase 9 finance database
+
+The Finance schema adds organization accounting settings, hierarchical GL accounts, periods, mappings, idempotent accounting events, immutable journal headers/lines, expenses, transfers and bank reconciliation. Forced RLS, composite tenant references, revoked direct writes and controlled security-definer functions enforce double entry and period locks in PostgreSQL.

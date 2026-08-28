@@ -49,3 +49,6 @@ The schema leaves explicit boundaries for supplier portals, payment allocation, 
 ## Verification
 
 The hosted development gate provisions confirmed ephemeral users and tagged organizations, exercises all 22 supplier-to-return workflow steps, validates WAC quantities/value and immutable inventory transaction types, tests GRN replay, duplicate invoices, approval denial, branch tampering and tenant isolation, then purges all tagged transactional and identity fixtures. The cleanup RPC is service-role-only and refuses any organization without the `phase3-e2e-` slug prefix.
+# Finance integration
+
+Approved supplier invoice is the configured Phase 9 recognition boundary: Inventory/input tax is debited and AP credited. Goods receipt remains the stock event and is not double-posted to GL. Supplier payments, supplier credits and Purchase Returns create idempotent linked accounting effects through existing authoritative records.

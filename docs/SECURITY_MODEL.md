@@ -62,3 +62,6 @@ POS tables are read through branch- and capability-aware forced RLS; direct auth
 # Offline security boundary
 
 Device UUIDs and cached permission snapshots cannot authorize server work. Replay rechecks the authenticated user, membership capabilities, branch, terminal, device, session, products, pricing, stock, customer, and tenders. RLS scopes device and sync-event reads. Cache Storage excludes API/auth responses, and IndexedDB deliberately stores no credentials or card secrets.
+# Finance controls
+
+Finance uses forced tenant RLS, branch-aware read policies, capability authorization, private documents, composite cross-tenant references and deny-by-default functions. Authenticated clients cannot insert or mutate posted journals/lines. Period, mapping, expense, transfer and reconciliation changes occur only through re-authorizing RPCs.

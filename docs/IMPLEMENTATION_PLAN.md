@@ -134,3 +134,8 @@ Offline POS, gateways/card processing, peripheral integrations, bank reconciliat
 # Phase 8 — Offline-first PWA and POS sync
 
 Complete and verified: installable manifest and safe service worker, Dexie v3 scoped cache/queue, durable held carts and offline cash sale receipts, device registration/revocation, explicit replay through POS, retry/locking/conflicts/reconciliation UI, 13 new Vitest assertions, and 31 new pgTAP assertions. All 69 hosted migrations and generated types are synchronized; all 350 hosted assertions and the authenticated two-sale offline browser workflow pass. Production SMTP remains a release prerequisite.
+# Phase 9 — Finance, Expenses, General Ledger and Reporting
+
+Implemented: controlled activation, generic Chart of Accounts, mappings, transactional event posting, immutable balanced journals, reversals, accounting periods, Sales/COGS/Procurement/Payment/Return adapters, expenses with shared approvals, cash transfers, manual bank reconciliation, GL/Trial Balance/P&L/Balance Sheet/categorized cash flow, reconciliations, exports, forced RLS, generated types, hosted pgTAP and responsive administration.
+
+Verification: 48 new Phase 9 pgTAP assertions bring the hosted aggregate to 398. The authenticated Finance workflow passes 40 checks with complete cleanup; Team, Sales, Procurement, Payments and POS authenticated regressions pass, including offline POS replay. Vitest passes 67 assertions, Playwright passes 6 browser/PWA checks, and database lint, migration sync, typecheck, ESLint and production build pass.
