@@ -189,6 +189,13 @@ export function PosRegister({
             } as never,
           );
           if (error || typeof data !== "string") throw error ?? new Error("OFFLINE_DEVICE_INVALID");
+          const { data: leaseExpiresAt, error: leaseError } = await client.rpc(
+            "issue_offline_entitlement_lease" as never,
+            { target_organization_id: organizationId, target_device_id: data } as never,
+          );
+          if (leaseError || typeof leaseExpiresAt !== "string") throw leaseError ?? new Error("OFFLINE_ENTITLEMENT_EXPIRED");
+          const authorization = await offlineDb().authorization_cache.where("scopeKey").equals(scopeKey).first();
+          if (authorization) await offlineDb().authorization_cache.put({ ...authorization, payload: { ...authorization.payload, entitlementLeaseExpiresAt: leaseExpiresAt } });
           await offlineDb().app_meta.put({
             key: `device:${scopeKey}`,
             value: data,

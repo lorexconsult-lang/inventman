@@ -15,6 +15,11 @@ export default async function SettingsPage() {
       />
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <Card
+          href="/dashboard/settings/billing"
+          title="Billing & Plan"
+          text="Review subscription status, plan entitlements, usage limits and billing history."
+        />
+        <Card
           href="/dashboard/settings/team"
           title="Team"
           text="Invite staff, manage status and control branch access."

@@ -27,12 +27,14 @@ const groups = [
         href: "/dashboard/pos",
         icon: ScanLine,
         capabilities: ["pos.access"],
+        feature: "pos",
       },
       {
         label: "Dashboard",
         href: "/dashboard",
         icon: LayoutDashboard,
         capabilities: [],
+        feature: null,
       },
     ],
   },
@@ -44,12 +46,14 @@ const groups = [
         href: "/dashboard/catalogue",
         icon: PackageSearch,
         capabilities: ["products.view"],
+        feature: "core.catalogue",
       },
       {
         label: "Inventory",
         href: "/dashboard/inventory",
         icon: Boxes,
         capabilities: ["inventory.view", "inventory.movement_view"],
+        feature: "core.inventory",
       },
       {
         label: "Procurement",
@@ -60,6 +64,7 @@ const groups = [
           "procurement.requisition_view",
           "procurement.order_view",
         ],
+        feature: "procurement",
       },
       {
         label: "Sales",
@@ -70,6 +75,7 @@ const groups = [
           "sales.order_view",
           "sales.quotation_view",
         ],
+        feature: "sales",
       },
       {
         label: "Payments",
@@ -80,12 +86,14 @@ const groups = [
           "payments.supplier.view",
           "payments.reports.view",
         ],
+        feature: "payments",
       },
       {
         label: "Finance",
         href: "/dashboard/finance",
         icon: Landmark,
         capabilities: ["finance.view"],
+        feature: "finance",
       },
     ],
   },
@@ -97,12 +105,14 @@ const groups = [
         href: "/dashboard/branches",
         icon: Building2,
         capabilities: ["branches.view", "branches.manage"],
+        feature: null,
       },
       {
         label: "Warehouses",
         href: "/dashboard/warehouses",
         icon: Warehouse,
         capabilities: ["warehouses.view", "warehouses.manage"],
+        feature: "core.inventory",
       },
     ],
   },
@@ -114,12 +124,14 @@ const groups = [
         href: "/dashboard/settings/team",
         icon: Users,
         capabilities: ["team.view"],
+        feature: null,
       },
       {
         label: "Roles & permissions",
         href: "/dashboard/settings/roles",
         icon: UserCog,
         capabilities: ["roles.view", "roles.manage"],
+        feature: null,
       },
       {
         label: "Settings",
@@ -130,6 +142,7 @@ const groups = [
           "prices.manage",
           "inventory.settings_manage",
         ],
+        feature: null,
       },
     ],
   },
@@ -137,20 +150,23 @@ const groups = [
 
 export function WorkspaceNavigation({
   permissions,
+  features,
   mode,
 }: {
   permissions: string[];
+  features: string[];
   mode: "desktop" | "mobile";
 }) {
   const pathname = usePathname();
   const allowed = new Set(permissions);
+  const entitled = new Set(features);
   const visible = groups
     .map((group) => ({
       ...group,
       items: group.items.filter(
         (item) =>
-          !item.capabilities.length ||
-          item.capabilities.some((code) => allowed.has(code)),
+          (!item.feature || entitled.has(item.feature)) &&
+          (!item.capabilities.length || item.capabilities.some((code) => allowed.has(code))),
       ),
     }))
     .filter((group) => group.items.length);

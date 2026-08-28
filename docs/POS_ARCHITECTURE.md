@@ -29,3 +29,6 @@ An authenticated cashier with a previously cached active terminal/session can re
 # Finance integration
 
 POS continues to compose Sales, Inventory and Payments. Those authoritative records produce Finance postings, preventing a second POS-specific accounting path. Drawer events alone do not affect GL; only an actual mapped cash/bank transfer posts.
+# Commercial gate
+
+POS requires the plan feature, POS capability and branch access. Direct writes are database-gated. Offline operation additionally requires a current entitlement lease.

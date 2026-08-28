@@ -1,0 +1,3 @@
+import { createHmac } from "node:crypto"; import { afterEach, expect, it } from "vitest"; import { billingProvider } from "./providers";
+afterEach(()=>delete process.env.PAYSTACK_SECRET_KEY);
+it("verifies Paystack raw-body signatures and rejects tampering",()=>{process.env.PAYSTACK_SECRET_KEY="test-only";const body='{"event":"charge.success","data":{"id":42}}';const headers=new Headers({"x-paystack-signature":createHmac("sha512","test-only").update(body).digest("hex")});const provider=billingProvider("PAYSTACK")!;expect(provider.verifyWebhook(body,headers)).toBe(true);expect(provider.verifyWebhook(`${body}x`,headers)).toBe(false);expect(provider.eventIdentity(JSON.parse(body))).toEqual({id:"42",type:"charge.success"});});

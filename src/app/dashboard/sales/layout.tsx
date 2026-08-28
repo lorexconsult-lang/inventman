@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { requireOrganizationFeature } from "@/features/organizations/context";
 
 const links = [
   ["Dashboard", "/dashboard/sales"],
@@ -15,7 +16,8 @@ const links = [
   ["Reports", "/dashboard/sales/reports"],
 ] as const;
 
-export default function SalesLayout({ children }: { children: ReactNode }) {
+export default async function SalesLayout({ children }: { children: ReactNode }) {
+  await requireOrganizationFeature("sales");
   return (
     <div className="space-y-6">
       <nav

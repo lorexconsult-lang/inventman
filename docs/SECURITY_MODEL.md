@@ -65,3 +65,6 @@ Device UUIDs and cached permission snapshots cannot authorize server work. Repla
 # Finance controls
 
 Finance uses forced tenant RLS, branch-aware read policies, capability authorization, private documents, composite cross-tenant references and deny-by-default functions. Authenticated clients cannot insert or mutate posted journals/lines. Period, mapping, expense, transfer and reconciliation changes occur only through re-authorizing RPCs.
+# Phase 10 platform security
+
+Platform identity is independent from organization RBAC. Commercial writes are server-enforced after membership, suspension, access-mode and entitlement evaluation. Provider secrets remain server-only and webhook bodies are signature-verified before idempotent receipt.

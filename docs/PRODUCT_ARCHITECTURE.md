@@ -64,3 +64,6 @@ The installable PWA adds conservative offline POS continuity. IndexedDB holds sc
 # Phase 9 finance boundary
 
 Finance now consumes existing operational events and owns only accounting truth: immutable journals, GL balances, periods, expenses, mappings, reconciliation and financial statements. It does not recreate Sales, Procurement, Inventory, Payments, POS, Returns or Credits. See `FINANCE_ACCOUNTING_ARCHITECTURE.md`.
+# Phase 10 commercial control plane
+
+SaaS plans, subscriptions, entitlements, usage limits and platform administration are separated from tenant operations. See `SAAS_PLATFORM_ARCHITECTURE.md` and `SUBSCRIPTIONS_BILLING_ARCHITECTURE.md`.

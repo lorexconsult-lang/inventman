@@ -10,6 +10,12 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
       >
         <Link
           className="whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-muted"
+          href="/dashboard/settings/billing"
+        >
+          Billing & Plan
+        </Link>
+        <Link
+          className="whitespace-nowrap rounded-lg px-3 py-2 text-sm hover:bg-muted"
           href="/dashboard/settings"
         >
           Organization

@@ -80,7 +80,7 @@ describe("offline cache and reconciliation", () => {
 
   it("requires storage, products, terminal, session, auth, and freshness", () => {
     expect(cacheReadiness({ storageAvailable: false, productCount: 0, hasTerminal: false, hasSession: false, maxAgeHours: 24 }).ready).toBe(false);
-    expect(cacheReadiness({ storageAvailable: true, productCount: 2, hasTerminal: true, hasSession: true, authorizationCapturedAt: "2026-08-27T10:00:00.000Z", lastSyncedAt: "2026-08-27T10:00:00.000Z", maxAgeHours: 24, now: Date.parse("2026-08-27T11:00:00.000Z") }).ready).toBe(true);
+    expect(cacheReadiness({ storageAvailable: true, productCount: 2, hasTerminal: true, hasSession: true, authorizationCapturedAt: "2026-08-27T10:00:00.000Z", entitlementLeaseExpiresAt: "2026-08-28T10:00:00.000Z", lastSyncedAt: "2026-08-27T10:00:00.000Z", maxAgeHours: 24, now: Date.parse("2026-08-27T11:00:00.000Z") }).ready).toBe(true);
   });
 
   it("maps local receipts to authoritative server references", () => {

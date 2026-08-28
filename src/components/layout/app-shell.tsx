@@ -13,11 +13,13 @@ export function AppShell({
   organization,
   organizations,
   permissions,
+  features,
 }: {
   children: ReactNode;
   organization: Organization;
   organizations: Organization[];
   permissions: string[];
+  features: string[];
 }) {
   return (
     <div className="min-h-dvh bg-canvas text-ink">
@@ -43,12 +45,12 @@ export function AppShell({
         </div>
       </header>
       <div className="mx-auto grid max-w-[1600px] md:grid-cols-[240px_1fr]">
-        <WorkspaceNavigation permissions={permissions} mode="desktop" />
+        <WorkspaceNavigation permissions={permissions} features={features} mode="desktop" />
         <main className="min-w-0 p-4 pb-24 sm:p-6 md:pb-6 lg:p-10">
           {children}
         </main>
       </div>
-      <WorkspaceNavigation permissions={permissions} mode="mobile" />
+      <WorkspaceNavigation permissions={permissions} features={features} mode="mobile" />
       <PwaRegistration />
     </div>
   );

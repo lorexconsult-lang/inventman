@@ -43,3 +43,6 @@ Migrations `20260831200000` through `20260831206000` add tenant-bound offline de
 # Phase 9 finance database
 
 The Finance schema adds organization accounting settings, hierarchical GL accounts, periods, mappings, idempotent accounting events, immutable journal headers/lines, expenses, transfers and bank reconciliation. Forced RLS, composite tenant references, revoked direct writes and controlled security-definer functions enforce double entry and period locks in PostgreSQL.
+# Phase 10 database boundary
+
+Platform plans, feature registry, subscriptions, overrides, flags, billing transactions, webhook receipts and audit use dedicated tables. Tenant payment and general-ledger tables never store Inventman subscription billing.

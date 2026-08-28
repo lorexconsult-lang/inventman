@@ -45,3 +45,6 @@ Logout and organization switching warn when unsynced work exists. Queues remain 
 ## Future scope
 
 Later phases may add controlled return drafts or other modules, but must continue to replay explicit commands through existing server engines. Phase 8 intentionally excludes offline inventory and procurement posting, AR/AP settlement, gateways, and accounting.
+# Subscription entitlement lease
+
+Offline authorization includes a configurable server-issued lease. Checkout is disabled when it expires; queued sales remain durable and sync is accepted deterministically only when `local_created_at` was within the lease.

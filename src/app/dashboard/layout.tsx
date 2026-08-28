@@ -1,14 +1,15 @@
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/layout/app-shell";
-import { getAvailableOrganizations, getEffectivePermissions, getOrganizationContext } from "@/features/organizations/context";
+import { getAvailableOrganizations, getEffectivePermissions, getEntitledFeatures, getOrganizationContext } from "@/features/organizations/context";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const context = await getOrganizationContext();
-  const [organizations, permissions] = await Promise.all([
+  const [organizations, permissions, features] = await Promise.all([
     getAvailableOrganizations(),
     getEffectivePermissions(context.organization.id),
+    getEntitledFeatures(context.organization.id),
   ]);
-  return <AppShell organization={context.organization} organizations={organizations} permissions={[...permissions]}>{children}</AppShell>;
+  return <AppShell organization={context.organization} organizations={organizations} permissions={[...permissions]} features={[...features]}>{children}</AppShell>;
 }

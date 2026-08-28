@@ -139,3 +139,6 @@ Complete and verified: installable manifest and safe service worker, Dexie v3 sc
 Implemented: controlled activation, generic Chart of Accounts, mappings, transactional event posting, immutable balanced journals, reversals, accounting periods, Sales/COGS/Procurement/Payment/Return adapters, expenses with shared approvals, cash transfers, manual bank reconciliation, GL/Trial Balance/P&L/Balance Sheet/categorized cash flow, reconciliations, exports, forced RLS, generated types, hosted pgTAP and responsive administration.
 
 Verification: 48 new Phase 9 pgTAP assertions bring the hosted aggregate to 398. The authenticated Finance workflow passes 40 checks with complete cleanup; Team, Sales, Procurement, Payments and POS authenticated regressions pass, including offline POS replay. Vitest passes 67 assertions, Playwright passes 6 browser/PWA checks, and database lint, migration sync, typecheck, ESLint and production build pass.
+# Phase 10 — complete
+
+Commercial plans, subscription lifecycle, centralized access modes, feature/limit enforcement, billing-provider boundary, offline leases, tenant billing and isolated platform administration are implemented.

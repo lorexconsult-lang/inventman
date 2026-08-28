@@ -61,3 +61,6 @@ POS capabilities independently govern register access, sale completion, discount
 # Finance capabilities
 
 Finance capabilities cover dashboard/settings, account view/manage, journal view/create/approve/post/reverse, expense view/create/approve/post, bank view/transfer/reconcile, reports and period management. Authorization always checks capabilities, never role names; Owner/Administrator are merely default templates receiving the capabilities.
+# Platform capabilities
+
+Platform staff use separately assigned `platform.*` capabilities for tenants, subscriptions, plans, billing, features and audit. No tenant role can grant or inherit these capabilities.

@@ -204,12 +204,14 @@ export async function getOfflineReadiness(scopeKey: string) {
       lastSyncedAt?: string;
       settings?: { maxAgeHours?: number };
     };
+    const authorizationPayload = (authorization?.payload ?? {}) as { entitlementLeaseExpiresAt?: string };
     return cacheReadiness({
       storageAvailable: true,
       productCount: products,
       hasTerminal: Boolean(terminal),
       hasSession: Boolean(session),
       authorizationCapturedAt: authorization?.syncedAt,
+      entitlementLeaseExpiresAt: authorizationPayload.entitlementLeaseExpiresAt,
       lastSyncedAt: value.lastSyncedAt,
       maxAgeHours: value.settings?.maxAgeHours ?? 24,
     });

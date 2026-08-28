@@ -68,3 +68,8 @@
 - Added seven synchronized database migrations, refreshed generated types, 13 unit assertions, and 31 database assertions.
 - Verified durable held-cart recovery, two-sale offline browser replay, all 350 hosted pgTAP assertions, and guarded POS/payment fixture cleanup ordering.
 - Kept production custom SMTP, redirect allowlists, and delivery monitoring as release prerequisites.
+# Phase 10
+
+- Added SaaS plans, subscriptions, entitlements, real usage limits and downgrade-safe enforcement.
+- Added tenant Billing & Plan and visually separate Platform Administration interfaces.
+- Added signed, idempotent billing-provider webhook architecture and time-bounded offline entitlement leases.

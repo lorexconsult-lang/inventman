@@ -80,6 +80,7 @@ export function cacheReadiness(input: {
   hasTerminal: boolean;
   hasSession: boolean;
   authorizationCapturedAt?: string;
+  entitlementLeaseExpiresAt?: string;
   lastSyncedAt?: string;
   maxAgeHours: number;
   now?: number;
@@ -91,6 +92,8 @@ export function cacheReadiness(input: {
   if (!input.hasSession) reasons.push("No active cashier session is cached");
   if (!input.authorizationCapturedAt)
     reasons.push("Authorization snapshot is missing");
+  if (!input.entitlementLeaseExpiresAt || new Date(input.entitlementLeaseExpiresAt).getTime() < (input.now ?? Date.now()))
+    reasons.push("Offline entitlement lease has expired");
   if (
     !input.lastSyncedAt ||
     isPriceStale(

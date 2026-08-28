@@ -77,3 +77,18 @@ export async function getEffectivePermissions(organizationId: string) {
   if (error) return new Set<string>();
   return new Set(data ?? []);
 }
+
+export async function getEntitledFeatures(organizationId: string) {
+  await requireAuthenticatedUser();
+  const client = await createClient();
+  const featureCodes = ["core.catalogue", "core.inventory", "procurement", "sales", "payments", "pos", "offline", "finance"];
+  const checks = await Promise.all(featureCodes.map(async (code) => ({ code, result: await client.rpc("organization_has_feature", { target_organization_id: organizationId, target_feature_code: code }) })));
+  return new Set(checks.filter((item) => item.result.data === true).map((item) => item.code));
+}
+
+export async function requireOrganizationFeature(featureCode: string) {
+  const context = await getOrganizationContext();
+  const { data } = await context.client.rpc("organization_has_feature", { target_organization_id: context.organization.id, target_feature_code: featureCode });
+  if (!data) redirect("/dashboard/settings/billing?error=FEATURE_NOT_INCLUDED");
+  return context;
+}
