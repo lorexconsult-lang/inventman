@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { LogOut } from "lucide-react";
+import { Building2, LogOut } from "lucide-react";
 import { logout } from "@/features/auth/actions";
 import { switchOrganization } from "@/features/organizations/actions";
 import { hasPendingOfflineWork } from "@/features/offline/components/offline-status";
@@ -36,9 +36,10 @@ export function WorkspaceControls({
     });
   };
   return (
-    <div className="flex min-w-0 items-center gap-2 text-sm">
+    <div className="flex min-w-0 items-center gap-1 text-sm">
       <form
         action={switchOrganization}
+        className="hidden lg:block"
         onSubmit={(event) => guard(event, "Switch workspace")}
       >
         <label className="sr-only" htmlFor="workspace-switcher">
@@ -61,13 +62,28 @@ export function WorkspaceControls({
           Switch
         </button>
       </form>
+      <details className="group relative lg:hidden">
+        <summary aria-label="Switch organization" className="grid size-10 list-none place-items-center rounded-lg text-subtle hover:bg-muted hover:text-ink [&::-webkit-details-marker]:hidden">
+          <Building2 aria-hidden="true" className="size-4" />
+        </summary>
+        <div className="absolute right-0 top-12 w-64 rounded-xl border border-line bg-surface p-3 shadow-xl">
+          <p className="mb-2 truncate text-xs font-semibold text-subtle">{organization.name}</p>
+          <form action={switchOrganization} onSubmit={(event) => guard(event, "Switch workspace")}>
+            <label className="sr-only" htmlFor="mobile-workspace-switcher">Current organization</label>
+            <select className="w-full rounded-lg border bg-surface px-3 py-2 text-sm" defaultValue={organization.id} id="mobile-workspace-switcher" name="organizationId">
+              {organizations.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+            </select>
+            <button className="mt-2 min-h-10 w-full rounded-lg bg-accent px-3 text-sm font-semibold text-white" type="submit">Switch organization</button>
+          </form>
+        </div>
+      </details>
       <form
         action={logout}
         onSubmit={(event) => guard(event, "Sign out")}
       >
         <button
           aria-label="Sign out"
-          className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 hover:bg-muted hover:text-ink"
+          className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-subtle hover:bg-muted hover:text-ink"
           type="submit"
         >
           <LogOut className="size-4" aria-hidden="true" />

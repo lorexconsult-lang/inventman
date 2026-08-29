@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   BadgeDollarSign,
   Boxes,
@@ -16,7 +18,10 @@ import {
   UserCog,
   Users,
   Warehouse,
+  Menu,
+  X,
 } from "lucide-react";
+import { appConfig } from "@/config/app";
 
 const groups = [
   {
@@ -158,6 +163,13 @@ export function WorkspaceNavigation({
   mode: "desktop" | "mobile";
 }) {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: KeyboardEvent) => event.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [open]);
   const allowed = new Set(permissions);
   const entitled = new Set(features);
   const visible = groups
@@ -172,31 +184,32 @@ export function WorkspaceNavigation({
     .filter((group) => group.items.length);
   if (mode === "mobile")
     return (
-      <nav
-        aria-label="Mobile navigation"
-        className="fixed inset-x-0 bottom-0 z-20 flex gap-1 overflow-x-auto border-t bg-canvas/95 p-2 backdrop-blur md:hidden"
-      >
-        {visible
-          .flatMap((group) => group.items)
-          .map(({ label, href, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              aria-current={isActive(pathname, href) ? "page" : undefined}
-              className={`flex min-w-20 flex-1 flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-[10px] text-subtle ${isActive(pathname, href) ? "bg-accent-soft text-accent" : ""}`}
-            >
-              <Icon className="size-4" />
-              <span className="whitespace-nowrap">{label}</span>
-            </Link>
-          ))}
-      </nav>
+      <>
+        <nav aria-label="Mobile navigation" className="mobile-nav-trigger fixed left-3 top-3 z-40 md:hidden">
+          <button aria-controls="mobile-workspace-navigation" aria-expanded={open} aria-label="Open navigation" className="grid size-10 place-items-center rounded-lg border border-line bg-surface shadow-sm" onClick={() => setOpen(true)} type="button">
+            <Menu aria-hidden="true" className="size-5" />
+          </button>
+        </nav>
+        {open && <button aria-label="Close navigation" className="fixed inset-0 z-40 bg-black/45 md:hidden" onClick={() => setOpen(false)} type="button" />}
+        <aside id="mobile-workspace-navigation" aria-hidden={!open} className={`mobile-nav-drawer app-sidebar fixed inset-y-0 left-0 z-50 flex w-[min(88vw,320px)] flex-col overflow-y-auto shadow-2xl transition-transform duration-200 md:hidden ${open ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className="flex min-h-16 items-center justify-between border-b border-white/10 px-4">
+            <Link className="flex items-center gap-3 font-semibold" href="/dashboard"><span className="grid size-9 place-items-center rounded-lg bg-accent text-sm font-black">I</span>{appConfig.name}</Link>
+            <button aria-label="Close navigation" className="grid size-10 place-items-center rounded-lg text-white hover:bg-white/10" onClick={() => setOpen(false)} type="button"><X aria-hidden="true" className="size-5" /></button>
+          </div>
+          <NavigationGroups onNavigate={() => setOpen(false)} pathname={pathname} visible={visible} />
+        </aside>
+      </>
     );
   return (
-    <aside className="hidden min-h-[calc(100dvh-4rem)] border-r border-line p-4 md:block">
-      <nav aria-label="Primary navigation" className="space-y-5">
+    <div className="hidden flex-1 md:block"><NavigationGroups pathname={pathname} visible={visible} /></div>
+  );
+}
+
+function NavigationGroups({ pathname, visible, onNavigate }: { pathname: string; visible: Array<{ label: string; items: Array<{ label: string; href: string; icon: LucideIcon }> }>; onNavigate?: () => void }) {
+  return <nav aria-label="Primary navigation" className="space-y-5 p-3 py-5">
         {visible.map((group) => (
           <div key={group.label}>
-            <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-subtle">
+            <p className="app-sidebar-muted mb-2 px-3 text-[10px] font-bold uppercase tracking-[.14em]">
               {group.label}
             </p>
             <div className="space-y-1">
@@ -204,8 +217,9 @@ export function WorkspaceNavigation({
                 <Link
                   key={href}
                   href={href}
+                  onClick={onNavigate}
                   aria-current={isActive(pathname, href) ? "page" : undefined}
-                  className={`flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-subtle hover:bg-muted hover:text-ink ${isActive(pathname, href) ? "bg-accent-soft text-accent" : ""}`}
+                  className="app-sidebar-link flex min-h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-[#c5d2cb]"
                 >
                   <Icon aria-hidden="true" className="size-4" />
                   {label}
@@ -214,9 +228,7 @@ export function WorkspaceNavigation({
             </div>
           </div>
         ))}
-      </nav>
-    </aside>
-  );
+      </nav>;
 }
 
 function isActive(pathname: string, href: string) {
