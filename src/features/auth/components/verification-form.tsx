@@ -4,18 +4,20 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { verifyRegistration, type AuthActionState } from "../actions";
 
-export function VerificationForm() {
+export function VerificationForm({email,plan}:{email?:string;plan?:string}) {
   const [state, action, pending] = useActionState<AuthActionState, FormData>(
     verifyRegistration,
     {},
   );
   return (
     <form action={action} className="mt-8 space-y-5 text-left">
+      {plan&&<input type="hidden" name="plan" value={plan}/>}
       <Field
         label="Email address"
         name="email"
         type="email"
         autoComplete="email"
+        defaultValue={email}
       />
       <Field
         label="One-time code"

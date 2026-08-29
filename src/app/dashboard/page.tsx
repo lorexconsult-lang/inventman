@@ -1,6 +1,7 @@
 import { Building2, CircleAlert, PackageSearch, Warehouse } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOrganizationContext } from "@/features/organizations/context";
+import { FirstRunChecklist } from "@/features/onboarding/first-run-checklist";
 
 export default async function DashboardPage() {
   const { client, organization } = await getOrganizationContext();
@@ -60,6 +61,7 @@ export default async function DashboardPage() {
           </article>
         ))}
       </section>
+      <FirstRunChecklist />
       <section className="rounded-2xl border bg-surface">
         <div className="flex items-start justify-between gap-4 border-b p-5 sm:items-center">
           <div>

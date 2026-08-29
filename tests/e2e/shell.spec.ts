@@ -10,10 +10,10 @@ test("renders the public home and auth routes without console errors", async ({
   await page.goto("/");
   await expect(
     page.getByRole("heading", {
-      name: "Operational clarity starts with a sound foundation.",
+      name: "Control your stock, sales, cash and profitability from one platform.",
     }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Sign in" }).click();
+  await page.goto("/login");
   await expect(
     page.getByRole("heading", { name: "Sign in to your workspace" }),
   ).toBeVisible();

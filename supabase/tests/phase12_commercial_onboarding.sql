@@ -1,0 +1,35 @@
+begin;
+set local role postgres;
+create extension if not exists pgtap with schema extensions;
+set local search_path=pgtap,extensions,public;
+select plan(15);
+
+select ok((select count(*) from public.public_saas_plans())>=1,'active public plans are projected');
+insert into public.saas_plans(code,name,status,currency,is_public,is_custom) values('PRIVATE_TEST','Private','ACTIVE','GBP',false,false),('ARCHIVED_TEST','Archived','ARCHIVED','GBP',true,false);
+select is((select count(*)::int from public.public_saas_plans() where code='PRIVATE_TEST'),0,'private plans excluded');
+select is((select count(*)::int from public.public_saas_plans() where code='ARCHIVED_TEST'),0,'archived plans excluded');
+select ok(not exists(select 1 from public.public_saas_plans() p cross join lateral jsonb_object_keys(to_jsonb(p)) k where k in('id','created_at','updated_at')),'projection omits internal identifiers');
+
+insert into auth.users(id,instance_id,aud,role,email,encrypted_password,email_confirmed_at,created_at,updated_at) values('00000000-0000-4000-8000-000000012001','00000000-0000-0000-0000-000000000000','authenticated','authenticated','phase12-owner@example.test','',now(),now(),now()),('00000000-0000-4000-8000-000000012002','00000000-0000-0000-0000-000000000000','authenticated','authenticated','phase12-outsider@example.test','',now(),now(),now());
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"00000000-0000-4000-8000-000000012001","role":"authenticated"}',true);
+select lives_ok($$select public.create_commercial_organization('Phase Twelve','phase-twelve','GB','GBP','Europe/London','RETAIL','STARTER')$$,'valid public plan accepted');
+set local role postgres;
+select set_config('test.phase12_org',(select id::text from public.organizations where slug='phase-twelve'),true);
+select is((select count(*)::int from public.organizations where slug='phase-twelve'),1,'one organization created');
+select is((select count(*)::int from public.organization_members where organization_id=current_setting('test.phase12_org')::uuid and user_id='00000000-0000-4000-8000-000000012001'),1,'one owner membership created');
+select is((select count(*)::int from public.organization_subscriptions where organization_id=current_setting('test.phase12_org')::uuid and status='TRIALING'),1,'one trial created');
+select is((select count(*)::int from public.organization_onboarding where organization_id=current_setting('test.phase12_org')::uuid),1,'one onboarding state created');
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"00000000-0000-4000-8000-000000012001","role":"authenticated"}',true);
+select is(public.create_commercial_organization('Retry','retry-ignored','US','USD','UTC','OTHER','STARTER'),current_setting('test.phase12_org')::uuid,'duplicate retry returns existing organization');
+set local role postgres;
+select is((select count(*)::int from public.organizations where created_by='00000000-0000-4000-8000-000000012001'),1,'retry creates no duplicate organization');
+select is((select count(*)::int from public.organization_subscriptions where organization_id=current_setting('test.phase12_org')::uuid),1,'retry creates no duplicate subscription');
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"00000000-0000-4000-8000-000000012002","role":"authenticated"}',true);
+select is((select count(*)::int from public.organization_onboarding where organization_id=current_setting('test.phase12_org')::uuid),0,'other tenant cannot read onboarding');
+select throws_ok(format($q$select public.set_organization_onboarding('%s','OTHER','FINISH',array[]::text[],true)$q$,current_setting('test.phase12_org')),'42501','PERMISSION_DENIED','other tenant cannot modify onboarding');
+select throws_ok($$select public.create_commercial_organization('Bad Plan','bad-plan','GB','GBP','UTC','GENERAL','PRIVATE_TEST')$$,'22023','PLAN_UNAVAILABLE','private plan selection rejected');
+select * from finish();
+rollback;

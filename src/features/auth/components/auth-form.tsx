@@ -8,9 +8,11 @@ import Link from "next/link";
 export function AuthForm({
   mode,
   next,
+  plan,
 }: {
   mode: "login" | "register";
   next?: string;
+  plan?: string;
 }) {
   const action = mode === "login" ? login : register;
   const [state, formAction, pending] = useActionState<
@@ -23,7 +25,7 @@ export function AuthForm({
         <input type="hidden" name="next" value={next} />
       )}
       {mode === "register" && (
-        <Field label="Full name" name="fullName" autoComplete="name" />
+        <><Field label="Full name" name="fullName" autoComplete="name" />{plan&&<input type="hidden" name="plan" value={plan}/>}</>
       )}
       <Field
         label="Email address"
@@ -31,6 +33,7 @@ export function AuthForm({
         type="email"
         autoComplete="email"
       />
+      {mode === "register"&&<p className="text-xs text-subtle">Use at least 10 characters with upper and lower case letters and a number.</p>}
       <Field
         label="Password"
         name="password"

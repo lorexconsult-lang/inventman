@@ -16,3 +16,6 @@ Email event hooks are anticipated for trial start/end, payment success/failure, 
 # Production billing operations
 
 Provider webhooks verify the raw request signature, derive idempotent event identity, store only a payload hash, apply throttling, and emit correlation-safe logs. Production launch also requires live provider credentials, endpoint registration, retry/replay monitoring, and reconciliation procedures; repository tests cannot prove external provider configuration.
+# Signup trial selection
+
+Commercial onboarding uses the existing automatic trial. A valid public selected plan may replace the default trial plan atomically; provider webhooks remain the only paid activation authority.

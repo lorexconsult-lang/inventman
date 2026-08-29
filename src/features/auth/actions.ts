@@ -10,6 +10,7 @@ import {
   resetPasswordSchema,
   verificationSchema,
 } from "./schemas/credentials";
+import { safePlanCode } from "@/features/commercial/domain";
 
 export type AuthActionState = { error?: string };
 
@@ -37,16 +38,18 @@ export async function register(
   if (!input.success)
     return { error: input.error.issues[0]?.message ?? "Check your details" };
   const client = await createClient();
+  const plan = safePlanCode(formData.get("plan"));
+  const continuation = plan ? `/onboarding?plan=${plan}` : "/onboarding";
   const { error } = await client.auth.signUp({
     email: input.data.email,
     password: input.data.password,
     options: {
       data: { full_name: input.data.fullName },
-      emailRedirectTo: `${getPublicEnvironment().NEXT_PUBLIC_APP_URL}/auth/callback`,
+      emailRedirectTo: `${getPublicEnvironment().NEXT_PUBLIC_APP_URL}/auth/callback?next=${encodeURIComponent(continuation)}`,
     },
   });
   if (error) return { error: "Registration could not be completed" };
-  redirect("/auth/check-email");
+  redirect(`/auth/check-email?email=${encodeURIComponent(input.data.email)}${plan ? `&plan=${plan}` : ""}`);
 }
 
 export async function logout() {
@@ -71,7 +74,8 @@ export async function verifyRegistration(
     type: "signup",
   });
   if (error) return { error: "The verification code is invalid or expired" };
-  redirect("/onboarding");
+  const plan = safePlanCode(formData.get("plan"));
+  redirect(plan ? `/onboarding?plan=${plan}` : "/onboarding");
 }
 
 export async function forgotPassword(

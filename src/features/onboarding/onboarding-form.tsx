@@ -4,13 +4,14 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { createOrganization, type OnboardingActionState } from "./actions";
 
-export function OnboardingForm() {
+export function OnboardingForm({plan}:{plan?:string}) {
   const [state, action, pending] = useActionState<
     OnboardingActionState,
     FormData
   >(createOrganization, {});
   return (
     <form action={action} className="mt-8 space-y-5">
+      {plan&&<input type="hidden" name="plan" value={plan}/>}
       <Field
         label="Organization name"
         name="name"
@@ -37,6 +38,7 @@ export function OnboardingForm() {
         />
       </div>
       <Field label="Timezone" name="timezone" defaultValue="Europe/London" />
+      <label className="block text-sm font-medium"><span>Business type</span><select required name="businessType" defaultValue="GENERAL" className="mt-2 min-h-11 w-full rounded-lg border bg-surface px-3"><option value="RETAIL">Retail / Supermarket</option><option value="RESTAURANT">Restaurant / Lounge</option><option value="HOSPITALITY">Hotel / Hospitality</option><option value="PHARMACY">Pharmacy / Health Retail</option><option value="ELECTRONICS">Electronics / Gadgets</option><option value="WHOLESALE">Wholesale / Distribution</option><option value="GENERAL">General Business</option><option value="OTHER">Other</option></select></label>
       {state.error && (
         <p
           role="alert"

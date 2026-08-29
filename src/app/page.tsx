@@ -1,6 +1,58 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { appConfig } from "@/config/app";
+import { PublicPage } from "@/components/marketing/public-shell";
 
-export default function HomePage() {
-  return <main className="grid min-h-dvh place-items-center p-6"><div className="max-w-2xl text-center"><span className="mx-auto grid size-12 place-items-center rounded-2xl bg-accent font-black text-white">I</span><h1 className="mt-6 text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">Operational clarity starts with a sound foundation.</h1><p className="mx-auto mt-5 max-w-xl text-lg text-subtle">{appConfig.name} is preparing a secure workspace for inventory-based businesses.</p><div className="mt-8 flex justify-center gap-3"><Link className="inline-flex min-h-11 items-center rounded-lg bg-ink px-5 font-semibold text-canvas" href="/auth/register">Create account</Link><Link className="inline-flex min-h-11 items-center rounded-lg border bg-surface px-5 font-semibold" href="/auth/login">Sign in</Link></div></div></main>;
+export const metadata: Metadata = {
+  title: "Business inventory, sales and profitability control",
+  description: "Control stock, purchasing, sales, cash, POS, expenses and profitability across your business.",
+  alternates: { canonical: "/" },
+};
+
+const capabilities = [
+  ["Know what you have", "Track products, variants, warehouses, movements, counts and valuation."],
+  ["Buy with control", "Move from supplier quotes and approvals through receiving and returns."],
+  ["Sell and collect", "Manage customers, orders, fulfilment, invoices, payments and receivables."],
+  ["See performance", "Connect operations to expenses, journals and financial reporting."],
+];
+
+export default function Home() {
+  return <PublicPage>
+    <section className="hero">
+      <div>
+        <p className="eyebrow">Business operations, connected</p>
+        <h1>Control your stock, sales, cash and profitability from one platform.</h1>
+        <p>Inventman gives inventory-based businesses a clear operating record across purchasing, branches, POS, payments, expenses and finance.</p>
+        <div className="hero-actions">
+          <Link className="public-button" href="/signup">Start free trial</Link>
+          <Link className="text-link" href="/pricing">View pricing →</Link>
+        </div>
+      </div>
+      <div className="product-visual">
+        <p>YOUR OPERATING FLOW</p>
+        {["Purchase & receive", "Track & transfer", "Sell & collect", "Reconcile & report"].map((item, index) =>
+          <div key={item}><span>0{index + 1}</span><strong>{item}</strong></div>,
+        )}
+        <small>Illustrative workflow — no customer data</small>
+      </div>
+    </section>
+    <section className="value-strip">
+      <span>Multi-branch visibility</span><span>Role-based control</span><span>Offline-ready POS</span><span>Financial reporting</span>
+    </section>
+    <section className="section">
+      <p className="eyebrow">One reliable operating picture</p>
+      <h2>Replace disconnected records with accountable workflows.</h2>
+      <div className="feature-grid">{capabilities.map(([heading, body]) =>
+        <article key={heading}><h3>{heading}</h3><p>{body}</p></article>,
+      )}</div>
+    </section>
+    <section className="dark-section">
+      <div><h2>Keep supported POS sales moving through an internet interruption.</h2><p>Provisioned devices can queue supported offline sales and synchronize safely when connectivity returns. Your wider workspace remains online-first.</p></div>
+      <div><h2>Follow activity through to profitability.</h2><p>Stock, sales, payments and expenses feed a controlled accounting trail without pretending to replace statutory filing.</p></div>
+    </section>
+    <section className="cta">
+      <h2>Build a clearer, more accountable business operation.</h2>
+      <p>Start with a configured trial. Add products manually or import your catalogue when ready.</p>
+      <Link className="public-button" href="/signup">Start free trial</Link>
+    </section>
+  </PublicPage>;
 }

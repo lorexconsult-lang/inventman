@@ -1,0 +1,5 @@
+export type PublicPlan={code:string;name:string;description:string;currency:string;monthly_price:number;annual_price:number;trial_days:number;display_order:number;is_custom:boolean;entitlements:Array<{feature_code:string;type:string;enabled?:boolean;value?:number;text?:string}>};
+export const safePlanCode=(value:unknown)=>typeof value==='string'&&/^[A-Z][A-Z0-9_]{0,39}$/.test(value.toUpperCase())?value.toUpperCase():null;
+export function formatPlanPrice(plan:PublicPlan,interval:'MONTHLY'|'ANNUAL'){if(plan.is_custom)return 'Contact sales';const amount=interval==='MONTHLY'?plan.monthly_price:plan.annual_price;return new Intl.NumberFormat('en',{style:'currency',currency:plan.currency,maximumFractionDigits:0}).format(amount)}
+export const safeInternalPath=(value:unknown,fallback='/dashboard')=>typeof value==='string'&&value.startsWith('/')&&!value.startsWith('//')?value:fallback;
+export function sanitizeAttribution(input:Record<string,unknown>){return Object.fromEntries(['utm_source','utm_medium','utm_campaign'].flatMap(k=>typeof input[k]==='string'&&/^[\w .-]{1,80}$/.test(input[k] as string)?[[k,input[k]]]:[]))}

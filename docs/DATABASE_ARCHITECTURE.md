@@ -49,3 +49,6 @@ Platform plans, feature registry, subscriptions, overrides, flags, billing trans
 # Production database operations
 
 Production and staging require isolated Supabase projects and credentials. Migrations are forward-only, reviewed, linted, tested from a clean database, and applied before artifact promotion. Provider-managed backups and point-in-time recovery must be enabled and proven by isolated restore drills; see `BACKUP_RESTORE_RUNBOOK.md`.
+# Commercial onboarding data
+
+`public_saas_plans()` is the anonymous-safe plan projection. `create_commercial_organization()` composes the existing organization and Phase 10 subscription engines idempotently. `organization_onboarding` is tenant-RLS state for wizard navigation only; operational completion remains derived from domain tables.

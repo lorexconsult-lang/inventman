@@ -71,3 +71,6 @@ Platform identity is independent from organization RBAC. Commercial writes are s
 # Production hardening
 
 Phase 11 adds explicit server environment validation, CSP and browser security headers, no-store health responses, correlation IDs, sensitive-field log redaction, webhook throttling, and destructive-operation guards. In-memory throttling is only a local fallback; production requires a shared counter or staged platform firewall policy.
+# Public onboarding boundary
+
+Commercial routes expose no tenant data. Plan identity is syntactically filtered and database revalidated, callback destinations stay internal, onboarding state is tenant-RLS protected, and all module setup continues through existing RBAC/entitlement boundaries.

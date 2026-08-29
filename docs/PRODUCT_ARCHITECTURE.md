@@ -70,3 +70,6 @@ SaaS plans, subscriptions, entitlements, usage limits and platform administratio
 # Production operations
 
 Phase 11 adds production environment separation, health/readiness signals, structured redacted telemetry, distributed rate-limit integration points, hardened browser/PWA boundaries, CI gates, and operational runbooks. These controls preserve existing product workflows; external provider configuration remains a deployment gate.
+# Commercial entry and first run
+
+Phase 12 adds the public product site, database-driven pricing, secure signup intent, atomic trial onboarding, a resumable setup wizard, and a checklist derived from operational records. Existing authenticated module engines remain authoritative.

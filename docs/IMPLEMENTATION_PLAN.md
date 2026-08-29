@@ -145,3 +145,6 @@ Commercial plans, subscription lifecycle, centralized access modes, feature/limi
 # Phase 11 completion scope
 
 Phase 11 hardens the existing system for production without adding Phase 12 functionality: environments, security headers, health, observability, rate limiting, PWA boundaries, CI, performance measurement, backup/restore, disaster recovery, incident response, and release operations.
+# Phase 12 completion scope
+
+Public website, live plan projection, signup/verification continuation, atomic commercial tenant creation, trial confirmation architecture, resumable setup and derived first-run guidance are implemented without an authenticated application redesign.

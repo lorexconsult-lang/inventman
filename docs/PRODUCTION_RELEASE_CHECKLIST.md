@@ -9,3 +9,5 @@
 - [ ] Browser, PWA/offline, POS, finance, subscription, platform-admin, and performance smoke tests pass in staging.
 - [ ] Deployment owner, incident lead, rollback artifact, maintenance window, and stakeholder communication are recorded.
 - [ ] Post-deploy live/readiness and runtime error scan are clean.
+- [ ] Final legal review approves Privacy and Terms content; public canonical domain, SMTP, checkout, analytics consent and contact channels are configured.
+- [ ] Public-plan projection, signup verification, onboarding retry/resume, sitemap/robots, mobile layout and private-route boundaries pass in isolated staging.

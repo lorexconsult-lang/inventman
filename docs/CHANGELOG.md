@@ -77,3 +77,6 @@
 
 - Added explicit environment validation, production security headers, safe PWA cache boundaries, health/readiness endpoints, structured redacted logging, billing-webhook throttling, CI quality gates, destructive-operation guards, load measurement, and production operations runbooks.
 - Documented external production blockers separately from repository-verified controls; no Phase 12 product functionality was introduced.
+# Phase 12 — public website and commercial onboarding
+
+- Added the complete public information architecture, database-driven pricing, commercial signup/verification intent, atomic trial onboarding, resumable first-run setup, derived workspace checklist, SEO controls and public browser coverage.

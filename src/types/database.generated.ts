@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       account_mappings: {
@@ -4033,6 +4058,41 @@ export type Database = {
             foreignKeyName: "organization_members_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_onboarding: {
+        Row: {
+          business_type: string
+          completed_at: string | null
+          completed_steps: string[]
+          current_step: string
+          organization_id: string
+          updated_at: string
+        }
+        Insert: {
+          business_type?: string
+          completed_at?: string | null
+          completed_steps?: string[]
+          current_step?: string
+          organization_id: string
+          updated_at?: string
+        }
+        Update: {
+          business_type?: string
+          completed_at?: string | null
+          completed_steps?: string[]
+          current_step?: string
+          organization_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_onboarding_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
@@ -11268,6 +11328,18 @@ export type Database = {
         }
         Returns: string
       }
+      create_commercial_organization: {
+        Args: {
+          country_code: string
+          currency_code: string
+          organization_name: string
+          organization_slug: string
+          organization_timezone: string
+          target_business_type: string
+          target_plan_code?: string
+        }
+        Returns: string
+      }
       create_customer: {
         Args: { target_customer: Json; target_organization_id: string }
         Returns: string
@@ -12066,6 +12138,22 @@ export type Database = {
         }
         Returns: Json
       }
+      production_database_readiness: { Args: never; Returns: boolean }
+      public_saas_plans: {
+        Args: never
+        Returns: {
+          annual_price: number
+          code: string
+          currency: string
+          description: string
+          display_order: number
+          entitlements: Json
+          is_custom: boolean
+          monthly_price: number
+          name: string
+          trial_days: number
+        }[]
+      }
       purge_ephemeral_finance_verification: {
         Args: { target_organization_id: string }
         Returns: undefined
@@ -12079,6 +12167,10 @@ export type Database = {
         Returns: undefined
       }
       purge_ephemeral_procurement_verification: {
+        Args: { target_organization_id: string }
+        Returns: undefined
+      }
+      purge_ephemeral_saas_verification: {
         Args: { target_organization_id: string }
         Returns: undefined
       }
@@ -12357,6 +12449,16 @@ export type Database = {
         }
         Returns: undefined
       }
+      set_organization_onboarding: {
+        Args: {
+          target_business_type: string
+          target_complete?: boolean
+          target_completed_steps: string[]
+          target_organization_id: string
+          target_step: string
+        }
+        Returns: undefined
+      }
       set_team_member_status: {
         Args: {
           target_membership_id: string
@@ -12627,6 +12729,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       membership_status: ["invited", "active", "suspended", "deactivated"],

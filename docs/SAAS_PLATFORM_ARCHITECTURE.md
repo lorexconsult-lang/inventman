@@ -14,3 +14,6 @@ Expired and cancelled tenant data is retained. Read/export access is the default
 # Production control plane
 
 Platform administration remains server-authorized and tenant-independent. Production status may expose only environment name, release version, and boolean integration readiness—never credentials. Admin, entitlement maintenance, billing webhooks, and scheduled transitions require rate limits, correlation logging, idempotency, and operational alerts.
+# Public commercial boundary
+
+Only active public plan fields and sanitized entitlements are exposed anonymously. Selected plan codes are revalidated during organization creation; client prices and feature claims are ignored.
