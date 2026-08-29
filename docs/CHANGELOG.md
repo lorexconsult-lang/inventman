@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Phase 14 adds a fail-closed production deployment preflight, removes a Windows-only direct dependency that broke Linux CI, and records an evidence-based go-live assessment. No production deployment or database mutation occurred because isolated infrastructure and launch configuration remain blocked.
+
 - Built the Phase 9 Finance foundation: activation-date setup, generic hierarchical Chart of Accounts, protected control mappings, idempotent accounting outbox, immutable double-entry journals, periods and reversals.
 - Integrated issued Sales invoices, authoritative Inventory COGS, supplier invoices, customer/supplier payments, refunds and returns without duplicating their operational systems.
 - Added expenses with shared approvals, cash/bank transfers, configurable CSV statement imports, deterministic user-confirmed reconciliation, GL financial statements, CSV/print exports, forced RLS and finance capabilities.

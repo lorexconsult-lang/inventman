@@ -17,7 +17,8 @@
     "test:e2e": "playwright test",
     "test:e2e:auth": "node scripts/verify-application-auth.mjs",
     "test:load": "node scripts/load-health.mjs",
-    "guard:environment": "node scripts/assert-safe-environment.mjs"
+    "guard:environment": "node scripts/assert-safe-environment.mjs",
+    "guard:production": "node scripts/assert-production-readiness.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.1",
@@ -35,7 +36,6 @@
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
-    "@rolldown/binding-win32-x64-msvc": "1.2.5",
     "@supabase/cli-windows-x64": "2.115.0",
     "@tailwindcss/postcss": "4.3.3",
     "@testing-library/jest-dom": "7.0.1",

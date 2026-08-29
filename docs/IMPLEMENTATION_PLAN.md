@@ -148,3 +148,7 @@ Phase 11 hardens the existing system for production without adding Phase 12 func
 # Phase 12 completion scope
 
 Public website, live plan projection, signup/verification continuation, atomic commercial tenant creation, trial confirmation architecture, resumable setup and derived first-run guidance are implemented without an authenticated application redesign.
+
+# Phase 14 — production deployment assessment
+
+Repository hardening is implemented: cross-platform CI installation is repaired, a strict production preflight is added, and release evidence is recorded. Live discovery found no dedicated staging/production Supabase project, linked Inventman Vercel project/domain, or SMTP, billing, monitoring, rate-limit, scheduler, backup/restore and legal signoff evidence. Decision: **NOT READY FOR GO-LIVE** pending the classified blockers in `GO_LIVE_REPORT.md`.
