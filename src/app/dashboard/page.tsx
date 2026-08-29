@@ -2,9 +2,16 @@ import { Building2, CircleAlert, PackageSearch, Warehouse } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOrganizationContext } from "@/features/organizations/context";
 import { FirstRunChecklist } from "@/features/onboarding/first-run-checklist";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const { client, organization } = await getOrganizationContext();
+  const { data: onboarding } = await client
+    .from("organization_onboarding")
+    .select("completed_at")
+    .eq("organization_id", organization.id)
+    .maybeSingle();
+  if (onboarding && !onboarding.completed_at) redirect("/onboarding/setup");
   const [{ count: products }, { count: branches }, { count: warehouses }] =
     await Promise.all([
       client

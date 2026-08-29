@@ -17,6 +17,10 @@ self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
+  if (request.mode === "navigate") {
+    event.respondWith(fetch(request).catch(() => caches.match("/offline.html")));
+    return;
+  }
   if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/dashboard") || url.pathname.startsWith("/platform-admin") || url.pathname.includes("/auth/") || request.headers.get("authorization")) return;
   if (url.pathname.startsWith("/_next/static/") || SHELL.includes(url.pathname)) {
     event.respondWith(
@@ -26,9 +30,6 @@ self.addEventListener("fetch", (event) => {
       })),
     );
     return;
-  }
-  if (request.mode === "navigate") {
-    event.respondWith(fetch(request).catch(() => caches.match("/offline.html")));
   }
 });
 

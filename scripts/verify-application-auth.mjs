@@ -21,12 +21,21 @@ const createdUserIds = [];
 const createdOrganizationIds = [];
 
 async function provision(email, password) {
-  let { data, error } = await admin.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
-    user_metadata: { foundation_auth_test: true, run: suffix },
-  });
+  let data, error;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      ({ data, error } = await admin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { foundation_auth_test: true, run: suffix },
+      }));
+      break;
+    } catch (cause) {
+      if (attempt === 2 || cause?.name !== "AuthRetryableFetchError") throw cause;
+      await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+    }
+  }
   if (error?.message.toLowerCase().includes("already")) {
     const { data: users, error: listError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
     if (listError) throw listError;
@@ -46,12 +55,20 @@ async function provision(email, password) {
 
 async function cleanup() {
   for (const organizationId of createdOrganizationIds) {
+    const { error: defaultError } = await admin.from("branches").update({ default_warehouse_id: null }).eq("organization_id", organizationId);
+    if (defaultError) throw new Error(`Branch default cleanup failed: ${defaultError.code}`);
     for (const table of ["member_branch_access", "member_roles", "role_permissions", "organization_invitations", "warehouses", "branches", "roles", "organization_members", "businesses"]) {
-      await admin.from(table).delete().eq("organization_id", organizationId);
+      const { error } = await admin.from(table).delete().eq("organization_id", organizationId);
+      if (error) throw new Error(`${table} cleanup failed: ${error.code}`);
     }
-    await admin.from("organizations").delete().eq("id", organizationId);
+    const { error } = await admin.from("organizations").delete().eq("id", organizationId);
+    if (error) throw new Error(`Organization cleanup failed: ${error.code}`);
   }
-  for (const userId of createdUserIds) await admin.auth.admin.deleteUser(userId);
+  for (const userId of createdUserIds) {
+    let { error } = await admin.auth.admin.deleteUser(userId);
+    if (error?.status === 500) ({ error } = await admin.auth.admin.deleteUser(userId, true));
+    if (error) throw new Error(`User cleanup failed: ${error.code ?? error.status}`);
+  }
 }
 
 const browserErrors = [];
@@ -72,11 +89,14 @@ try {
   createdOrganizationIds.push(orgBData);
 
   browser = await chromium.launch();
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  page.on("console", (message) => { if (message.type() === "error") browserErrors.push(`console:${message.text()}`); });
-  page.on("pageerror", (error) => browserErrors.push(`page:${error.message}`));
-  page.on("response", (response) => { if (response.status() >= 500) browserErrors.push(`http:${response.status()} ${response.url()}`); });
+  let context = await browser.newContext();
+  let page = await context.newPage();
+  const monitor = (target) => {
+    target.on("console", (message) => { if (message.type() === "error") browserErrors.push(`console:${message.text()}`); });
+    target.on("pageerror", (error) => browserErrors.push(`page:${error.message}`));
+    target.on("response", (response) => { if (response.status() >= 500) browserErrors.push(`http:${response.status()} ${response.url()}`); });
+  };
+  monitor(page);
 
   await page.goto("http://localhost:3100/auth/login");
   await page.getByLabel("Email address").fill(emailA);
@@ -88,20 +108,87 @@ try {
   await page.getByLabel("Organization name").fill("Foundation Boundary A");
   await page.getByLabel("Organization slug").fill(`gate-boundary-a-${suffix}`);
   await page.getByRole("button", { name: "Create organization" }).click();
-  await page.waitForURL("**/dashboard");
+  await page.waitForURL("**/onboarding/setup");
   const { data: orgARows, error: orgAError } = await admin.from("organizations").select("id").eq("slug", `gate-boundary-a-${suffix}`);
   if (orgAError || orgARows?.length !== 1) throw orgAError ?? new Error("Expected exactly one Organization A");
   createdOrganizationIds.push(orgARows[0].id);
-  console.log("real onboarding and single organization bootstrap: PASS");
+  const orgAId = orgARows[0].id;
+  const [memberships, subscriptions, onboardingRows] = await Promise.all([
+    admin.from("organization_members").select("id", { count: "exact", head: true }).eq("organization_id", orgAId).eq("user_id", createdUserIds[0]),
+    admin.from("organization_subscriptions").select("id", { count: "exact", head: true }).eq("organization_id", orgAId).eq("status", "TRIALING"),
+    admin.from("organization_onboarding").select("organization_id", { count: "exact", head: true }).eq("organization_id", orgAId),
+  ]);
+  if (memberships.count !== 1 || subscriptions.count !== 1 || onboardingRows.count !== 1) throw new Error("Commercial bootstrap cardinality failed");
+
+  const userA = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: false } });
+  const { error: loginAError } = await userA.auth.signInWithPassword({ email: emailA, password: passwordA });
+  if (loginAError) throw loginAError;
+  const { data: businessA, error: businessAError } = await admin.from("businesses").select("id").eq("organization_id", orgAId).single();
+  if (businessAError) throw businessAError;
+  const branchInput = {
+    organization_id: orgAId, business_id: businessA.id, created_by: createdUserIds[0],
+    name: "Phase 12 Main", code: `P12-${suffix}`.slice(0, 30), timezone: "Europe/London",
+  };
+  const branchCreate = await userA.from("branches").insert(branchInput).select("id").single();
+  if (branchCreate.error) throw branchCreate.error;
+  const branchRetry = await userA.from("branches").insert(branchInput);
+  if (!branchRetry.error) throw new Error("Branch retry unexpectedly created a duplicate");
+  const branchCount = await admin.from("branches").select("id", { count: "exact", head: true }).eq("organization_id", orgAId).eq("code", branchInput.code);
+  if (branchCount.count !== 1) throw new Error("Branch retry cardinality failed");
+
+  const warehouseInput = {
+    target_branch_id: branchCreate.data.id, warehouse_name: "Phase 12 Main Warehouse",
+    warehouse_code: `P12-W-${suffix}`.slice(0, 30), target_warehouse_type: "MAIN",
+    warehouse_description: "Phase 12 disposable verification", make_default: true,
+  };
+  const warehouseCreate = await userA.rpc("create_warehouse", warehouseInput);
+  if (warehouseCreate.error) throw warehouseCreate.error;
+  const warehouseRetry = await userA.rpc("create_warehouse", warehouseInput);
+  if (!warehouseRetry.error) throw new Error("Warehouse retry unexpectedly created a duplicate");
+  const warehouseCount = await admin.from("warehouses").select("id", { count: "exact", head: true }).eq("organization_id", orgAId).eq("code", warehouseInput.warehouse_code.toUpperCase());
+  if (warehouseCount.count !== 1) throw new Error("Warehouse retry cardinality failed");
+
+  const { data: businessB, error: businessBError } = await admin.from("businesses").select("id").eq("organization_id", orgBData).single();
+  if (businessBError) throw businessBError;
+  const foreignBranch = await admin.from("branches").insert({ organization_id: orgBData, business_id: businessB.id, created_by: createdUserIds[1], name: "Foreign", code: `FOREIGN-${suffix}`.slice(0, 30), timezone: "Europe/London" }).select("id").single();
+  if (foreignBranch.error) throw foreignBranch.error;
+  const foreignWarehouse = await userA.rpc("create_warehouse", { ...warehouseInput, target_branch_id: foreignBranch.data.id, warehouse_code: `FOREIGN-W-${suffix}`.slice(0, 30), make_default: false });
+  if (!foreignWarehouse.error) throw new Error("Cross-tenant branch reference was accepted");
+  console.log("branch and warehouse response-loss retries and tenant reference guard: PASS");
+
+  const retry = await userA.rpc("create_commercial_organization", {
+    organization_name: "Ignored Retry", organization_slug: `ignored-${suffix}`,
+    country_code: "GB", currency_code: "GBP", organization_timezone: "Europe/London",
+    target_business_type: "OTHER", target_plan_code: "STARTER",
+  });
+  if (retry.error || retry.data !== orgAId) throw retry.error ?? new Error("Organization retry did not reconcile");
+  const retryOrganizations = await admin.from("organizations").select("id", { count: "exact", head: true }).eq("created_by", createdUserIds[0]);
+  if (retryOrganizations.count !== 1) throw new Error("Organization retry created a duplicate");
+  console.log("commercial bootstrap cardinality and response-loss retry: PASS");
+
+  await context.close();
+  context = await browser.newContext();
+  page = await context.newPage();
+  monitor(page);
+  await page.goto("http://localhost:3100/auth/login");
+  await page.getByLabel("Email address").fill(emailA);
+  await page.getByLabel("Password").fill(passwordA);
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await page.waitForURL("**/onboarding/setup");
+  await page.getByText("First branch").waitFor();
+  console.log("interrupted session resumes onboarding from actual state: PASS");
+  await page.getByRole("button", { name: "Enter Inventman" }).click();
+  await page.waitForURL("**/dashboard");
+  await page.getByText("Operations overview").waitFor();
+  const checklist = page.locator("details summary");
+  if (await checklist.count() !== 1) throw new Error(`First-run checklist did not render at ${page.url()}`);
+  console.log("optional setup finish, checklist, and workspace entry: PASS");
 
   await page.reload();
   await page.getByText("Operations overview").waitFor();
   if (browserErrors.length) throw new Error(`Browser errors detected: ${browserErrors.join(" | ")}`);
   console.log("dashboard refresh, claims protection, and browser health: PASS");
 
-  const userA = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: false } });
-  const { error: loginAError } = await userA.auth.signInWithPassword({ email: emailA, password: passwordA });
-  if (loginAError) throw loginAError;
   const { data: foreignRead, error: foreignReadError } = await userA.from("organizations").select("id").eq("id", orgBData);
   if (foreignReadError || foreignRead?.length !== 0) throw foreignReadError ?? new Error("Cross-tenant read was not filtered");
   const { data: foreignUpdate, error: foreignUpdateError } = await userA.from("organizations").update({ name: "Compromised" }).eq("id", orgBData).select("id");
