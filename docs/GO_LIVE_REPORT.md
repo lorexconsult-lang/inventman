@@ -2,7 +2,7 @@
 
 Assessment date: 2026-08-29
 
-Expected application baseline: `3f0cfd98838573564c286c01cbd792cfd982ebf0`
+Expected application baseline: `8ff0e39547330b74f59432988df0d2137d8c9c8d`
 
 Decision: **NOT READY FOR GO-LIVE**
 
@@ -24,7 +24,9 @@ The application supports verified Paystack and Flutterwave webhook signatures an
 
 ## Rate limiting, monitoring and scheduled jobs
 
-The application fails closed when production lacks its shared rate-limit backend. No backend URL/token exists. No monitoring DSN, log drain, error-ingestion test, alert policy or uptime monitor is configured. `CRON_SECRET` is modeled, but no deployable scheduled-job endpoints or Vercel schedule configuration exist; expiry/reconciliation scheduling is blocked rather than simulated.
+The application fails closed when production lacks its shared rate-limit backend. No backend URL/token exists. No monitoring DSN, log drain, error-ingestion test, alert policy or uptime monitor is configured.
+
+Subscription maintenance is now PASS at the source and development-verification layers. The authenticated `/api/cron/subscriptions` route is environment-guarded, invokes one service-role-only database function, and has a daily Vercel schedule. The function handles trial expiry, grace entry/expiry and period-end cancellation, records audit events, and queues idempotent notification intents separately from delivery. Repeat-execution pgTAP coverage passes. Billing reconciliation is NOT APPLICABLE until a launch provider and outbound provider-state adapter exist; it does not create charges. Data cleanup is NOT APPLICABLE because no approved retention policy identifies disposable production data. Production execution remains BLOCKED until isolated infrastructure and `CRON_SECRET` are configured.
 
 ## Backups and recovery
 
@@ -47,13 +49,9 @@ No canonical production hostname exists. Sitemap and canonical generation are en
 - GitHub workflow/branch-policy inventory: PASS; CI dependency fault identified and branch protection plan limitation confirmed.
 - Secret values were not printed, copied into documentation or committed.
 - No production database mutation, fixture, email, billing event or deployment occurred.
+- Scheduled-job unit tests and 19 database assertions: PASS against development only.
 
 ## Blockers
-
-### Code
-
-- Obtain a green GitHub quality run after the cross-platform dependency correction.
-- Implement authenticated, idempotent scheduled-job endpoints only when the required job behavior is specified.
 
 ### Infrastructure
 
@@ -72,4 +70,17 @@ No canonical production hostname exists. Sitemap and canonical generation are en
 
 ## Path to controlled go-live
 
-Provision staging first, migrate from source, configure sandbox integrations, run the full release gate and isolated restore drill, then provision production. Deploy the same green artifact without assigning the domain, run non-destructive smoke checks, promote it, and begin with named internal or 1–3 pilot organizations under active monitoring.
+Provision staging first, migrate from source, configure sandbox integrations, run the full release gate and isolated restore drill, then provision production. Deploy the same green artifact without assigning the domain, run non-destructive smoke checks, promote it, and begin with named internal pilot organizations under active monitoring.
+
+## Phase 14B owner-required actions
+
+- BLOCKED: authorize or purchase two isolated Supabase projects and provide the intended organization, region and database passwords through a secure channel.
+- DOMAIN REQUIRED FROM OWNER.
+- SMTP PROVIDER/CREDENTIALS REQUIRED.
+- BLOCKED: select PAYSTACK or FLUTTERWAVE and provide an approved live merchant account and credentials.
+- BLOCKED: purchase or select a shared rate-limit backend and provide its production credentials.
+- MONITORING PROVIDER REQUIRED, including alert and uptime-monitor ownership.
+- BLOCKED: select Supabase plans with the required backup retention/PITR capability and authorize an isolated restore target plus Storage-object backup destination.
+- BLOCKED: authorize the initial platform administrator identity, launch plans/pricing/trial/features, company/support contacts, incident owner, pilot businesses and launch window.
+- LEGAL REVIEW REQUIRED.
+- BLOCKED: owner approval of achievable RPO/RTO after the selected backup plans are known.
