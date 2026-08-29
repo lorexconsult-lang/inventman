@@ -15,7 +15,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:auth": "node scripts/verify-application-auth.mjs"
+    "test:e2e:auth": "node scripts/verify-application-auth.mjs",
+    "test:load": "node scripts/load-health.mjs",
+    "guard:environment": "node scripts/assert-safe-environment.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.1",

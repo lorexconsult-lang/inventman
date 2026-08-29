@@ -2,6 +2,7 @@ begin;
 set local role postgres;
 create extension if not exists pgtap with schema extensions;
 set local search_path=pgtap,extensions,public;
+grant select on all tables in schema public to authenticated;
 select plan(41);
 
 select has_table('public','platform_admins','platform identities exist');

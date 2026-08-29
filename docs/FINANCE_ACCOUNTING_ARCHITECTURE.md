@@ -52,3 +52,6 @@ All exposed Finance tables use forced RLS. Policies require capability checks an
 ## Historical initialization
 
 The safe default is controlled activation, not blind historical backfill. The opening process accepts reviewed cash, AR, AP and Inventory control positions and creates the balancing equity line automatically. Inventory openings must first exist in the Inventory Ledger and the resulting control reconciliation must be zero before production use. A verified deterministic backfill can be added later as a separately versioned migration, never inferred automatically.
+# Production operations
+
+Deployment and recovery validation must prove balanced journals, immutable posted entries, period controls, tenant isolation, and export formula safety. Restore drills validate these invariants in an isolated database before any traffic change.

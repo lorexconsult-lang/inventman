@@ -2,6 +2,10 @@ begin;
 set local role postgres;
 create extension if not exists pgtap with schema extensions;
 set local search_path = pgtap, extensions, public;
+-- Restore DML grants inside this rolled-back test transaction so RLS, rather
+-- than a later phase's grant hardening, remains the boundary under test.
+grant select,insert,update,delete on all tables in schema public to authenticated;
+grant select on all tables in schema public to anon;
 select plan(27);
 
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at) values

@@ -142,3 +142,6 @@ Verification: 48 new Phase 9 pgTAP assertions bring the hosted aggregate to 398.
 # Phase 10 — complete
 
 Commercial plans, subscription lifecycle, centralized access modes, feature/limit enforcement, billing-provider boundary, offline leases, tenant billing and isolated platform administration are implemented.
+# Phase 11 completion scope
+
+Phase 11 hardens the existing system for production without adding Phase 12 functionality: environments, security headers, health, observability, rate limiting, PWA boundaries, CI, performance measurement, backup/restore, disaster recovery, incident response, and release operations.

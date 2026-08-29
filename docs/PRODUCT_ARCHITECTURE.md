@@ -67,3 +67,6 @@ Finance now consumes existing operational events and owns only accounting truth:
 # Phase 10 commercial control plane
 
 SaaS plans, subscriptions, entitlements, usage limits and platform administration are separated from tenant operations. See `SAAS_PLATFORM_ARCHITECTURE.md` and `SUBSCRIPTIONS_BILLING_ARCHITECTURE.md`.
+# Production operations
+
+Phase 11 adds production environment separation, health/readiness signals, structured redacted telemetry, distributed rate-limit integration points, hardened browser/PWA boundaries, CI gates, and operational runbooks. These controls preserve existing product workflows; external provider configuration remains a deployment gate.

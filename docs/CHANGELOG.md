@@ -73,3 +73,7 @@
 - Added SaaS plans, subscriptions, entitlements, real usage limits and downgrade-safe enforcement.
 - Added tenant Billing & Plan and visually separate Platform Administration interfaces.
 - Added signed, idempotent billing-provider webhook architecture and time-bounded offline entitlement leases.
+# Phase 11 — production readiness
+
+- Added explicit environment validation, production security headers, safe PWA cache boundaries, health/readiness endpoints, structured redacted logging, billing-webhook throttling, CI quality gates, destructive-operation guards, load measurement, and production operations runbooks.
+- Documented external production blockers separately from repository-verified controls; no Phase 12 product functionality was introduced.

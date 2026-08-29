@@ -1,4 +1,4 @@
-const CACHE_VERSION = "inventman-shell-v1";
+const CACHE_VERSION = "inventman-shell-v2";
 const SHELL = ["/offline.html", "/manifest.webmanifest", "/icons/icon.svg", "/icons/maskable.svg"];
 
 self.addEventListener("install", (event) => {
@@ -17,11 +17,11 @@ self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
-  if (url.pathname.startsWith("/api/") || url.pathname.includes("/auth/")) return;
+  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/dashboard") || url.pathname.startsWith("/platform-admin") || url.pathname.includes("/auth/") || request.headers.get("authorization")) return;
   if (url.pathname.startsWith("/_next/static/") || SHELL.includes(url.pathname)) {
     event.respondWith(
       caches.match(request).then((cached) => cached || fetch(request).then((response) => {
-        if (response.ok) caches.open(CACHE_VERSION).then((cache) => cache.put(request, response.clone()));
+        if (response.ok && !response.headers.has("set-cookie") && !/private|no-store/i.test(response.headers.get("cache-control") || "")) caches.open(CACHE_VERSION).then((cache) => cache.put(request, response.clone()));
         return response;
       })),
     );

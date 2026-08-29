@@ -46,3 +46,6 @@ The Finance schema adds organization accounting settings, hierarchical GL accoun
 # Phase 10 database boundary
 
 Platform plans, feature registry, subscriptions, overrides, flags, billing transactions, webhook receipts and audit use dedicated tables. Tenant payment and general-ledger tables never store Inventman subscription billing.
+# Production database operations
+
+Production and staging require isolated Supabase projects and credentials. Migrations are forward-only, reviewed, linted, tested from a clean database, and applied before artifact promotion. Provider-managed backups and point-in-time recovery must be enabled and proven by isolated restore drills; see `BACKUP_RESTORE_RUNBOOK.md`.

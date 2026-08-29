@@ -13,3 +13,6 @@ Offline POS receives a configurable, server-issued entitlement lease after onlin
 Subscription expiry during an already-submitted server transaction is governed by the database transaction snapshot: an atomic transaction that passed its commercial gate completes or rolls back as one unit. Subsequent transactions re-evaluate current state.
 
 Email event hooks are anticipated for trial start/end, payment success/failure, grace, renewal and cancellation. Production delivery remains dependent on configured custom SMTP and provider credentials; Phase 10 makes no deliverability claim.
+# Production billing operations
+
+Provider webhooks verify the raw request signature, derive idempotent event identity, store only a payload hash, apply throttling, and emit correlation-safe logs. Production launch also requires live provider credentials, endpoint registration, retry/replay monitoring, and reconciliation procedures; repository tests cannot prove external provider configuration.

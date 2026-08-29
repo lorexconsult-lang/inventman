@@ -32,3 +32,6 @@ POS continues to compose Sales, Inventory and Payments. Those authoritative reco
 # Commercial gate
 
 POS requires the plan feature, POS capability and branch access. Direct writes are database-gated. Offline operation additionally requires a current entitlement lease.
+# Production operations
+
+POS readiness requires staging tests for online and offline checkout, idempotent replay, payment reconciliation, printer/browser failure behavior, and database latency. Authenticated POS routes and bootstrap data are never service-worker cached as public responses.

@@ -68,3 +68,6 @@ Finance uses forced tenant RLS, branch-aware read policies, capability authoriza
 # Phase 10 platform security
 
 Platform identity is independent from organization RBAC. Commercial writes are server-enforced after membership, suspension, access-mode and entitlement evaluation. Provider secrets remain server-only and webhook bodies are signature-verified before idempotent receipt.
+# Production hardening
+
+Phase 11 adds explicit server environment validation, CSP and browser security headers, no-store health responses, correlation IDs, sensitive-field log redaction, webhook throttling, and destructive-operation guards. In-memory throttling is only a local fallback; production requires a shared counter or staged platform firewall policy.

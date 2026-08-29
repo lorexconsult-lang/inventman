@@ -48,3 +48,6 @@ Later phases may add controlled return drafts or other modules, but must continu
 # Subscription entitlement lease
 
 Offline authorization includes a configurable server-issued lease. Checkout is disabled when it expires; queued sales remain durable and sync is accepted deterministically only when `local_created_at` was within the lease.
+# Production cache boundary
+
+The service worker caches only versioned public shell assets. It excludes API, authentication, dashboard, platform-admin, authorized, `private`, `no-store`, and `Set-Cookie` responses. Offline business mutations remain in the existing tenant-scoped IndexedDB queue and must be monitored for retry exhaustion and quota failures.

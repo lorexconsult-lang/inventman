@@ -11,3 +11,6 @@ Bootstrap a platform administrator only through a trusted database/service-role 
 Platform metrics use explicit definitions. MRR is the sum of active monthly price snapshots plus annual snapshots divided by twelve. It excludes trials, past-due and manual revenue assumptions. ARR is twelve times that deterministic MRR. Churn and conversion require complete period event history and should not be presented until the reporting window is configured.
 
 Expired and cancelled tenant data is retained. Read/export access is the default restricted policy. A future retention/archive policy may be configured, but Phase 10 performs no automatic tenant-data deletion.
+# Production control plane
+
+Platform administration remains server-authorized and tenant-independent. Production status may expose only environment name, release version, and boolean integration readiness—never credentials. Admin, entitlement maintenance, billing webhooks, and scheduled transitions require rate limits, correlation logging, idempotency, and operational alerts.

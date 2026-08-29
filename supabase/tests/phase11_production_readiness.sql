@@ -1,0 +1,12 @@
+begin;
+set local role postgres;
+create extension if not exists pgtap with schema extensions;
+set local search_path=pgtap,extensions,public;
+select plan(3);
+select has_function('public','production_database_readiness',array[]::text[],'readiness probe exists');
+set local role anon;
+select ok(public.production_database_readiness(),'anonymous readiness probe reaches database');
+set local role postgres;
+select ok((select not prosecdef from pg_proc where oid='public.production_database_readiness()'::regprocedure),'readiness probe does not elevate privileges');
+select * from finish();
+rollback;
