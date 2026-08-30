@@ -8,7 +8,7 @@ Decision: **NOT READY FOR GO-LIVE**
 
 ## Production architecture and deployment
 
-The intended host is Vercel with a dedicated production Supabase project. Discovery found that this repository is not linked to Vercel, the account has no Inventman project or domain, and no production deployment exists. The application was therefore not deployed and the development database was not reused. No production domain, TLS certificate, deployment SHA, runtime logs or production performance measurements can be truthfully recorded.
+The Vercel project `lorexconsult-3939s-projects/inventman` now exists, is linked locally, and has Git integration with `lorexconsult-lang/inventman`, repository root `.`, framework preset Next.js and production branch `main`. Its temporary alias is `https://inventman-lorexconsult-3939s-projects.vercel.app`. An automatic production build of `dff0eb660edc10bff6f7fd269673108d3ed01859` failed closed because environment entries are empty placeholders; it was not retried or promoted and development Supabase credentials were not reused. A custom production domain remains pending owner purchase or selection.
 
 ## Supabase
 
@@ -38,13 +38,13 @@ Development RLS, tenant/platform isolation, redirects, webhook signatures, CSP a
 
 ## Public, legal and operational readiness
 
-No canonical production hostname exists. Sitemap and canonical generation are environment-driven and cannot be finalized. Privacy and Terms explicitly remain launch-preparation frameworks requiring counsel review. An approved support channel, company information, deployment owner, incident lead, launch window and pilot organizations were not provided.
+No custom canonical production hostname exists. Sitemap and canonical generation are environment-driven and cannot be finalized. Privacy and Terms explicitly remain launch-preparation frameworks requiring counsel review. The intended initial platform administrator is `info.vetrilink@gmail.com`; the identity is recorded but has not been bootstrapped. An approved support channel, company information, deployment owner, incident lead, launch window and pilot organizations were not provided.
 
 ## Safe verification completed
 
 - Development and source migration history synchronization: PASS.
 - Development public-schema lint: PASS with two warnings.
-- Vercel account/project/domain inventory: PASS; required Inventman resources absent.
+- Vercel CLI authentication, project creation/link, framework settings and GitHub integration: PASS. Environment configuration and successful deployment remain BLOCKED.
 - Supabase project inventory: PASS; isolated staging/production resources absent.
 - GitHub workflow/branch-policy inventory: PASS; CI dependency fault identified and branch protection plan limitation confirmed.
 - Secret values were not printed, copied into documentation or committed.
@@ -56,7 +56,7 @@ No canonical production hostname exists. Sitemap and canonical generation are en
 ### Infrastructure
 
 - Provision isolated staging and production Supabase projects.
-- Create and explicitly link staging/production Vercel projects.
+- Configure isolated staging and production environment values in the linked Vercel project.
 - Supply a real domain/DNS control, shared rate limiter, monitoring provider, backup plan and restore target.
 
 ### Configuration
@@ -75,12 +75,12 @@ Provision staging first, migrate from source, configure sandbox integrations, ru
 ## Phase 14B owner-required actions
 
 - BLOCKED: authorize or purchase two isolated Supabase projects and provide the intended organization, region and database passwords through a secure channel.
-- DOMAIN REQUIRED FROM OWNER.
+- CUSTOM DOMAIN: PENDING OWNER PURCHASE/SELECTION; the generated Vercel alias is temporary.
 - SMTP PROVIDER/CREDENTIALS REQUIRED.
 - BLOCKED: select PAYSTACK or FLUTTERWAVE and provide an approved live merchant account and credentials.
 - BLOCKED: purchase or select a shared rate-limit backend and provide its production credentials.
 - MONITORING PROVIDER REQUIRED, including alert and uptime-monitor ownership.
 - BLOCKED: select Supabase plans with the required backup retention/PITR capability and authorize an isolated restore target plus Storage-object backup destination.
-- BLOCKED: authorize the initial platform administrator identity, launch plans/pricing/trial/features, company/support contacts, incident owner, pilot businesses and launch window.
+- BLOCKED: bootstrap the authorized initial platform administrator `info.vetrilink@gmail.com` after isolated infrastructure exists; supply launch plans/pricing/trial/features, company/support contacts, incident owner, pilot businesses and launch window.
 - LEGAL REVIEW REQUIRED.
 - BLOCKED: owner approval of achievable RPO/RTO after the selected backup plans are known.
