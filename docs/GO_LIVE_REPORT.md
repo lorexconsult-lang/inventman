@@ -10,6 +10,8 @@ Decision: **NOT READY FOR GO-LIVE**
 
 The Vercel project `lorexconsult-3939s-projects/inventman` now exists, is linked locally, and has Git integration with `lorexconsult-lang/inventman`, repository root `.`, framework preset Next.js and production branch `main`. Its temporary alias is `https://inventman-lorexconsult-3939s-projects.vercel.app`. An automatic production build of `dff0eb660edc10bff6f7fd269673108d3ed01859` failed closed because environment entries are empty placeholders; it was not retried or promoted and development Supabase credentials were not reused. A custom production domain remains pending owner purchase or selection.
 
+The repository-local Git author for future Inventman commits is the authenticated GitHub repository owner `lorexconsult-lang` using its account-specific no-reply address. Existing commit authorship was not rewritten. The `staging` branch remains the Preview-only integration path while `main` remains unchanged.
+
 ## Supabase
 
 The existing development project remains isolated. A dedicated free-plan staging project, `inventman-staging` (`gqgghdawfgfibshzxeom`), is active and healthy in `eu-west-1`. It was initialized from zero using the complete source-controlled migration chain without development data or seeds; local and staging migration histories match. Staging Auth uses the exact HTTPS branch alias and callback allowlist. Public-schema lint has no errors and retains two known unused-variable warnings. Production Supabase, backup status, PITR status and production-safe structural assertions remain blocked.
