@@ -34,7 +34,7 @@ These values are included in browser bundles and must never contain privileged c
 ## Isolation status
 
 - Development: local development configuration exists outside source control. It is not authorized for Vercel Preview or Production.
-- Preview/Staging: the Vercel target exists, but its placeholder variables are intentionally incomplete. It requires a dedicated staging Supabase project and staging integration credentials.
-- Production: the Vercel target exists, but its placeholder variables are intentionally incomplete. It requires dedicated production infrastructure and `APP_ENV=production` before deployment.
+- Preview/Staging: configured with the isolated `inventman-staging` Supabase project (`gqgghdawfgfibshzxeom`) and `APP_ENV=staging`. Third-party SMTP, billing, monitoring and distributed rate-limit credentials remain intentionally absent.
+- Production: no environment variables are configured. It requires dedicated production infrastructure and `APP_ENV=production` before deployment.
 
 The Vercel project is `lorexconsult-3939s-projects/inventman`, linked to `lorexconsult-lang/inventman` with repository root `.` and production branch `main`. The temporary project alias is `https://inventman-lorexconsult-3939s-projects.vercel.app`; it is not considered a successful deployment until a configuration-complete build passes.

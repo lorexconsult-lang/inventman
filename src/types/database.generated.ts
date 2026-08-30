@@ -4962,6 +4962,63 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_notification_events: {
+        Row: {
+          attempts: number
+          available_at: string
+          created_at: string
+          event_type: string
+          id: string
+          organization_id: string
+          payload: Json
+          scheduled_for: string
+          status: string
+          subscription_id: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          available_at?: string
+          created_at?: string
+          event_type: string
+          id?: string
+          organization_id: string
+          payload?: Json
+          scheduled_for: string
+          status?: string
+          subscription_id: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          available_at?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          organization_id?: string
+          payload?: Json
+          scheduled_for?: string
+          status?: string
+          subscription_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_notification_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "platform_notification_events_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "organization_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_settings: {
         Row: {
           billing_provider: string
@@ -12407,6 +12464,10 @@ export type Database = {
       revoke_team_invitation: {
         Args: { target_invitation_id: string; target_organization_id: string }
         Returns: string
+      }
+      run_subscription_maintenance: {
+        Args: { target_now?: string }
+        Returns: Json
       }
       sales_assert_access: {
         Args: {

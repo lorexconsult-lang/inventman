@@ -12,7 +12,7 @@ The Vercel project `lorexconsult-3939s-projects/inventman` now exists, is linked
 
 ## Supabase
 
-The only active linked project is the existing development project in `eu-west-1`. Its source and remote migration histories match, and public-schema lint has no errors (two unused-variable warnings remain). No separate production or staging project was identified. Consequently production migrations, Auth URL configuration, Storage bucket verification, backup status, PITR status and safe production structural assertions are blocked. The destructive/full pgTAP suite was not run against production.
+The existing development project remains isolated. A dedicated free-plan staging project, `inventman-staging` (`gqgghdawfgfibshzxeom`), is active and healthy in `eu-west-1`. It was initialized from zero using the complete source-controlled migration chain without development data or seeds; local and staging migration histories match. Staging Auth uses the exact HTTPS branch alias and callback allowlist. Public-schema lint has no errors and retains two known unused-variable warnings. Production Supabase, backup status, PITR status and production-safe structural assertions remain blocked.
 
 ## SMTP and DNS authentication
 
@@ -55,7 +55,7 @@ No custom canonical production hostname exists. Sitemap and canonical generation
 
 ### Infrastructure
 
-- Provision isolated staging and production Supabase projects.
+- Provision an isolated production Supabase project; staging is provisioned.
 - Configure isolated staging and production environment values in the linked Vercel project.
 - Supply a real domain/DNS control, shared rate limiter, monitoring provider, backup plan and restore target.
 
