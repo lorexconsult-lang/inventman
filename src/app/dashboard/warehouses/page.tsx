@@ -9,7 +9,9 @@ export default async function WarehousesPage() {
   const { client, organization } = await getOrganizationContext();
   const { data } = await client
     .from("warehouses")
-    .select("id,name,code,warehouse_type,status,is_default,branches(name)")
+    .select(
+      "id,name,code,warehouse_type,status,is_default,branches!warehouses_branch_fk(name)",
+    )
     .eq("organization_id", organization.id)
     .order("name");
   return (

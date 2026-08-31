@@ -18,7 +18,7 @@ export default async function WarehouseDetailPage({
   const [{ data: warehouse }, { data: locations }] = await Promise.all([
     client
       .from("warehouses")
-      .select("*,branches(name)")
+      .select("*,branches!warehouses_branch_fk(name)")
       .eq("id", warehouseId)
       .eq("organization_id", organization.id)
       .maybeSingle(),
