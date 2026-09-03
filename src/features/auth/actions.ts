@@ -10,7 +10,7 @@ import {
   resetPasswordSchema,
   verificationSchema,
 } from "./schemas/credentials";
-import { safePlanCode } from "@/features/commercial/domain";
+import { safePlanCode, sanitizeAttribution } from "@/features/commercial/domain";
 
 export type AuthActionState = { error?: string };
 
@@ -44,7 +44,7 @@ export async function register(
     email: input.data.email,
     password: input.data.password,
     options: {
-      data: { full_name: input.data.fullName },
+      data: { full_name: input.data.fullName, attribution: sanitizeAttribution(Object.fromEntries(formData)) },
       emailRedirectTo: `${getPublicEnvironment().NEXT_PUBLIC_APP_URL}/auth/callback?next=${encodeURIComponent(continuation)}`,
     },
   });

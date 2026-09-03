@@ -1,6 +1,9 @@
 import { PageHeader } from "@/components/ui/page-header";
+import type { Metadata } from "next";
 import { getAvailableOrganizations } from "@/features/organizations/context";
 import { switchOrganization } from "@/features/organizations/actions";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function SelectOrganizationPage() {
   const organizations = await getAvailableOrganizations();

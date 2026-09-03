@@ -1,6 +1,9 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { acceptInvitation } from "@/features/team/actions";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function InvitationPage({
   searchParams,

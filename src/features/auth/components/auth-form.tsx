@@ -9,10 +9,12 @@ export function AuthForm({
   mode,
   next,
   plan,
+  attribution,
 }: {
   mode: "login" | "register";
   next?: string;
   plan?: string;
+  attribution?: Record<string, string>;
 }) {
   const action = mode === "login" ? login : register;
   const [state, formAction, pending] = useActionState<
@@ -25,7 +27,7 @@ export function AuthForm({
         <input type="hidden" name="next" value={next} />
       )}
       {mode === "register" && (
-        <><Field label="Full name" name="fullName" autoComplete="name" />{plan&&<input type="hidden" name="plan" value={plan}/>}</>
+        <><Field label="Full name" name="fullName" autoComplete="name" />{plan&&<input type="hidden" name="plan" value={plan}/>} {Object.entries(attribution ?? {}).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}</>
       )}
       <Field
         label="Email address"

@@ -1,0 +1,7 @@
+import Link from "next/link";
+import { FinalCta, PageIntro, PrimaryCta, PublicPage, TextCta } from "@/components/marketing/public-shell";
+import { resourcePages } from "@/lib/marketing/content";
+import { absoluteUrl, breadcrumbSchema, publicMetadata } from "@/lib/marketing/seo";
+
+export const metadata = publicMetadata({ title: "Business Inventory Guides & Resources | Inventman", description: "Practical guides for stock control, multi-branch inventory and accountable business operations.", path: "/resources" });
+export default function ResourcesPage() { return <PublicPage schema={[breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Resources", path: "/resources" }]), { "@context": "https://schema.org", "@type": "CollectionPage", name: "Inventman resources", url: absoluteUrl("/resources") }]}><PageIntro eyebrow="Practical resources" title="Clear guidance for inventory-based businesses." body="Evergreen explanations for teams building better stock control and operating routines. No trend-chasing content or filler." actions={<><PrimaryCta /><TextCta href="/features" label="Explore the platform" /></>} /><section className="section resource-grid">{resourcePages.map((article) => <article key={article.slug}><p className="eyebrow">Guide · Updated {article.updated}</p><h2>{article.title}</h2><p>{article.description}</p><Link className="text-link" href={`/resources/${article.slug}`}>Read the guide <span aria-hidden="true">→</span></Link></article>)}</section><FinalCta /></PublicPage>; }

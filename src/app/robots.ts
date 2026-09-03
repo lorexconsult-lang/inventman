@@ -1,1 +1,9 @@
-import type{MetadataRoute}from'next';import{getPublicEnvironment}from'@/lib/env/public';export default function robots():MetadataRoute.Robots{const base=getPublicEnvironment().NEXT_PUBLIC_APP_URL;return{rules:{userAgent:'*',allow:['/','/features','/pricing','/about','/security','/contact','/support','/privacy','/terms'],disallow:['/dashboard','/platform-admin','/onboarding','/select-organization','/auth/callback','/auth/reset-password','/invite','/api/']},sitemap:`${base}/sitemap.xml`}}
+import type { MetadataRoute } from "next";
+import { getPublicEnvironment } from "@/lib/env/public";
+import { publicIndexingEnabled } from "@/lib/marketing/seo";
+
+export default function robots(): MetadataRoute.Robots {
+  const base = getPublicEnvironment().NEXT_PUBLIC_APP_URL;
+  if (!publicIndexingEnabled()) return { rules: { userAgent: "*", disallow: "/" } };
+  return { rules: { userAgent: "*", allow: "/", disallow: ["/dashboard/", "/platform-admin/", "/onboarding/", "/select-organization", "/auth/", "/login", "/signup", "/invite", "/api/"] }, sitemap: `${base}/sitemap.xml` };
+}

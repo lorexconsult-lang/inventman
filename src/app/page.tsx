@@ -1,58 +1,40 @@
-import type { Metadata } from "next";
+import { BarChart3, Boxes, Building2, CircleDollarSign, PackageCheck, ScanLine, ShieldCheck, ShoppingCart, Users } from "lucide-react";
 import Link from "next/link";
-import { PublicPage } from "@/components/marketing/public-shell";
+import { CheckList, Faq, FinalCta, PrimaryCta, PublicPage, TextCta } from "@/components/marketing/public-shell";
+import { StructuredData } from "@/components/marketing/structured-data";
+import { industryPages } from "@/lib/marketing/content";
+import { absoluteUrl, faqSchema, productCategory, publicMetadata } from "@/lib/marketing/seo";
 
-export const metadata: Metadata = {
-  title: "Business inventory, sales and profitability control",
-  description: "Control stock, purchasing, sales, cash, POS, expenses and profitability across your business.",
-  alternates: { canonical: "/" },
-};
+export const metadata = publicMetadata({ title: "Inventman — Inventory, Sales & Profitability Software", description: "Control stock, purchasing, sales, POS, cash, expenses, teams and profitability across your business with Inventman.", path: "/" });
 
-const capabilities = [
-  ["Know what you have", "Track products, variants, warehouses, movements, counts and valuation."],
-  ["Buy with control", "Move from supplier quotes and approvals through receiving and returns."],
-  ["Sell and collect", "Manage customers, orders, fulfilment, invoices, payments and receivables."],
-  ["See performance", "Connect operations to expenses, journals and financial reporting."],
+const faqs = [
+  { question: "What is Inventman?", answer: "Inventman is a business inventory, sales and profitability operating system. It connects stock, purchasing, sales, POS, payments, expenses, teams and financial reporting." },
+  { question: "Who is Inventman for?", answer: "Inventman is designed for inventory-based small and growing businesses, including retailers, supermarkets, hospitality operators, pharmacies, electronics stores, wholesalers and multi-branch teams." },
+  { question: "Does Inventman include POS?", answer: "Yes. Inventman includes controlled cashier sessions, product search, payments and receipts connected to stock movement." },
+  { question: "Can Inventman work without internet?", answer: "Provisioned POS devices can continue supported offline cash sales during temporary connectivity loss and synchronize safely later. The wider workspace remains online-first." },
+  { question: "Can I manage multiple branches?", answer: "Yes. Inventman supports branch-level warehouses, stock, users and operating records inside one organization." },
+  { question: "Can Inventman track suppliers, receivables and payables?", answer: "Yes. Purchasing and supplier workflows connect to invoices, payments and payables, while customer sales connect to invoices, receipts and receivables." },
+  { question: "Can Inventman track expenses and profitability?", answer: "Yes. Supported sales, inventory cost, payment and expense activity feeds management financial reporting. Inventman does not claim statutory filing or tax certification." },
+  { question: "How does the free trial work?", answer: "Available trial length and plan limits come from Inventman’s current public plan configuration. Account creation does not take payment." },
 ];
 
+const platform = [
+  [Boxes, "Inventory", "Balances, movements, counts, transfers and valuation."], [ShoppingCart, "Purchasing", "Suppliers, approvals, orders, receiving and returns."], [PackageCheck, "Sales", "Customers, orders, fulfilment, invoices and receivables."], [ScanLine, "POS", "Cashier sessions, payments, receipts and supported offline sales."], [CircleDollarSign, "Payments & expenses", "Collections, supplier payments, refunds and operating spend."], [BarChart3, "Finance", "Journals, reconciliation and management financial reports."], [Users, "Teams", "Roles, permissions, approvals and accountable activity."], [Building2, "Branches", "Local stock and access with organization-wide visibility."],
+] as const;
+
 export default function Home() {
-  return <PublicPage>
-    <section className="hero">
-      <div>
-        <p className="eyebrow">Business operations, connected</p>
-        <h1>Control your stock, sales, cash and profitability from one platform.</h1>
-        <p>Inventman gives inventory-based businesses a clear operating record across purchasing, branches, POS, payments, expenses and finance.</p>
-        <div className="hero-actions">
-          <Link className="public-button" href="/signup">Start free trial</Link>
-          <Link className="text-link" href="/pricing">View pricing →</Link>
-        </div>
-      </div>
-      <div className="product-visual">
-        <p>YOUR OPERATING FLOW</p>
-        {["Purchase & receive", "Track & transfer", "Sell & collect", "Reconcile & report"].map((item, index) =>
-          <div key={item}><span>0{index + 1}</span><strong>{item}</strong></div>,
-        )}
-        <small>Illustrative workflow — no customer data</small>
-      </div>
-    </section>
-    <section className="value-strip">
-      <span>Multi-branch visibility</span><span>Role-based control</span><span>Offline-ready POS</span><span>Financial reporting</span>
-    </section>
-    <section className="section">
-      <p className="eyebrow">One reliable operating picture</p>
-      <h2>Replace disconnected records with accountable workflows.</h2>
-      <div className="feature-grid">{capabilities.map(([heading, body]) =>
-        <article key={heading}><h3>{heading}</h3><p>{body}</p></article>,
-      )}</div>
-    </section>
-    <section className="dark-section">
-      <div><h2>Keep supported POS sales moving through an internet interruption.</h2><p>Provisioned devices can queue supported offline sales and synchronize safely when connectivity returns. Your wider workspace remains online-first.</p></div>
-      <div><h2>Follow activity through to profitability.</h2><p>Stock, sales, payments and expenses feed a controlled accounting trail without pretending to replace statutory filing.</p></div>
-    </section>
-    <section className="cta">
-      <h2>Build a clearer, more accountable business operation.</h2>
-      <p>Start with a configured trial. Add products manually or import your catalogue when ready.</p>
-      <Link className="public-button" href="/signup">Start free trial</Link>
-    </section>
+  const base = absoluteUrl("/");
+  return <PublicPage><StructuredData data={[{ "@context": "https://schema.org", "@type": "Organization", name: "Inventman", url: base }, { "@context": "https://schema.org", "@type": "WebSite", name: "Inventman", url: base, description: productCategory }, { "@context": "https://schema.org", "@type": "SoftwareApplication", name: "Inventman", applicationCategory: "BusinessApplication", operatingSystem: "Web", url: base, description: productCategory }, faqSchema(faqs)]} />
+    <section className="hero"><div className="hero-copy"><p className="eyebrow">Your business operation, connected</p><h1>Control your stock, sales, cash and profitability from one business platform.</h1><p>Inventman brings inventory, purchasing, sales, POS, payments, expenses, branches and financial reporting into one accountable operating system.</p><div className="hero-actions"><PrimaryCta /><TextCta href="/features" label="See How Inventman Works" /></div><div className="hero-proof"><ShieldCheck aria-hidden="true" /><span>Role-based access</span><span>Branch controls</span><span>Offline-supported POS</span></div></div><ProductVisual /></section>
+    <section className="problem-band"><div><p className="eyebrow">Less uncertainty. Better decisions.</p><h2>Stop running critical operations through disconnected records.</h2></div><div className="problem-list">{["Unexplained stock loss", "Supplier and payment confusion", "Weak staff accountability", "Unclear branch performance", "Sales without profit visibility", "Spreadsheets that disagree"].map((problem, index) => <p key={problem}><span>0{index + 1}</span>{problem}</p>)}</div></section>
+    <section className="section"><div className="section-heading split"><div><p className="eyebrow">One operating picture</p><h2>Every core workflow stays connected.</h2></div><p>Use the capabilities your plan includes without losing the relationship between physical stock, commercial activity, cash and performance.</p></div><div className="platform-grid">{platform.map(([Icon, title, body]) => <article key={title}><span><Icon aria-hidden="true" /></span><h3>{title}</h3><p>{body}</p></article>)}</div></section>
+    <section className="spotlight-grid section"><article className="spotlight dark"><p className="eyebrow">Offline-supported POS</p><h2>Keep supported cash sales moving through a connection drop.</h2><p>Provisioned devices can queue a bounded offline checkout flow and safely synchronize when connectivity returns. Your wider workspace remains online-first.</p><TextCta href="/features/offline-pos" label="Understand offline POS" /></article><article className="spotlight"><p className="eyebrow">Multi-branch control</p><h2>See the whole business while preserving local responsibility.</h2><p>Track branch stock, warehouses, staff access and operating activity without turning every location into a disconnected system.</p><TextCta href="/features/multi-branch-management" label="Explore branch control" /></article></section>
+    <section className="finance-story"><div><p className="eyebrow">From operations to performance</p><h2>Follow day-to-day activity through to financial visibility.</h2><p>Supported stock, sales, payments and expenses feed controlled journals and management reporting, helping teams understand more than revenue alone.</p><TextCta href="/features/financial-reporting" label="Explore financial reporting" /></div><div className="report-preview"><p>Management view</p><div><span>Revenue</span><strong>Connected to sales</strong></div><div><span>Inventory cost</span><strong>Connected to fulfilment</strong></div><div><span>Operating expenses</span><strong>Controlled and posted</strong></div><div className="report-total"><span>Operating result</span><strong>Visible in context</strong></div><small>Illustrative structure — no customer data or financial claims</small></div></section>
+    <section className="section"><div className="section-heading split"><div><p className="eyebrow">Built around real operations</p><h2>A practical fit for inventory-based businesses.</h2></div><TextCta href="/industries" label="View all industries" /></div><div className="industry-grid">{industryPages.map((page) => <Link key={page.slug} href={`/industries/${page.slug}`}><span>{page.name}</span><span aria-hidden="true">↗</span></Link>)}</div></section>
+    <section className="section how-it-works"><div className="section-heading"><p className="eyebrow">How it works</p><h2>From account to a clearer operating routine.</h2></div><ol>{[["Create your account", "Verify your identity and choose an available plan."], ["Set up the business", "Define the organization, first branch and operating context."], ["Add products and stock", "Build or import the catalogue, then establish stock locations."], ["Run daily operations", "Buy, receive, sell, collect, spend and manage teams."], ["Track performance", "Review exceptions, balances and management reports."]].map(([title, body], index) => <li key={title}><span>{index + 1}</span><div><h3>{title}</h3><p>{body}</p></div></li>)}</ol></section>
+    <section className="security-callout section"><div><ShieldCheck aria-hidden="true" /><p className="eyebrow">Designed with control in mind</p><h2>Private business data, role-aware access and traceable workflows.</h2></div><CheckList items={["Database-enforced tenant isolation", "Secure authentication and controlled sessions", "Role and branch-aware permissions", "Auditable operational and financial activity"]} /><TextCta href="/security" label="Read about security" /></section>
+    <Faq items={faqs} /><FinalCta />
   </PublicPage>;
 }
+
+function ProductVisual() { return <div className="product-visual" aria-label="Illustration of the Inventman operations dashboard"><div className="visual-top"><span><i />Inventman overview</span><small>Today</small></div><div className="visual-metrics"><article><small>Stock visibility</small><strong>4 locations</strong><span>Live operating view</span></article><article><small>Sales & payments</small><strong>Connected</strong><span>Orders to collection</span></article></div><div className="visual-flow"><p>Operating flow</p>{[["Purchase & receive", "Complete"], ["Track & transfer", "In control"], ["Sell & collect", "Connected"], ["Reconcile & report", "Ready"]].map(([name, status], index) => <div key={name}><span>0{index + 1}</span><strong>{name}</strong><small>{status}</small></div>)}</div></div>; }
