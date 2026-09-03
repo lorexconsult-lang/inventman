@@ -45,3 +45,8 @@ The UI never fabricates a global branch filter: many existing workflows delibera
 ## Verification contract
 
 For UI changes, the minimum checkpoint is type checking plus an authenticated browser pass at desktop and 390px that validates page load, current navigation, drawer behavior, key controls, and console errors. Release verification additionally runs lint, unit tests, production build, Playwright, authenticated workflow verification, hosted database tests, and environment cleanup according to the production runbooks.
+# Phase 14C experience boundaries
+
+Public discovery follows search intent → useful landing page → pricing or trial → signup → verification → onboarding → workspace. The primary CTA is consistently “Start Free Trial.” Industry pages explain existing use cases without implying specialist packs. Staging is intended for browser review but not search indexing.
+
+Authenticated refinement remains systemic rather than a workflow rewrite: shared headers, metric cards, tables, forms, navigation, POS touch targets, finance statements and platform-admin surfaces retain their existing actions and authorization boundaries.

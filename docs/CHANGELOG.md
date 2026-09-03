@@ -82,3 +82,9 @@
 # Phase 12 — public website and commercial onboarding
 
 - Added the complete public information architecture, database-driven pricing, commercial signup/verification intent, atomic trial onboarding, resumable first-run setup, derived workspace checklist, SEO controls and public browser coverage.
+# Phase 14C — public discovery and interface refinement
+
+- Expanded the public website with substantive feature, industry and evergreen resource content.
+- Added environment-aware indexability, complete public sitemap coverage, private-route exclusions, canonical metadata, breadcrumbs, FAQs and accurate JSON-LD.
+- Refined conversion paths, live-plan pricing comparison, mobile navigation and the shared public/application visual system without changing business logic or database schema.
+- Added search architecture and search-engine operating documentation plus automated SEO coverage.

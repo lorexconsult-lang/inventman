@@ -77,3 +77,6 @@ Phase 12 adds the public product site, database-driven pricing, secure signup in
 # Phase 14 production assessment
 
 Phase 14 adds a fail-closed production preflight and records external release evidence without expanding product scope. Isolated staging/production hosting and data, domain, email, billing, monitoring, rate limiting, schedules, backups and legal approval remain blockers. The development database is explicitly ineligible for production.
+# Phase 14C discovery architecture
+
+Inventman now exposes a public, machine-readable discovery layer around the completed product: connected feature narratives, honest industry use cases, practical resources, structured data and environment-safe search controls. This layer does not alter inventory, procurement, sales, payment, POS, finance, RBAC, subscription or onboarding domain behavior and introduces no business database migration.

@@ -10,7 +10,7 @@ test("renders the public home and auth routes without console errors", async ({
   await page.goto("/");
   await expect(
     page.getByRole("heading", {
-      name: "Control your stock, sales, cash and profitability from one platform.",
+      name: "Control your stock, sales, cash and profitability from one business platform.",
     }),
   ).toBeVisible();
   await page.goto("/login");

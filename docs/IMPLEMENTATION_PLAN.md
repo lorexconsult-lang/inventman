@@ -152,3 +152,6 @@ Public website, live plan projection, signup/verification continuation, atomic c
 # Phase 14 — production deployment assessment
 
 Repository hardening is implemented: cross-platform CI installation is repaired, a strict production preflight is added, and release evidence is recorded. Live discovery found no dedicated staging/production Supabase project, linked Inventman Vercel project/domain, or SMTP, billing, monitoring, rate-limit, scheduler, backup/restore and legal signoff evidence. Decision: **NOT READY FOR GO-LIVE** pending the classified blockers in `GO_LIVE_REPORT.md`.
+# Phase 14C — public discovery and interface refinement
+
+Phase 14C expands the public website, technical SEO, AEO/GEO content clarity, live-plan conversion presentation and shared visual system while preserving all established business engines. Search indexing remains disabled outside a future configured production environment. Completion requires the full repository gate, internal crawl, structured-data checks, responsive/accessibility/performance review and verified staging deployment before owner visual acceptance.

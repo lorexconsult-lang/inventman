@@ -50,3 +50,8 @@ Use sentence case, direct verbs, and domain language already established in busi
 ## Extension checklist
 
 Before shipping a new authenticated screen, confirm that it has one page title, a visible current navigation context, a deliberate empty state, keyboard-reachable actions, a 360px check, a wide-table containment strategy, semantic status text, server-owned authorization, and no hard-coded domain formatting that bypasses existing helpers.
+# Phase 14C refinement
+
+Public and authenticated experiences share Geist typography, forest-green interaction accents, precise tabular numerals, restrained radii and consistent button language. Marketing surfaces use more space and editorial hierarchy; workspace surfaces preserve information density. Public layouts use content widths up to 1240px, balanced display headings, bordered workflow grids and a dark operational-report motif. Motion remains subtle and is disabled under reduced-motion preferences.
+
+The application adds stronger shared metric hierarchy, quick-action surfaces, calmer tables/forms and professional statement-style finance reports. Platform administration retains its distinct dark blue control-plane identity. Print rules continue to remove navigation and marketing conversion elements from business documents.
