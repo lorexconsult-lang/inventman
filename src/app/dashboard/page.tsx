@@ -1,4 +1,7 @@
+import Link from "next/link";
 import { Building2, CircleAlert, PackageSearch, Warehouse } from "lucide-react";
+import { MetricCard } from "@/components/ui/metric-card";
+import { PageHeader } from "@/components/ui/page-header";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOrganizationContext } from "@/features/organizations/context";
 import { FirstRunChecklist } from "@/features/onboarding/first-run-checklist";
@@ -45,30 +48,16 @@ export default async function DashboardPage() {
   ];
   return (
     <div className="space-y-8">
-      <div>
-        <p className="mb-2 text-sm font-semibold text-accent">
-          Operations overview
-        </p>
-        <h1 className="text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">
-          Run your business operations.
-        </h1>
-        <p className="mt-3 max-w-2xl text-subtle">
-          Manage locations, catalogue, inventory, procurement, and Sales from
-          one tenant-secure workspace.
-        </p>
-      </div>
+      <PageHeader eyebrow="Operations overview" title="Run your business operations." description="Manage locations, catalogue, inventory, procurement and sales from one secure workspace." />
       <section aria-label="Key metrics" className="grid gap-4 lg:grid-cols-3">
         {metrics.map(({ label, value, icon: Icon }) => (
-          <article key={label} className="rounded-2xl border bg-surface p-5">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-subtle">{label}</p>
-              <Icon className="size-4 text-subtle" />
-            </div>
-            <p className="mt-8 text-3xl font-semibold">{value}</p>
-          </article>
+          <MetricCard key={label} label={label} value={value} icon={<Icon className="size-4" />} />
         ))}
       </section>
       <FirstRunChecklist />
+      <section aria-label="Quick actions" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {[["Add a product", "/dashboard/catalogue/new"], ["Review inventory", "/dashboard/inventory"], ["Create a purchase order", "/dashboard/procurement/purchase-orders"], ["Open point of sale", "/dashboard/pos"]].map(([label, href]) => <Link key={href} href={href} className="app-surface flex min-h-16 items-center justify-between px-4 text-sm font-semibold hover:-translate-y-0.5 hover:border-accent"><span>{label}</span><span aria-hidden="true" className="text-accent">→</span></Link>)}
+      </section>
       <section className="rounded-2xl border bg-surface">
         <div className="flex items-start justify-between gap-4 border-b p-5 sm:items-center">
           <div>
