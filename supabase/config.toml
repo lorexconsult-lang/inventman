@@ -18,8 +18,8 @@ port = 54323
 
 [auth]
 enabled = true
-site_url = "http://localhost:3100"
-additional_redirect_urls = ["http://localhost:3000/auth/callback", "http://127.0.0.1:3000/auth/callback", "http://localhost:3100/auth/callback", "http://127.0.0.1:3100/auth/callback"]
+site_url = "https://inventman-git-staging-lorexconsult-3939s-projects.vercel.app"
+additional_redirect_urls = ["http://localhost:3000/auth/callback", "http://127.0.0.1:3000/auth/callback", "http://localhost:3100/auth/callback", "http://127.0.0.1:3100/auth/callback", "https://inventman-git-staging-lorexconsult-3939s-projects.vercel.app/**"]
 enable_signup = true
 
 [auth.email]
