@@ -338,10 +338,8 @@ try {
   await page.goto(
     `http://localhost:3100/dashboard/settings/team/${membership.id}`,
   );
-  ok(
-    await page.getByText("Effective permissions").isVisible(),
-    "19. Owner views staff access detail",
-  );
+  await page.getByRole("heading", { name: "Effective permissions" }).waitFor();
+  ok(true, "19. Owner views staff access detail");
   await page.goto("http://localhost:3100/dashboard/settings/roles");
   ok(
     await page
@@ -349,14 +347,14 @@ try {
       .isVisible(),
     "20. Owner opens role administration",
   );
-  await page.getByLabel("Current organization").selectOption(orgB);
+  await page.locator("#workspace-switcher").selectOption(orgB);
   await page.getByRole("button", { name: "Switch" }).click();
   await page.waitForLoadState("networkidle");
   ok(
-    (await page.getByLabel("Current organization").inputValue()) === orgB,
+    (await page.locator("#workspace-switcher").inputValue()) === orgB,
     "21. Owner switches to another valid organization",
   );
-  await page.getByLabel("Current organization").selectOption(orgA);
+  await page.locator("#workspace-switcher").selectOption(orgA);
   await page.getByRole("button", { name: "Switch" }).click();
   await page.waitForLoadState("networkidle");
   await page.setViewportSize({ width: 390, height: 844 });

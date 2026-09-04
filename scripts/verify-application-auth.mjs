@@ -55,13 +55,21 @@ async function provision(email, password) {
 
 async function cleanup() {
   for (const organizationId of createdOrganizationIds) {
-    const { error: defaultError } = await admin.from("branches").update({ default_warehouse_id: null }).eq("organization_id", organizationId);
+    const { error: defaultError } = await admin
+      .from("branches")
+      .update({ default_warehouse_id: null, default_price_list_id: null })
+      .eq("organization_id", organizationId);
     if (defaultError) throw new Error(`Branch default cleanup failed: ${defaultError.code}`);
-    for (const table of ["member_branch_access", "member_roles", "role_permissions", "organization_invitations", "warehouses", "branches", "roles", "organization_members", "businesses"]) {
-      const { error } = await admin.from(table).delete().eq("organization_id", organizationId);
-      if (error) throw new Error(`${table} cleanup failed: ${error.code}`);
-    }
-    const { error } = await admin.from("organizations").delete().eq("id", organizationId);
+    const cleanupSlug = `phase3-e2e-auth-cleanup-${organizationId}`;
+    const { error: markerError } = await admin
+      .from("organizations")
+      .update({ slug: cleanupSlug })
+      .eq("id", organizationId)
+      .like("slug", "gate-boundary-%");
+    if (markerError) throw new Error(`Organization cleanup marker failed: ${markerError.code}`);
+    const { error } = await admin.rpc("purge_ephemeral_procurement_verification", {
+      target_organization_id: organizationId,
+    });
     if (error) throw new Error(`Organization cleanup failed: ${error.code}`);
   }
   for (const userId of createdUserIds) {
@@ -180,7 +188,8 @@ try {
   await page.getByRole("button", { name: "Enter Inventman" }).click();
   await page.waitForURL("**/dashboard");
   await page.getByText("Operations overview").waitFor();
-  const checklist = page.locator("details summary");
+  const checklist = page.getByText(/^First-run checklist/);
+  await checklist.waitFor();
   if (await checklist.count() !== 1) throw new Error(`First-run checklist did not render at ${page.url()}`);
   console.log("optional setup finish, checklist, and workspace entry: PASS");
 
