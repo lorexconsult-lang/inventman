@@ -88,3 +88,8 @@
 - Added environment-aware indexability, complete public sitemap coverage, private-route exclusions, canonical metadata, breadcrumbs, FAQs and accurate JSON-LD.
 - Refined conversion paths, live-plan pricing comparison, mobile navigation and the shared public/application visual system without changing business logic or database schema.
 - Added search architecture and search-engine operating documentation plus automated SEO coverage.
+# Phase 14D — premium brand redirection
+
+- Replaced the rejected green-led identity with semantic midnight, slate and sapphire tokens while retaining green for success states.
+- Recomposed the homepage and deep marketing templates around sanitized Inventman inventory, POS, finance and branch interface frames.
+- Refined public navigation, pricing, typography, section rhythm, footer, authenticated sidebar, tables, forms and platform-admin surfaces without changing business logic or schema.
