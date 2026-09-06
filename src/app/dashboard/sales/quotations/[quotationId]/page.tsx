@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DocumentBrand } from "@/components/brand/inventman-logo";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { getOrganizationContext } from "@/features/organizations/context";
@@ -30,6 +31,7 @@ export default async function QuoteDetail({
     location = d.locations.find((x) => x.warehouse_id === warehouse?.id);
   return (
     <div className="space-y-7 print:p-0">
+      <DocumentBrand />
       <PageHeader
         eyebrow="Sales quotation"
         title={q.quotation_number}

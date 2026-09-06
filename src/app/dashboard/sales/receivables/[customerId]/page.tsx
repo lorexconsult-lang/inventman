@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DocumentBrand } from "@/components/brand/inventman-logo";
 import { PageHeader } from "@/components/ui/page-header";
 import { requireOrganizationPermission } from "@/features/organizations/context";
 import { PrintButton } from "@/features/sales/components/print-button";
@@ -59,6 +60,7 @@ export default async function CustomerStatementPage({
   const exportHref = `/dashboard/sales/export?report=statement&customer=${customerId}&from=${filters.from ?? ""}&to=${filters.to ?? ""}`;
   return (
     <div className="space-y-7 print:p-0">
+      <DocumentBrand />
       <PageHeader
         eyebrow="Customer Statement"
         title={customer.display_name}

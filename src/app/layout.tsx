@@ -14,7 +14,10 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   applicationName: appConfig.name,
   appleWebApp: { capable: true, statusBarStyle: "default", title: appConfig.name },
-  icons: { icon: "/icons/icon.svg", apple: "/icons/icon.svg" },
+  icons: {
+    icon: [{ url: "/brand/inventman-favicon.png", type: "image/png", sizes: "512x512" }],
+    apple: [{ url: "/brand/inventman-favicon.png", type: "image/png", sizes: "512x512" }],
+  },
   robots: { index: publicIndexingEnabled(), follow: publicIndexingEnabled() },
   openGraph: { type: "website", siteName: appConfig.name, title: appConfig.name, description: appConfig.description },
   twitter: { card: "summary_large_image", title: appConfig.name, description: appConfig.description },
@@ -23,7 +26,7 @@ export const metadata: Metadata = {
     other: process.env.BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION } : undefined,
   },
 };
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#183f35" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0B3D91" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en" className={`${geist.variable} ${geistMono.variable}`}><body className="antialiased">{children}</body></html>;

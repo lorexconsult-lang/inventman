@@ -9,11 +9,17 @@ test("renders the public home and auth routes without console errors", async ({
   });
   await page.goto("/");
   await expect(
+    page.getByRole("link", { name: "Inventman home" }).first().locator("img"),
+  ).toBeVisible();
+  await expect(
     page.getByRole("heading", {
       name: /Control your stock, sales, cash and profitability.*Run your entire business from one connected platform/,
     }),
   ).toBeVisible();
   await page.goto("/login");
+  await expect(
+    page.getByRole("link", { name: "Inventman home" }).locator("img"),
+  ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Sign in to your workspace" }),
   ).toBeVisible();

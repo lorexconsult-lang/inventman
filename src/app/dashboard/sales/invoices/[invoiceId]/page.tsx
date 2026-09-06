@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { DocumentBrand } from "@/components/brand/inventman-logo";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { getOrganizationContext } from "@/features/organizations/context";
@@ -25,6 +26,7 @@ export default async function InvoiceDetail({
     Number(i.amount_paid_base);
   return (
     <div className="space-y-7 print:p-0">
+      <DocumentBrand />
       <PageHeader
         eyebrow="Sales invoice"
         title={i.invoice_number}

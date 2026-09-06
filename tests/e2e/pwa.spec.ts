@@ -12,15 +12,25 @@ test("serves an installable manifest and a safe offline shell", async ({
     short_name: string;
     start_url: string;
     display: string;
-    icons: unknown[];
+    icons: Array<{ src: string; purpose?: string }>;
   };
   expect(manifest.name).toContain("Inventman");
   expect(manifest.short_name).toBe("Inventman");
   expect(manifest.start_url).toBe("/dashboard/pos");
   expect(manifest.display).toBe("standalone");
   expect(manifest.icons.length).toBeGreaterThanOrEqual(2);
+  expect(manifest.icons.map((icon) => icon.src)).toEqual(
+    expect.arrayContaining([
+      "/brand/inventman-icon.png",
+      "/brand/inventman-favicon.png",
+    ]),
+  );
 
   await page.goto("/");
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
+    "href",
+    /inventman-favicon\.png/,
+  );
   await page.evaluate(async () => {
     await navigator.serviceWorker.register("/sw.js", { scope: "/" });
     await navigator.serviceWorker.ready;

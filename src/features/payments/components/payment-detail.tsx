@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DocumentBrand } from "@/components/brand/inventman-logo";
 import { Button } from "@/components/ui/button";
 import { PrintButton } from "@/features/sales/components/print-button";
 import { allocatePayment, postRefund, reversePayment } from "../actions";
@@ -11,6 +12,7 @@ export function PaymentDetail({ payment, kind, openInvoices, accounts, methods }
   const base = kind === "CUSTOMER" ? "/dashboard/sales/payments" : "/dashboard/procurement/payments";
   const party = kind === "CUSTOMER" ? payment.customers?.display_name : payment.suppliers?.legal_name;
   return <div className="space-y-7 print:p-0">
+    <DocumentBrand />
     <div className="flex flex-wrap justify-between gap-4"><div><p className="text-sm font-semibold text-accent">{kind === "CUSTOMER" ? "Customer receipt" : "Supplier payment voucher"}</p><h1 className="mt-2 text-3xl font-semibold">{payment.payment_number}</h1><p className="mt-2 text-subtle">{party} · {payment.branches?.name}</p></div><div className="print:hidden"><PrintButton label={kind === "CUSTOMER" ? "Print receipt" : "Print voucher"} /></div></div>
     <section className="grid gap-4 rounded-2xl border bg-surface p-5 sm:grid-cols-2 lg:grid-cols-4">{[["Status", payment.status],["Amount", `${payment.currency} ${Number(payment.amount).toLocaleString()}`],["Allocated", `${payment.currency} ${allocated.toLocaleString()}`],["Unallocated", `${payment.currency} ${unallocated.toLocaleString()}`],["Method", payment.payment_methods?.name],["Account", payment.payment_accounts?.name],["Reference", payment.external_reference || "—"],["Date", payment.payment_date]].map(([label,value]) => <div key={label}><p className="text-xs uppercase text-subtle">{label}</p><p className="mt-1 font-semibold">{value}</p></div>)}</section>
     <section className="rounded-2xl border p-5"><h2 className="font-semibold">Allocations</h2><div className="mt-3 space-y-2">{payment.payment_allocations.filter((x) => !x.is_reversal).map((x) => <div key={x.id} className="flex justify-between rounded-lg bg-muted p-3 text-sm"><span>{x.customer_invoices?.invoice_number ?? x.supplier_invoices?.invoice_number}</span><strong>{payment.currency} {Number(x.allocated_amount).toLocaleString()}</strong></div>)}{!payment.payment_allocations.length && <p className="text-sm text-subtle">No allocations yet.</p>}</div></section>

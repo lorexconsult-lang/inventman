@@ -21,7 +21,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { appConfig } from "@/config/app";
+import { InventmanLogo } from "@/components/brand/inventman-logo";
 
 const groups = [
   {
@@ -193,7 +193,7 @@ export function WorkspaceNavigation({
         {open && <button aria-label="Close navigation" className="fixed inset-0 z-40 bg-black/45 md:hidden" onClick={() => setOpen(false)} type="button" />}
         <aside id="mobile-workspace-navigation" aria-hidden={!open} className={`mobile-nav-drawer app-sidebar fixed inset-y-0 left-0 z-50 flex w-[min(88vw,320px)] flex-col overflow-y-auto shadow-2xl transition-transform duration-200 md:hidden ${open ? "translate-x-0" : "-translate-x-full"}`}>
           <div className="flex min-h-16 items-center justify-between border-b border-white/10 px-4">
-            <Link className="flex items-center gap-3 font-semibold" href="/dashboard"><span className="grid size-9 place-items-center rounded-lg bg-accent text-sm font-black">I</span>{appConfig.name}</Link>
+            <Link aria-label="Inventman dashboard" className="flex items-center" href="/dashboard"><InventmanLogo variant="dark" decorative eager className="w-36" sizes="144px" /></Link>
             <button aria-label="Close navigation" className="grid size-10 place-items-center rounded-lg text-white hover:bg-white/10" onClick={() => setOpen(false)} type="button"><X aria-hidden="true" className="size-5" /></button>
           </div>
           <NavigationGroups onNavigate={() => setOpen(false)} pathname={pathname} visible={visible} />

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DocumentBrand } from "@/components/brand/inventman-logo";
 import { Button } from "@/components/ui/button";
 import { PrintButton } from "@/components/ui/print-button";
 import { reprintReceipt } from "@/features/pos/actions";
@@ -37,6 +38,7 @@ export default async function Receipt({
       </div>
       <article className="rounded-2xl border bg-white p-6 text-black print:border-0 print:p-0">
         <header className="border-b pb-4 text-center">
+          <DocumentBrand className="mb-3 justify-center" />
           <p className="text-sm font-semibold">{receipt.branch_name}</p>
           <h1 className="mt-1 text-2xl font-bold">RECEIPT</h1>
           <p className="font-mono">{receipt.receipt_number}</p>

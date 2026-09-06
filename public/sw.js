@@ -1,5 +1,5 @@
-const CACHE_VERSION = "inventman-shell-v2";
-const SHELL = ["/offline.html", "/manifest.webmanifest", "/icons/icon.svg", "/icons/maskable.svg"];
+const CACHE_VERSION = "inventman-shell-v3";
+const SHELL = ["/offline.html", "/manifest.webmanifest", "/brand/inventman-icon.png", "/brand/inventman-favicon.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(SHELL)));
