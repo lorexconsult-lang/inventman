@@ -5022,6 +5022,7 @@ export type Database = {
       platform_settings: {
         Row: {
           billing_provider: string
+          commercial_access_mode: string
           default_trial_days: number
           default_trial_plan_id: string | null
           grace_period_days: number
@@ -5033,6 +5034,7 @@ export type Database = {
         }
         Insert: {
           billing_provider?: string
+          commercial_access_mode?: string
           default_trial_days?: number
           default_trial_plan_id?: string | null
           grace_period_days?: number
@@ -5044,6 +5046,7 @@ export type Database = {
         }
         Update: {
           billing_provider?: string
+          commercial_access_mode?: string
           default_trial_days?: number
           default_trial_plan_id?: string | null
           grace_period_days?: number
@@ -11956,6 +11959,10 @@ export type Database = {
         }
         Returns: string
       }
+      platform_commercial_access_mode: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       platform_create_plan: {
         Args: {
           target_annual_price: number
@@ -11986,6 +11993,10 @@ export type Database = {
           target_scope: string
         }
         Returns: string
+      }
+      platform_set_commercial_access_mode: {
+        Args: { target_mode: string; target_reason: string }
+        Returns: undefined
       }
       platform_set_plan_entitlement: {
         Args: {

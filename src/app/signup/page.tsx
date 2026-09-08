@@ -4,7 +4,7 @@ import { InventmanLogo } from "@/components/brand/inventman-logo";
 import { AuthForm } from "@/features/auth/components/auth-form";
 import { safePlanCode, sanitizeAttribution } from "@/features/commercial/domain";
 
-export const metadata: Metadata = { title: "Start Free Trial", description: "Create your Inventman account and continue to secure business setup.", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Create Account", description: "Create your Inventman account and continue to secure business setup.", robots: { index: false, follow: false } };
 
 export default async function SignupPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const query = await searchParams;

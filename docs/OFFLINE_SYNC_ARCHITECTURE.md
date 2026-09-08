@@ -47,7 +47,7 @@ Logout and organization switching warn when unsynced work exists. Queues remain 
 Later phases may add controlled return drafts or other modules, but must continue to replay explicit commands through existing server engines. Phase 8 intentionally excludes offline inventory and procurement posting, AR/AP settlement, gateways, and accounting.
 # Subscription entitlement lease
 
-Offline authorization includes a configurable server-issued lease. Checkout is disabled when it expires; queued sales remain durable and sync is accepted deterministically only when `local_created_at` was within the lease.
+Offline authorization includes a configurable server-issued lease. Checkout is disabled when it expires; queued sales remain durable and sync is accepted deterministically only when `local_created_at` was within the lease. Temporary open access ignores subscription expiry when an eligible online device renews the lease, but the lease remains time-limited and device revocation, membership, RBAC, branch scope, cashier session checks and replay validation remain authoritative.
 # Production cache boundary
 
 The service worker caches only versioned public shell assets. It excludes API, authentication, dashboard, platform-admin, authorized, `private`, `no-store`, and `Set-Cookie` responses. Offline business mutations remain in the existing tenant-scoped IndexedDB queue and must be monitored for retry exhaustion and quota failures.

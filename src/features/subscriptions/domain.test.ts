@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { formatBillingInterval, offlineLeaseValid, platformMetrics, remainingDays, subscriptionAccessMode, usageState } from "./domain";
+import {
+  applicationAccessMode,
+  effectiveEntitlement,
+  formatBillingInterval,
+  offlineLeaseValid,
+  parseCommercialAccessMode,
+  platformMetrics,
+  remainingDays,
+  subscriptionCheckoutAllowed,
+  subscriptionAccessMode,
+  usageState,
+} from "./domain";
 
 const now = new Date("2026-08-28T12:00:00Z");
 describe("commercial subscription domain", () => {
@@ -9,6 +20,30 @@ describe("commercial subscription domain", () => {
     expect(subscriptionAccessMode({ status: "TRIALING", trialEndsAt: new Date("2026-08-27") }, now)).toBe("READ_ONLY");
     expect(subscriptionAccessMode({ status: "PAST_DUE", graceEndsAt: new Date("2026-08-30") }, now)).toBe("GRACE_ACCESS");
     expect(subscriptionAccessMode({ status: "ACTIVE", platformSuspended: true }, now)).toBe("SUSPENDED");
+  });
+  it("grants full access in open-access mode regardless of commercial lifecycle", () => {
+    for (const status of ["TRIALING", "PAST_DUE", "CANCELLED", "EXPIRED", "SUSPENDED"] as const)
+      expect(
+        applicationAccessMode(
+          "OPEN_ACCESS",
+          { status, trialEndsAt: new Date("2026-08-01"), graceEndsAt: new Date("2026-08-01") },
+          now,
+        ),
+      ).toBe("FULL_ACCESS");
+    expect(applicationAccessMode("OPEN_ACCESS", { status: "ACTIVE", platformSuspended: true }, now)).toBe("SUSPENDED");
+  });
+  it("makes active features unlimited in open access while retaining subscription decisions", () => {
+    expect(effectiveEntitlement({ commercialMode: "OPEN_ACCESS", featureActive: true, featureFlagEnabled: true, subscriptionEnabled: false, numericLimit: 1 })).toEqual({ enabled: true, numericLimit: null });
+    expect(effectiveEntitlement({ commercialMode: "SUBSCRIPTION", featureActive: true, featureFlagEnabled: true, subscriptionEnabled: false, numericLimit: 1 })).toEqual({ enabled: false, numericLimit: 1 });
+    expect(effectiveEntitlement({ commercialMode: "OPEN_ACCESS", featureActive: true, featureFlagEnabled: false, subscriptionEnabled: true, numericLimit: null })).toEqual({ enabled: false, numericLimit: null });
+  });
+  it("fails closed to subscription mode for unknown configuration", () => {
+    expect(parseCommercialAccessMode("OPEN_ACCESS")).toBe("OPEN_ACCESS");
+    expect(parseCommercialAccessMode("unexpected")).toBe("SUBSCRIPTION");
+  });
+  it("does not permit subscription checkout while open access is active", () => {
+    expect(subscriptionCheckoutAllowed("OPEN_ACCESS")).toBe(false);
+    expect(subscriptionCheckoutAllowed("SUBSCRIPTION")).toBe(true);
   });
   it("calculates trial countdown without negative days", () => {
     expect(remainingDays(new Date("2026-08-30T12:00:00Z"), now)).toBe(2);

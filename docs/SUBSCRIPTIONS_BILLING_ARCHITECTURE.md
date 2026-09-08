@@ -2,6 +2,14 @@
 
 Plans are versionable platform data with precise numeric monthly/annual prices and currency. Features use a small set of understandable entitlement types: boolean, limit, quota and enum. Usage is calculated from authoritative branch, member, warehouse, terminal and device records. Downgrades never delete or deactivate existing records; an over-limit organization keeps history and is prevented from creating more until usage is reduced or the plan changes.
 
+## Temporary open-access mode
+
+`platform_settings.commercial_access_mode` is the centralized commercial switch. Its supported values are `OPEN_ACCESS` and `SUBSCRIPTION`. The current launch setting is `OPEN_ACCESS`.
+
+In `OPEN_ACCESS`, active organization members receive all active platform features with no plan-derived numeric limits. Subscription status, trial expiry and billing status remain recorded but do not restrict ordinary tenant functionality. Platform suspension remains authoritative, and feature flags may still disable functionality for an operational or security reason. Authentication, active organization membership, RBAC, branch access and RLS continue to apply independently.
+
+`SUBSCRIPTION` restores the existing lifecycle, plan-entitlement and plan-limit decisions without changing subscription, billing or tenant records. A platform administrator with `platform.subscriptions.manage` can change the setting only through the audited `platform_set_commercial_access_mode` RPC. The switch therefore requires no destructive migration or subscription rewrite.
+
 One live subscription is permitted per organization. Lifecycle states are `TRIALING`, `ACTIVE`, `PAST_DUE`, `GRACE_PERIOD`, `CANCELLED`, `EXPIRED` and `SUSPENDED`. Central access modes are `FULL_ACCESS`, `GRACE_ACCESS`, `READ_ONLY` and `SUSPENDED`. Trials have explicit timestamps. Provider failure moves through past-due/grace policy rather than immediate suspension. Cancellation defaults to period end, data remains retained, and reactivation must not create a conflicting live subscription.
 
 New organizations receive the configured default trial plan atomically from an organization insert trigger. Existing organizations receive a non-expiring compatibility Business subscription during migration so commercial enforcement does not break deployed tenants. The default plan is referenced by ID in platform settings, never hardcoded in application authorization.
@@ -9,6 +17,8 @@ New organizations receive the configured default trial plan atomically from an o
 Platform billing transactions are separate from tenant customer/supplier payments. Each subscription snapshots its price, currency and interval; later plan price edits cannot rewrite historical billing. Provider references and webhook event IDs are unique. Paystack and Flutterwave adapters verify raw request signatures using server-only secrets. A signed webhook is recorded idempotently before provider-specific lifecycle processing. Browser redirects never activate paid access. Without configured credentials the UI reports checkout unavailable and makes no commercial-state change.
 
 Offline POS receives a configurable, server-issued entitlement lease after online validation. The encrypted/session-bound authorization cache stores the expiry. New offline checkout is disabled after lease expiry, while queued transactions are preserved. Sync accepts a queued sale only when its `local_created_at` falls inside the recorded lease; server receipt time cannot change that result.
+
+Open access allows an eligible device to renew this finite lease even when the recorded subscription is expired. It does not extend the lease indefinitely or bypass current membership, permissions, branch access, terminal/device status, cashier session validation, tender policy or replay idempotency.
 
 Subscription expiry during an already-submitted server transaction is governed by the database transaction snapshot: an atomic transaction that passed its commercial gate completes or rolls back as one unit. Subsequent transactions re-evaluate current state.
 

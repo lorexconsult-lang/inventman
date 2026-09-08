@@ -3,6 +3,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireOrganizationPermission } from "@/features/organizations/context";
+import {
+  parseCommercialAccessMode,
+  subscriptionCheckoutAllowed,
+} from "./domain";
 import { requirePlatformAdmin } from "./queries";
 
 const uuid = z.string().uuid();
@@ -11,7 +15,12 @@ function platformDone(key: string): never { revalidatePath("/platform-admin", "l
 export async function requestPlanChange(form: FormData) {
   const input = z.object({ planId: uuid, interval: z.enum(["MONTHLY", "ANNUAL"]) }).safeParse(Object.fromEntries(form));
   if (!input.success) redirect("/dashboard/settings/billing?error=INVALID_PLAN_TRANSITION");
-  await requireOrganizationPermission("organizations.manage");
+  const { client } = await requireOrganizationPermission("organizations.manage");
+  const { data: accessMode } = await client.rpc(
+    "platform_commercial_access_mode",
+  );
+  if (!subscriptionCheckoutAllowed(parseCommercialAccessMode(accessMode)))
+    redirect("/dashboard/settings/billing?openAccess=1");
   // Paid activation remains provider/webhook authoritative. No client-side subscription mutation occurs here.
   redirect(`/dashboard/settings/billing?checkout=unavailable&plan=${input.data.planId}&interval=${input.data.interval}`);
 }
@@ -45,4 +54,19 @@ export async function setTenantSuspension(form: FormData) {
   const client = await requirePlatformAdmin("platform.tenants.manage");
   const { error } = await client.rpc("platform_set_tenant_suspension", { target_organization_id: input.data.organizationId, target_suspended: input.data.suspended === "true", target_reason: input.data.reason });
   if (error) redirect(`/platform-admin?error=${encodeURIComponent(error.message)}`); platformDone(input.data.suspended === "true" ? "suspended" : "reactivated");
+}
+
+export async function setCommercialAccessMode(form: FormData) {
+  const input = z.object({
+    mode: z.enum(["OPEN_ACCESS", "SUBSCRIPTION"]),
+    reason: z.string().trim().min(3),
+  }).safeParse(Object.fromEntries(form));
+  if (!input.success) redirect("/platform-admin?error=invalid");
+  const client = await requirePlatformAdmin("platform.subscriptions.manage");
+  const { error } = await client.rpc("platform_set_commercial_access_mode", {
+    target_mode: input.data.mode,
+    target_reason: input.data.reason,
+  });
+  if (error) redirect(`/platform-admin?error=${encodeURIComponent(error.message)}`);
+  platformDone("accessModeChanged");
 }
