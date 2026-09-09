@@ -64,44 +64,54 @@ export const priceListSchema = z.object({
     .optional()
     .transform((v) => v === "on"),
 });
-export const simpleProductSchema = z.object({
-  name: z.string().trim().min(1).max(180),
-  productType: z.enum([
-    "STOCKED_PRODUCT",
-    "NON_STOCKED_PRODUCT",
-    "SERVICE",
-    "BUNDLE",
-    "RECIPE",
-    "SERIALIZED_PRODUCT",
-    "BATCH_CONTROLLED_PRODUCT",
-    "PERISHABLE_PRODUCT",
-  ]),
-  categoryId: nullableUuid,
-  brandId: nullableUuid,
-  taxProfileId: nullableUuid,
-  unitId: z.uuid(),
-  priceListId: nullableUuid,
-  sku: z
-    .string()
-    .trim()
-    .max(100)
-    .optional()
-    .transform((v) => v || ""),
-  barcode: z
-    .string()
-    .trim()
-    .max(100)
-    .optional()
-    .transform((v) => v || ""),
-  price: nullableMoney,
-  referenceCost: nullableMoney,
-  reorderPoint: nullableQuantity,
-  trackInventory: z
-    .string()
-    .optional()
-    .transform((v) => v === "on"),
-  idempotencyKey: z.uuid(),
-});
+export const simpleProductSchema = z
+  .object({
+    name: z.string().trim().min(1).max(180),
+    productType: z.enum([
+      "STOCKED_PRODUCT",
+      "NON_STOCKED_PRODUCT",
+      "SERVICE",
+      "BUNDLE",
+      "RECIPE",
+      "SERIALIZED_PRODUCT",
+      "BATCH_CONTROLLED_PRODUCT",
+      "PERISHABLE_PRODUCT",
+    ]),
+    categoryId: nullableUuid,
+    brandId: nullableUuid,
+    taxProfileId: nullableUuid,
+    unitId: z.uuid(),
+    priceListId: nullableUuid,
+    sku: z
+      .string()
+      .trim()
+      .max(100)
+      .optional()
+      .transform((v) => v || ""),
+    barcode: z
+      .string()
+      .trim()
+      .max(100)
+      .optional()
+      .transform((v) => v || ""),
+    price: nullableMoney,
+    referenceCost: nullableMoney,
+    reorderPoint: nullableQuantity,
+    trackInventory: z
+      .string()
+      .optional()
+      .transform((v) => v === "on"),
+    idempotencyKey: z.uuid(),
+  })
+  .superRefine((value, context) => {
+    if (value.price !== null && value.priceListId === null) {
+      context.addIssue({
+        code: "custom",
+        path: ["priceListId"],
+        message: "Select a price list when entering a selling price",
+      });
+    }
+  });
 export const packagingSchema = z.object({
   variantId: z.uuid(),
   unitId: z.uuid(),
