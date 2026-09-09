@@ -7,18 +7,21 @@ export default async function CheckEmailPage({
 }) {
   const { mode,email,plan } = await searchParams;
   const reset = mode === "reset";
+  const callbackError = mode === "callback-error";
   return (
     <div className="mx-auto max-w-md py-20 text-center">
       <p className="text-sm font-semibold text-accent">
-        {reset ? "Password recovery" : "Verification required"}
+        {reset ? "Password recovery" : callbackError ? "Verification problem" : "Verification required"}
       </p>
       <h1 className="mt-2 text-3xl font-semibold">Check your email</h1>
       <p className="mt-3 text-subtle">
-        {reset
+        {callbackError
+          ? "This confirmation link could not establish a secure session. Open the latest verification email in the same browser used to create the account, then try again."
+          : reset
           ? "If an account exists, a secure password-reset link has been sent. The link expires according to the authentication policy."
           : "Enter the one-time code from the Supabase verification message, or follow its secure PKCE link."}
       </p>
-      {!reset && <VerificationForm email={email} plan={plan} />}
+      {!reset && !callbackError && <VerificationForm email={email} plan={plan} />}
     </div>
   );
 }
