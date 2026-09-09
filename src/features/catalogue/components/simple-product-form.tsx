@@ -6,6 +6,7 @@ import { ActionFeedback } from "@/components/ui/action-feedback";
 import { Button } from "@/components/ui/button";
 import { Field, SelectField, TextareaField } from "@/components/ui/field";
 import { createSimpleProduct, type CatalogueActionState } from "../actions";
+import { ProductCreationToast } from "./product-creation-toast";
 
 type Choice = { id: string; name: string };
 export function SimpleProductForm({
@@ -29,6 +30,7 @@ export function SimpleProductForm({
   const [idempotencyKey] = useState(() => crypto.randomUUID());
   return (
     <form action={action} className="space-y-8">
+      <ProductCreationToast state={state} />
       <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
       <ActionFeedback {...state} />
       {state.productId && (

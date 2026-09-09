@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Field, SelectField } from "@/components/ui/field";
 import { ActionFeedback } from "@/components/ui/action-feedback";
 import { createVariantProduct, type CatalogueActionState } from "../actions";
+import { ProductCreationToast } from "./product-creation-toast";
 import {
   generateVariantCombinations,
   type VariantOption,
@@ -41,6 +42,7 @@ export function VariantProductForm({
   }));
   return (
     <form action={action} className="space-y-7">
+      <ProductCreationToast state={state} />
       <input type="hidden" name="idempotencyKey" value={key} />
       <input type="hidden" name="optionsJson" value={JSON.stringify(options)} />
       <input
