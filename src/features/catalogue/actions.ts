@@ -28,6 +28,26 @@ const invalid = (
   message = "Check the submitted details",
 ): CatalogueActionState => ({ error: message });
 
+function catalogueRpcError(
+  message: string | null | undefined,
+  fallback: string,
+) {
+  switch (message?.toLowerCase()) {
+    case "permission_denied":
+      return "You do not have permission to create products in this organization.";
+    case "price_permission_denied":
+      return "You can create products, but you do not have permission to add selling prices.";
+    case "invalid_base_unit":
+      return "Select an active base unit before creating the product.";
+    case "feature_not_included":
+      return "Product catalogue access is not enabled for this organization.";
+    case "tenant_suspended":
+      return "This organization is currently suspended.";
+    default:
+      return fallback;
+  }
+}
+
 export async function createCategory(
   _: CatalogueActionState,
   formData: FormData,
@@ -182,7 +202,7 @@ export async function createSimpleProduct(
     return invalid(
       error.code === "23505"
         ? "SKU, barcode, or request has already been used"
-        : "Product creation failed",
+        : catalogueRpcError(error.message, "Product creation failed"),
     );
   revalidatePath("/dashboard/catalogue");
   return { success: "Product created", productId: data };
@@ -221,7 +241,7 @@ export async function createVariantProduct(
     return invalid(
       error.code === "23505"
         ? "A SKU or variant combination is duplicated"
-        : "Variant product creation failed",
+        : catalogueRpcError(error.message, "Variant product creation failed"),
     );
   revalidatePath("/dashboard/catalogue");
   return { success: "Variant product created", productId: data };
