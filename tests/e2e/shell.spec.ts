@@ -52,6 +52,6 @@ test("fails closed on invalid callbacks and ignores external redirect targets", 
     { maxRedirects: 0 },
   );
   expect(response.status()).toBe(307);
-  expect(response.headers().location).toMatch(/\/auth\/login\?error=callback$/);
+  expect(response.headers().location).toMatch(/\/auth\/check-email\?mode=callback-error$/);
   expect(response.headers()["cache-control"]).toContain("no-store");
 });
