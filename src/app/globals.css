@@ -388,7 +388,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .price-card.featured { border-color:var(--color-brand-blue); box-shadow:0 20px 50px rgb(11 61 145/.1); }
 .app-sidebar,.public-footer-shell,.final-cta,.problem-band,.finance-story,.benefit-panel,.spotlight.dark { background:var(--color-brand-navy); }
 .problem-band .eyebrow,.finance-story .eyebrow,.final-cta .eyebrow,.benefit-panel .eyebrow,.spotlight.dark .eyebrow,.security-callout .eyebrow { color:var(--color-brand-green)!important; }
-.app-sidebar-link[aria-current="page"] { background:rgb(0 184 148/.14); color:#d9fff5; box-shadow:inset 3px 0 0 var(--color-brand-green); }
+.app-sidebar-link[aria-current="page"] { background:rgb(11 61 145/.24); color:#dbeafe; box-shadow:inset 3px 0 0 var(--color-brand-blue); }
 .app-sidebar-link:hover { background:rgb(255 255 255/.075); }
 
 @media(max-width:600px) {
