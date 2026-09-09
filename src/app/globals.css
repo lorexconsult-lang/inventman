@@ -395,8 +395,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   position: fixed;
   right: max(1rem, env(safe-area-inset-right));
   bottom: max(1rem, env(safe-area-inset-bottom));
-  z-index: 60;
+  left: auto;
+  z-index: 100;
   display: flex;
+  max-width: calc(100vw - 2rem);
   width: min(30rem, calc(100vw - 2rem));
   align-items: flex-start;
   justify-content: space-between;
@@ -413,6 +415,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .product-creation-toast strong { display:block; font-size:.9rem; }
 .product-creation-toast p { margin:.25rem 0 0; color:var(--color-subtle); font-size:.875rem; line-height:1.45; }
 .product-creation-toast button { flex:0 0 auto; color:var(--color-brand-blue); font-size:.75rem; font-weight:700; text-decoration:underline; text-underline-offset:3px; }
+@media(max-width:600px) {
+  .product-creation-toast {
+    right: max(.75rem, env(safe-area-inset-right));
+    bottom: max(.75rem, env(safe-area-inset-bottom));
+    left: max(.75rem, env(safe-area-inset-left));
+    width: auto;
+    max-width: none;
+  }
+}
 
 @media(max-width:600px) {
   .brand .inventman-logo { width:128px; }

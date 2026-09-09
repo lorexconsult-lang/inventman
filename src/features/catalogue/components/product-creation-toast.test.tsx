@@ -20,4 +20,10 @@ describe("ProductCreationToast", () => {
     act(() => vi.advanceTimersByTime(7000));
     expect(screen.queryByRole("alert")).toBeNull();
   });
+
+  it("renders into the document body so fixed positioning is viewport anchored", () => {
+    render(<ProductCreationToast state={{ success: "Product created" }} />);
+    const toast = screen.getByRole("status");
+    expect(toast.parentElement).toBe(document.body);
+  });
 });

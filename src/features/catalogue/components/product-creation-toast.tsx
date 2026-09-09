@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type { CatalogueActionState } from "../actions";
 
 export function ProductCreationToast({ state }: { state: CatalogueActionState }) {
@@ -13,8 +14,8 @@ export function ProductCreationToast({ state }: { state: CatalogueActionState })
     return () => window.clearTimeout(timeout);
   }, [message]);
 
-  if (!message || dismissedMessage === message) return null;
-  return (
+  if (!message || dismissedMessage === message || typeof document === "undefined") return null;
+  return createPortal(
     <div className="product-creation-toast" role={state.error ? "alert" : "status"}>
       <div>
         <strong>{state.error ? "Product could not be created" : "Product created"}</strong>
@@ -23,6 +24,7 @@ export function ProductCreationToast({ state }: { state: CatalogueActionState })
       <button type="button" aria-label="Dismiss product notification" onClick={() => setDismissedMessage(message)}>
         Dismiss
       </button>
-    </div>
+    </div>,
+    document.body,
   );
 }
